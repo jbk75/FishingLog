@@ -1,0 +1,106 @@
+﻿USE [FishingLog]
+GO
+
+/****** Object:  Table [dbo].[Fiskitegundir]    Script Date: 18.6.2017 23:58:05 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Fiskitegundir](
+	[ftid] [int] NULL,
+	[heiti_tegundar] [nvarchar](50) NULL
+) ON [PRIMARY]
+
+GO
+
+
+USE [FishingLog]
+GO
+
+/****** Object:  Table [dbo].[Veidistadir]    Script Date: 18.6.2017 23:58:29 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Veidistadir](
+	[vsid] [int] NOT NULL,
+	[heiti] [nvarchar](50) NOT NULL,
+	[fjoldi_veidisvaeda] [nvarchar](50) NOT NULL,
+	[vtid] [int] NOT NULL,
+	[lysing] [nvarchar](max) NOT NULL,
+	[stadid] [int] NOT NULL,
+	[veidileyfi_simanumer] [nvarchar](50) NOT NULL,
+	[veidileyfasali] [nvarchar](50) NOT NULL,
+	[vefsidur] [nvarchar](50) NOT NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+
+USE [FishingLog]
+GO
+
+/****** Object:  Table [dbo].[Veidiferdir]    Script Date: 18.6.2017 23:58:21 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Veidiferdir](
+	[Id] [int] NULL,
+	[Dags_fra] [datetime] NULL,
+	[Dags_til] [datetime] NULL,
+	[Lysing] [nvarchar](max) NULL,
+	[Timastimpill] [datetime] NULL,
+	[Ar] [nvarchar](50) NULL,
+	[vet_id] [int] NULL,
+	[vsid] [int] NULL,
+	[koid] [int] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+
+USE [FishingLog]
+GO
+
+/****** Object:  Table [dbo].[Veididagatal_texti]    Script Date: 18.6.2017 23:58:17 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Veididagatal_texti](
+	[vetid] [int] NOT NULL,
+	[vet_texti] [nvarchar](max) NOT NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+
+USE [FishingLog]
+GO
+
+/****** Object:  Table [dbo].[kostnadur]    Script Date: 18.6.2017 23:58:10 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[kostnadur](
+	[koid] [int] NOT NULL,
+	[heildarkostnadur_i_kronum] [int] NOT NULL,
+	[utskyring] [nvarchar](50) NULL,
+	[Veidileyfi_kostnadur] [int] NULL
+) ON [PRIMARY]
+
+GO
+
+
