@@ -41,6 +41,7 @@ namespace VedurConsole
             var builder = new ConfigurationBuilder()
                 .AddJsonFile($"appsettings.json", true, true)
                 .AddJsonFile($"appsettings.{env}.json", true, true)
+                .AddUserSecrets<Program>()
                 .AddEnvironmentVariables();
 
             return builder.Build();
