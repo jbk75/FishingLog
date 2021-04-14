@@ -8,9 +8,9 @@ namespace VedurConsole.Repos
     public static class WeatherRepo
     {
 
-        public static void Insert(Weather weatherItem)
+        public static void Insert(Weather weatherItem, string connectionString)
         {
-            using (var context = new WeatherContext())
+            using (var context = new WeatherContext(connectionString))
             {
                 //var weather = 
                 //    new Models.Weather 

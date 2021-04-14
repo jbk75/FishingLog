@@ -3,14 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using VedurConsole.Models;
 using VedurConsole.Repos;
 
 namespace VedurConsole
 {
     class Program
     {
-
         public class DataObject
         {
             public string Dags { get; set; }
@@ -32,7 +30,6 @@ namespace VedurConsole
             public string VindattStDev { get; set; }
             public string Vindhradi { get; set; }
             public string Vindhvida { get; set; }
-
         }
 
         private static IConfigurationRoot InitConfig()
@@ -47,17 +44,19 @@ namespace VedurConsole
             return builder.Build();
         }
 
-        private static T InitOptions<T>()
-    where T : new()
-        {
-            var config = InitConfig();
-            return config.Get<T>();
-        }
+    //    private static T InitOptions<T>()
+    //where T : new()
+    //    {
+    //        var config = InitConfig();
+    //        return config.Get<T>();
+    //    }
+
+        public static IConfigurationRoot Configuration;
 
         static  void Main(string[] args)
         {
 
-            var cfg = InitOptions<AppConfig>();
+            Configuration = InitConfig(); // InitOptions<AppConfig>();
 
             //##################### 
 
@@ -100,7 +99,7 @@ namespace VedurConsole
                     weather.Vindhradi = d.Vindhradi;
                     weather.Vindhvida = d.Vindhvida;
 
-                    WeatherRepo.Insert(weather);
+                    WeatherRepo.Insert(weather, Configuration.GetConnectionString("FishingLogDatabase"));
                 }
             }
             else
