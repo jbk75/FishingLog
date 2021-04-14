@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -34,8 +35,31 @@ namespace VedurConsole
 
         }
 
-        static void Main(string[] args)
+        private static IConfigurationRoot InitConfig()
         {
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile($"appsettings.json", true, true)
+                .AddJsonFile($"appsettings.{env}.json", true, true)
+                .AddEnvironmentVariables();
+
+            return builder.Build();
+        }
+
+        private static T InitOptions<T>()
+    where T : new()
+        {
+            var config = InitConfig();
+            return config.Get<T>();
+        }
+
+        static  void Main(string[] args)
+        {
+
+            var cfg = InitOptions<AppConfig>();
+
+            //##################### 
+
             var weatherAPIUrl = "https://gagnaveita.vegagerdin.is/api/vedur2014_1";
    
             HttpClient client = new HttpClient();
@@ -64,7 +88,7 @@ namespace VedurConsole
                     weather.Loftthrystingur = d.Loftthrystingur;
                     weather.Nafn = d.Nafn;
                     weather.Nr = d.Nr;
-                    weather.Nr_Vedurstofa = d.Nr_Vedurstofa;
+                    weather.NrVedurstofa = d.Nr_Vedurstofa;
                     weather.PntX = d.PntX;
                     weather.PntY = d.PntY;
                     weather.Raki = d.Raki;
