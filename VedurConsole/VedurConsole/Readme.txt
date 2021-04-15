@@ -36,9 +36,11 @@ Microsoft.Extensions.Configuration.Json
 
 https://blog.hildenco.com/2020/05/configuration-in-net-core-console.html
 
+
 Velja appsettings skrárnar og í properties velja : Always copy
 
 ###############
 
 Til að bæta við secret skrá í console forrit
 Install-Package Microsoft.Extensions.Configuration.UserSecrets
+https://makolyte.com/how-to-add-user-secrets-in-a-dotnetcore-console-app/
