@@ -1,57 +1,82 @@
-﻿var APIBaseUrl = 'http://localhost/fishinglog/api/';
+﻿//var APIBaseUrl = 'http://localhost/fishinglog/api/';
 
-function GetVeidistadir()
-{
+
+//var APIBaseUrl = 'https://log20170517012354.azurewebsites.net/api/';
+
+var APIBaseUrl = 'http://localhost:15749/api/';
+//var APIBaseUrl = 'https://fishingloggerapi20190710081131.azurewebsites.net/api/';
+
+function GetVeidistadir() {
     $.ajax({
         url: APIBaseUrl + 'veidistadur',
         type: 'GET',
         dataType: 'json',
-        success: function (data)
-        {
-            jQuery.each(data, function (i, val)
-            {
+        success: function (data) {
+            jQuery.each(data, function (i, val) {
                 $('#selectVeidiStadir').append($('<option value="' + val.vsId + '">' + val.heiti + '</option>'));
-            });
+            }
+            );
             //   console.log(data);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            console.log(xhr.status);
+            console.log(thrownError);
         }
     });
 }
 
-function GetVeidiferd(id)
-{
+//function GetValues() {
+//    $.ajax({
+//        url: APIBaseUrl + 'values',
+//        type: 'GET',
+//        dataType: 'json',
+//        success: function (data) {
+//            jQuery.each(data, function (i, val) {
+//                $('#selectVeidiStadir').append($('<option value="' + val.vsId + '">' + val.heiti + '</option>'));
+//            }
+//            );
+//            //   console.log(data);
+//        },
+//        error: function (xhr, ajaxOptions, thrownError) {
+//            alert(xhr.status);
+//            alert(thrownError);
+//        }
+//    });
+//}
+
+function GetVeidiferd(id) {
+    if (!id) {
+        return;
+    }
+
     $.ajax({
         url: APIBaseUrl + 'veidiferd/' + id,
         type: 'GET',
         dataType: 'json',
-        success: function (data)
-        {
-            $("#textVeidiferd").val(data.lysingLong)
+        success: function (data) {
+            $("#textVeidiferd").val(data.lysing);
             var vsid = Number(data.vsId);
             $('#event-modal input[name="event-location"]').val(vsid);
-            $("#selectVeidiStadir").val(vsid);
+            $("#selectVeidiStadir").val(data.vsId);
         }
     });
 }
 
-function GetVeidiferdir()
-{
+function GetVeidiferdir() {
     $.ajax({
         url: APIBaseUrl + 'veidiferd',
         type: 'GET',
         dataType: 'json',
-        success: function (data)
-        {
+        success: function (data) {
             var dataSource = $('#calendar').data('calendar').getDataSource();
             dataSource = [];
-            
+
             //calendarData = data;
-            jQuery.each(data, function (i, val)
-            {
+            jQuery.each(data, function (i, val) {
                 //$('#selectVeidiStadir').append($('<option value="' + val.vsId + '">' + val.lysing + '</option>'));
                 var dFrom = new Date(val.dagsFra);
                 var dFromYear = dFrom.getFullYear();
-                if (dFromYear === 2017)
-                {
+                if (dFromYear === 2017) {
                     console.log('asdfasdf');
                 }
                 var dFromMonth = dFrom.getMonth();
@@ -79,14 +104,12 @@ function GetVeidiferdir()
     });
 }
 
-function GetVeidiferdNextId()
-{
+function GetVeidiferdNextId() {
     $.ajax({
         url: APIBaseUrl + 'veidiferdID',
         type: 'GET',
         dataType: 'json',
-        success: function (data)
-        {
+        success: function (data) {
             return data;
         }
     });

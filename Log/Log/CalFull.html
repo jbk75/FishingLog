@@ -1,37 +1,38 @@
 ﻿<html>
 <head>
-    <link rel="stylesheet" type="text/css" href="http://www.bootstrap-year-calendar.com/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="http://www.bootstrap-year-calendar.com/css/bootstrap-datepicker.min.css">
-    <link rel="stylesheet" type="text/css" href="http://www.bootstrap-year-calendar.com/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="http://www.bootstrap-year-calendar.com/css/bootstrap-year-calendar.min.css">
-    <link rel="stylesheet" type="text/css" href="http://www.bootstrap-year-calendar.com/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="http://www.bootstrap-year-calendar.com/css/style.css">
+    <link rel="stylesheet" type="text/css" href="Scripts/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="scripts/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="scripts/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="scripts/bootstrap-year-calendar.min.css">
+    <link rel="stylesheet" type="text/css" href="scripts/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="scripts/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="Content-Type" content="text/html; charset=utf-8">
     <meta name="title" content="Bootstrap year calendar">
     <meta name="description" content="The fully customizable year calendar widget, for bootstrap !">
     <meta name="keywords" content="bootstrap, jquery, javascript, widget, calendar, year, component, library, framework, html, css, api">
     <meta name="author" content="Paul DAVID-SIVELLE">
-    <title>Examples - bootstrap-year-calendar</title>
+    <title>Year calendar</title>
 
-    <script src="http://www.bootstrap-year-calendar.com/js/respond.min.js"></script>
-    <script src="http://www.bootstrap-year-calendar.com/js/jquery-1.10.2.min.js"></script>
-    <script src="http://www.bootstrap-year-calendar.com/js/bootstrap.min.js"></script>
-    <script src="http://www.bootstrap-year-calendar.com/js/bootstrap-datepicker.min.js"></script>
-    <script src="http://www.bootstrap-year-calendar.com/js/bootstrap-year-calendar.min.js"></script>
-    <script src="http://www.bootstrap-year-calendar.com/js/bootstrap-popover.js"></script>
-    <script src="http://www.bootstrap-year-calendar.com/js/scripts.js"></script>
+
+    <script src="scripts/respond.min.js"></script>
+    <script src="scripts/jquery-1.10.2.min.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+    <script src="scripts/bootstrap-datepicker.min.js"></script>
+    <script src="scripts/bootstrap-year-calendar.min.js"></script>
+    <script src="scripts/bootstrap-popover.js"></script>
+    <script src="scripts/scripts.js"></script>
     <script src="Dal.js"></script>
     <script src="Dates.js"></script>
 </head>
 <body>
-    <div id="banner">
+    <!--<div id="banner">
         <div class="site-content">
-            <!--<a href=".">
+            <a href=".">
                 <div class="logo">
                     <span class="fa fa-calendar"></span> bootstrap-year-calendar
                 </div>
-            </a>-->
+            </a>
             <span class="menu-button fa fa-bars"></span>
             <ul class="menu">
                 <li data-url="download.html" data-subtitle="Let's get started !">Download</li>
@@ -42,7 +43,7 @@
             </ul>
 
         </div>
-    </div>
+    </div>-->
     <!--<div id="title">
         <div class="site-content">
             <h1>Examples</h1>
@@ -51,7 +52,7 @@
     </div>-->
     <div id="main">
         <div class="site-content full">
-            <div class="left-menu">
+            <div class="left-menu" style="display:none">
                 <ul>
                     <li data-url="examples/real.html" class="default selected">Full example</li>
                     <li data-url="examples/simple.html">Simple example</li>
@@ -85,7 +86,7 @@
                                 <div class="modal-body">
                                     <input type="hidden" name="event-index">
                                     <form class="form-horizontal">
-                                                                                <div class="form-group">
+                                        <div class="form-group">
                                             <label for="min-date" class="col-sm-4 control-label" style="text-align:left">Veiðistaður</label>
                                             <div class="col-sm-12">
                                                 <select id="selectVeidiStadir" type="text" style="margin-bottom:5px;" class="form-control" />
@@ -95,7 +96,7 @@
                                         <div class="form-group">
                                             <label for="min-date" class="col-sm-4 control-label">Lýsing</label>
                                             <div class="col-sm-7">
-                                                <textarea name="event-name" id="textVeidiferd" cols="80" rows="14" class="form-control" ></textarea>
+                                                <textarea name="event-name" id="textVeidiferd" cols="80" rows="14" class="form-control"></textarea>
                                             </div>
                                         </div>
                                         <!--<div class="form-group">
@@ -153,8 +154,7 @@
 
                         var calendarData = '';
                         //if we have more than one event per day
-                        function editEvent(event)
-                        {
+                        function editEvent(event) {
                             $('#event-modal input[name="event-index"]').val(event ? event.id : '');
                             $('#event-modal input[name="event-name"]').val(event ? event.name : '');
                             $('#event-modal input[name="event-location"]').val(event ? event.location : '');
@@ -164,217 +164,213 @@
                             $('#event-modal').modal();
                             //$("#textVeidiferd").val('bosta')
                             var id = event.id;
-                            if (id)
-                            {
+                            if (id) {
                                 GetVeidiferd(id);
                             }
                         }
 
-    //if we have one event per day
-    function DayClickEditEvent(event)
-    {
-        if (event.events.length > 0)
-        {
-            var id = event.events[0].id;
+                        //if we have one event per day
+                        function DayClickEditEvent(event) {
+                            if (event.events.length > 0) {
+                                var id = event.events[0].id;
 
-            $('#event-modal input[name="event-index"]').val(event ? event.events[0].id : '');
-            $('#event-modal input[name="event-name"]').val('wefwefewfwefwefew');
-            //$("#textVeidiferd").val(event.events[0].name)
-            //$('#event-modal input[name="event-location"]').val(event ? event.events[0].location : '');
-            //$('#event-modal input[name="event-location"]').val(74);
-            //$("#selectVeidiStadir").val(event.events[0].location);
-            //$("#selectVeidiStadir").val(74);
-        }
-        else
-        {
-            $('#event-modal input[name="event-index"]').val('');
-            $('#event-modal input[name="event-name"]').val('');
-            $("#textVeidiferd").val('')
-            $('#event-modal input[name="event-location"]').val('');
-            $("#selectVeidiStadir").val('');
-        }
-        $('#event-modal input[name="event-start-date"]').datepicker('update', event ? event.date : '');
-        $('#event-modal input[name="event-end-date"]').datepicker('update', event ? event.date : '');
-                        $('#event-modal').modal();
-                        GetVeidiferd(id);
-    } 
+                                $('#event-modal input[name="event-index"]').val(event ? event.events[0].id : '');
+                                $('#event-modal input[name="event-name"]').val('wefwefewfwefwefew');
+                                //$("#textVeidiferd").val(event.events[0].name)
+                                //$('#event-modal input[name="event-location"]').val(event ? event.events[0].location : '');
+                                //$('#event-modal input[name="event-location"]').val(74);
+                                //$("#selectVeidiStadir").val(event.events[0].location);
+                                //$("#selectVeidiStadir").val(74);
+                            }
+                            else {
+                                $('#event-modal input[name="event-index"]').val('');
+                                $('#event-modal input[name="event-name"]').val('');
+                                $("#textVeidiferd").val('')
+                                $('#event-modal input[name="event-location"]').val('');
+                                $("#selectVeidiStadir").val('');
+                            }
+                            $('#event-modal input[name="event-start-date"]').datepicker('update', event ? event.date : '');
+                            $('#event-modal input[name="event-end-date"]').datepicker('update', event ? event.date : '');
+                            $('#event-modal').modal();
+                            GetVeidiferd(id);
+                        }
 
-    function deleteEvent(event)
-    {
-	    var dataSource = $('#calendar').data('calendar').getDataSource();
+                        function deleteEvent(event) {
+                            var dataSource = $('#calendar').data('calendar').getDataSource();
 
-	    for(var i in dataSource) {
-		    if(dataSource[i].id == event.id) {
-			    dataSource.splice(i, 1);
-			    break;
-		    }
-	    }
+                            for (var i in dataSource) {
+                                if (dataSource[i].id == event.id) {
+                                    dataSource.splice(i, 1);
+                                    break;
+                                }
+                            }
 
-	$('#calendar').data('calendar').setDataSource(dataSource);
-}
+                            $('#calendar').data('calendar').setDataSource(dataSource);
+                        }
 
-    function saveEvent()
-    {
-        SaveVeidiferd();
+                        function saveEvent() {
+                            SaveVeidiferd();
 
-    	var event = {
-		    id: $('#event-modal input[name="event-index"]').val(),
-		    name: $('#event-modal input[name="event-name"]').val(),
-		    location: $('#event-modal input[name="event-location"]').val(),
-		    startDate: $('#event-modal input[name="event-start-date"]').datepicker('getDate'),
-		    endDate: $('#event-modal input[name="event-end-date"]').datepicker('getDate')
-	    }
+                            var event = {
+                                id: $('#event-modal input[name="event-index"]').val(),
+                                name: $('#event-modal input[name="event-name"]').val(),
+                                location: $('#event-modal input[name="event-location"]').val(),
+                                startDate: $('#event-modal input[name="event-start-date"]').datepicker('getDate'),
+                                endDate: $('#event-modal input[name="event-end-date"]').datepicker('getDate')
+                            }
 
-	var dataSource = $('#calendar').data('calendar').getDataSource();
+                            var dataSource = $('#calendar').data('calendar').getDataSource();
 
-	if(event.id) {
-		for(var i in dataSource) {
-			if(dataSource[i].id == event.id) {
-				dataSource[i].name = event.name;
-				dataSource[i].location = event.location;
-				dataSource[i].startDate = event.startDate;
-				dataSource[i].endDate = event.endDate;
-			}
-		}
-	}
-	else
-	{
-		var newId = 0;
-		for(var i in dataSource) {
-			if(dataSource[i].id > newId) {
-				newId = dataSource[i].id;
-			}
-		}
+                            if (event.id) {
+                                for (var i in dataSource) {
+                                    if (dataSource[i].id == event.id) {
+                                        dataSource[i].name = event.name;
+                                        dataSource[i].location = event.location;
+                                        dataSource[i].startDate = event.startDate;
+                                        dataSource[i].endDate = event.endDate;
+                                    }
+                                }
+                            }
+                            else {
+                                var newId = 0;
+                                for (var i in dataSource) {
+                                    if (dataSource[i].id > newId) {
+                                        newId = dataSource[i].id;
+                                    }
+                                }
 
-		newId++;
-		event.id = newId;
+                                newId++;
+                                event.id = newId;
 
-		dataSource.push(event);
-	}
+                                dataSource.push(event);
+                            }
 
-	$('#calendar').data('calendar').setDataSource(dataSource);
-	$('#event-modal').modal('hide');
-}
+                            $('#calendar').data('calendar').setDataSource(dataSource);
+                            $('#event-modal').modal('hide');
+                        }
 
 
-    function SaveVeidiferd()
-    {
-        var startDate = $('#event-modal input[name="event-start-date"]').datepicker('getDate');
-        var endDate = $('#event-modal input[name="event-end-date"]').datepicker('getDate');
+                        function SaveVeidiferd() {
+                            var startDate = $('#event-modal input[name="event-start-date"]').datepicker('getDate');
+                            var endDate = $('#event-modal input[name="event-end-date"]').datepicker('getDate');
 
-        var dayFrom = FormatDay(startDate);
-        var monthFrom = FormatMonth(startDate); 
+                            var dayFrom = FormatDay(startDate);
+                            var monthFrom = FormatMonth(startDate);
 
-        year = endDate.getFullYear();
-        var dayTo = FormatDay(endDate);
-        var monthTo = FormatMonth(endDate);
+                            year = endDate.getFullYear();
+                            var dayTo = FormatDay(endDate);
+                            var monthTo = FormatMonth(endDate);
 
-        var id = $('#event-modal input[name="event-index"]').val();
-        if (!id)
-        {
-            id = GetVeidiferdNextId();
-        }
-        var data = {
-            Id: id,
-            Lysing: $('#textVeidiferd').val(),
-            DagsFra: year + '-' + monthFrom + '-' + dayFrom + 'T01:01:01',
-            DagsTil: year + '-' + monthTo + '-' + dayTo + 'T01:01:01',
-            //DagsTil: '2001-01-01T01:01:01',
-            vsid: $("#selectVeidiStadir").val(),
-        }
-        var dataType = 'application/json; charset=utf-8';
-        var userName = 'Testari';
-        var password = 'blabla';
+                            var id = $('#event-modal input[name="event-index"]').val();
+                            //if (!id)
+                            //{
+                            //    id = GetVeidiferdNextId();
+                            //}
+                            var data = {
+                                Id: id,
+                                Lysing: $('#textVeidiferd').val(),
+                                DagsFra: year + '-' + monthFrom + '-' + dayFrom + 'T01:01:01',
+                                DagsTil: year + '-' + monthTo + '-' + dayTo + 'T01:01:01',
+                                //DagsTil: '2001-01-01T01:01:01',
+                                vsid: $("#selectVeidiStadir").val(),
+                            }
+                            var dataType = 'application/json; charset=utf-8';
+                            var userName = 'Testari';
+                            var password = 'blabla';
 
-        $.ajax({
-            url: APIBaseUrl + 'veidiferd',
-            type: 'POST',
-            data: JSON.stringify(data),
-            dataType: 'json',
-            contentType: dataType,
-            success: function (data)
-            {
-                console.log(data);
-            }
-        });
+                            $.ajax({
+                                //headers: {
+                                //    'Accept': 'application/json',
+                                //    'Content-Type': 'application/json'
+                                //},
+                                type: 'POST',
+                                url: APIBaseUrl + 'veidiferd',
+                                data: JSON.stringify(data),
+                                dataType: 'json',
+                                contentType: dataType,
+                                success: function (data) {
+                                    console.log(data);
+                                }, error: function (jqXHR, textStatus, errorThrown) {
+                                    console.log(textStatus);
+                                }
+                            });
 
-    }
+                        }
 
-    $(function ()
-    {
-        GetVeidiferdir();
+                        $(function () {
+                            GetVeidiferdir();
 
-        $('.datepicker').datepicker({
-            format: 'dd.mm.yyyy'
-            //,startDate: '-3d'
-        });
+                            $('.datepicker').datepicker({
+                                format: 'dd.mm.yyyy'
+                                //,startDate: '-3d'
+                            });
+                            //GetValues();
+                            GetVeidistadir();
+                            var currentYear = new Date().getFullYear();
 
-        GetVeidistadir();
-	var currentYear = new Date().getFullYear();
+                            $('#calendar').calendar({
+                                enableContextMenu: true,
+                                enableRangeSelection: true,
+                                contextMenuItems: [
+                                    {
+                                        text: 'Update',
+                                        click: editEvent
+                                    },
+                                    {
+                                        text: 'Delete',
+                                        click: deleteEvent
+                                    }
+                                ],
+                                //selectRange: function(e) {
+                                //editEvent({ startDate: e.startDate, endDate: e.endDate });
+                                //                     },  //this does not give us id of the event.  But mabey use this sometime if I want to select range to create new event
+                                clickDay: function (e) { DayClickEditEvent(e) },
+                                mouseOnDay: function (e) {
+                                    if (e.events.length > 0) {
+                                        var content = '';
 
-	$('#calendar').calendar({
-		enableContextMenu: true,
-		enableRangeSelection: true,
-		contextMenuItems:[
-			{
-				text: 'Update',
-				click: editEvent
-			},
-			{
-				text: 'Delete',
-				click: deleteEvent
-			}
-		],
-		//selectRange: function(e) {
-			//editEvent({ startDate: e.startDate, endDate: e.endDate });
-   //                     },  //this does not give us id of the event.  But mabey use this sometime if I want to select range to create new event
-        clickDay: function (e) { DayClickEditEvent(e) },
-		mouseOnDay: function(e) {
-			if(e.events.length > 0) {
-				var content = '';
+                                        for (var i in e.events) {
+                                            content += '<div class="event-tooltip-content">'
+                                                + '<div class="event-name" style="color:' + e.events[i].color + '">' + e.events[i].name + '</div>'
+                                                + '<div class="event-location">' + e.events[i].location + '</div>'
+                                                + '</div>';
+                                        }
 
-				for(var i in e.events) {
-					content += '<div class="event-tooltip-content">'
-									+ '<div class="event-name" style="color:' + e.events[i].color + '">' + e.events[i].name + '</div>'
-									+ '<div class="event-location">' + e.events[i].location + '</div>'
-								+ '</div>';
-				}
+                                        $(e.element).popover({
+                                            trigger: 'manual',
+                                            container: 'body',
+                                            html: true,
+                                            content: content
+                                        });
 
-				$(e.element).popover({
-					trigger: 'manual',
-					container: 'body',
-					html:true,
-					content: content
-				});
+                                        $(e.element).popover('show');
+                                    }
+                                },
+                                mouseOutDay: function (e) {
+                                    if (e.events.length > 0) {
+                                        $(e.element).popover('hide');
+                                    }
+                                },
+                                dayContextMenu: function (e) {
+                                    $(e.element).popover('hide');
+                                },
+                                dataSource: [
+                                    //{
+                                    //id: 1,
+                                    //name: 'Microsoft Convergence',
+                                    //location: 'New Orleans, LA',
+                                    //startDate: new Date(currentYear+1, 2, 16),
+                                    //endDate: new Date(currentYear + 1, 2, 19)
+                                    //}
+                                ]
+                            });
 
-				$(e.element).popover('show');
-			}
-		},
-		mouseOutDay: function(e) {
-			if(e.events.length > 0) {
-				$(e.element).popover('hide');
-			}
-		},
-		dayContextMenu: function(e) {
-			$(e.element).popover('hide');
-		},
-            dataSource: [
-                //{
-                //id: 1,
-                //name: 'Microsoft Convergence',
-                //location: 'New Orleans, LA',
-                //startDate: new Date(currentYear+1, 2, 16),
-                //endDate: new Date(currentYear + 1, 2, 19)
-                //}
-            ]
-	});
-
-	$('#save-event').click(function() {
-        saveEvent();
-        GetVeidiferdir();
-        });
-     });
-    </script>
+                            $('#save-event').click(function () {
+                                saveEvent();
+                                GetVeidiferdir();
+                            });
+                        });
+                    </script>
                 </div>
             </div>
         </div>

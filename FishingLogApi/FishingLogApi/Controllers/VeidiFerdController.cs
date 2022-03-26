@@ -87,11 +87,11 @@ namespace FishingLogApi.Controllers
             DAL.Repositories.VeidiferdirRepository veidiferdirRepo = new VeidiferdirRepository();
             Veidiferd veidiferd = veidiferdirRepo.GetVeidiferd(id);
 
-            if (veidiferd == null)
-            {
-                throw new System.Web.HttpResponseException(HttpStatusCode.NotFound);
-            }
-            _emp.Remove(emp);
+            //if (veidiferd == null)
+            //{
+            //    throw new System.Web.HttpResponseException(HttpStatusCode.NotFound);
+            //}
+            //_emp.Remove(emp);
             var response = new HttpResponseMessage();
             response.Headers.Add("DeleteMessage", "Succsessfuly Deleted!!!");
             return response;
