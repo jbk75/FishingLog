@@ -78,6 +78,7 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="Properties\PublishProfiles\Log20170517012354 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\Log20190707021822 - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
