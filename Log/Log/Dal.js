@@ -38,7 +38,7 @@ function GetVeidiferd(id) {
         success: function (data) {
             $("#textVeidiferd").val(data.Lysing);
             var vsid = Number(data.VsId);
-            $('#event-modal input[name="event-location"]').val(Vsid);
+            $('#event-modal input[name="event-location"]').val(VsId);
             $("#selectVeidiStadir").val(data.VsId);
         }
     });
@@ -58,7 +58,7 @@ function GetVeidiferdir()
 
             //calendarData = data;
             jQuery.each(data, function (i, val) {
-                //$('#selectVeidiStadir').append($('<option value="' + val.vsId + '">' + val.lysing + '</option>'));
+                
                 var dFrom = new Date(val.DagsFra);
                 var dFromYear = dFrom.getFullYear();
                 if (dFromYear === 2017) {
