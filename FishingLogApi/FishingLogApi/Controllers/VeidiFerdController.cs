@@ -36,7 +36,7 @@ namespace FishingLogApi.Controllers
         [HttpGet]
         public IEnumerable<Veidiferd> GetAllVeidiferd()
         {
-            DAL.Logger.Logg("Getting veidiferdir");
+            //DAL.Logger.Logg("Getting veidiferdir");
             DAL.Repositories.VeidiferdirRepository veidiferdirRepo = new VeidiferdirRepository();
             var listVeidiferdir = veidiferdirRepo.GetVeidiferdir();
             return listVeidiferdir;

@@ -21,7 +21,7 @@ namespace FishingLogApi.DAL.Repositories
 
         public static DataTable GetData(SqlCommand cmd, string connectionString)
         {
-            Logger.Logg("Getting data from sql database..");
+            //Logger.Logg("Getting data from sql database..");
             DataTable dt = new DataTable();
             //String strConnString = "Data Source=KOBSAPP02;Initial Catalog=KOBS_UserManagement;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             SqlConnection con = new SqlConnection(connectionString);
