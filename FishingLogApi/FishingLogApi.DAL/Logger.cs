@@ -30,8 +30,8 @@ namespace FishingLogApi.DAL
 
         public static void Logg(String sString)
         {
-            Object oLogObject = sString as Object;
-            Logg(oLogObject, STRING, DEFAULTDIRECTORY);
+            //Object oLogObject = sString as Object;
+            //Logg(oLogObject, STRING, DEFAULTDIRECTORY);
         }
         /// <summary>
         /// Writes a text log
