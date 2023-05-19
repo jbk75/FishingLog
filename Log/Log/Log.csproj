@@ -75,6 +75,9 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="Properties\PublishProfiles\FishingLogAflaklo - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\FishingLogJBK - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\FishingLogJBK - ReadOnly - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\FishingLogJBK - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\Log20170517012354 - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\Log20190707021822 - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
@@ -112,6 +115,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="publishprofile\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
