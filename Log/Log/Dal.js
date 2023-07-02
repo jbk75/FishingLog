@@ -39,8 +39,8 @@ function GetVeidiferd(id) {
         success: function (data) {
             $("#textVeidiferd").val(data.lysing);
             var vsid = Number(data.vsId);
-            $('#event-modal input[name="event-location"]').val(vsId);
-            $("#selectVeidiStadir").val(data.vsId);
+            $('#event-modal input[name="event-location"]').val(vsid);
+            $("#selectVeidiStadir").val(vsid);
         }
     });
 }
