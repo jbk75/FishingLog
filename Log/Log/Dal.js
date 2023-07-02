@@ -26,7 +26,6 @@ function GetVeidistadir() {
     });
 }
 
-
 function GetVeidiferd(id) {
     if (!id) {
         return;
