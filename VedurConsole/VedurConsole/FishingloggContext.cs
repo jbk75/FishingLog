@@ -247,9 +247,9 @@ namespace VedurConsole
             {
                 entity.ToTable("Weather");
 
-                entity.Property(e => e.WeatherId).HasColumnName("WeatherID");
+                entity.Property(e => e.Id).HasColumnName("WeatherID");
 
-                entity.Property(e => e.NrVedurstofa).HasColumnName("Nr_Vedurstofa");
+                entity.Property(e => e.Nr_Vedurstofa).HasColumnName("Nr_Vedurstofa");
             });
 
             OnModelCreatingPartial(modelBuilder);

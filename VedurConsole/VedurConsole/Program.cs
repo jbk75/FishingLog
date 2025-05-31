@@ -15,7 +15,7 @@ namespace VedurConsole
             public string Breidd { get; set; }
             public string Daggarmark { get; set; }
             public string Haed { get; set; }
-            public double Hiti { get; set; }
+            public double? Hiti { get; set; }
             public string Lengd { get; set; }
             public string Loftthrystingur { get; set; }
             public string Nafn { get; set; }
@@ -88,7 +88,7 @@ namespace VedurConsole
                     weather.Loftthrystingur = d.Loftthrystingur;
                     weather.Nafn = d.Nafn;
                     weather.Nr = d.Nr;
-                    weather.NrVedurstofa = d.Nr_Vedurstofa;
+                    weather.Nr_Vedurstofa = d.Nr_Vedurstofa;
                     weather.PntX = d.PntX;
                     weather.PntY = d.PntY;
                     weather.Raki = d.Raki;

@@ -1,0 +1,165 @@
+﻿USE [Fishinglogg]
+GO
+
+/****** Object:  Table [dbo].[Weather]    Script Date: 31/05/2025 23:17:05 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Weather](
+	[Id] [bigint] IDENTITY(1,1) NOT NULL,
+	[Dags] [nvarchar](255) NULL,
+	[Breidd] [nvarchar](255) NULL,
+	[Daggarmark] [nvarchar](255) NULL,
+	[Haed] [nvarchar](255) NULL,
+	[Hiti] [float] NULL,
+	[Lengd] [nvarchar](255) NULL,
+	[Loftthrystingur] [nvarchar](255) NULL,
+	[Nafn] [nvarchar](255) NULL,
+	[Nr] [int] NULL,
+	[Nr_Vedurstofa] [nvarchar](255) NULL,
+	[PntX] [nvarchar](255) NULL,
+	[PntY] [nvarchar](255) NULL,
+	[Raki] [nvarchar](255) NULL,
+	[Sjavarhaed] [nvarchar](255) NULL,
+	[Vindatt] [nvarchar](255) NULL,
+	[VindattAsc] [nvarchar](255) NULL,
+	[VindattStDev] [nvarchar](255) NULL,
+	[Vindhradi] [nvarchar](255) NULL,
+	[Vindhvida] [nvarchar](255) NULL,
+ CONSTRAINT [PK_Weather] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+--################
+
+USE [Fishinglogg]
+GO
+
+/****** Object:  Table [dbo].[Trip]    Script Date: 31/05/2025 23:17:20 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[Trip](
+	[Id] [int] NOT NULL,
+	[FishingPlaceId] [int] NOT NULL,
+	[DateFrom] [datetime] NOT NULL,
+	[DateTo] [datetime] NOT NULL,
+	[Description] [nvarchar](max) NULL,
+	[DateCreated] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[Trip] ADD  CONSTRAINT [DF_Trip_DateCreated]  DEFAULT (getdate()) FOR [DateCreated]
+GO
+
+--##########
+
+USE [Fishinglogg]
+GO
+
+/****** Object:  Table [dbo].[FishingPlaceType]    Script Date: 31/05/2025 23:17:33 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[FishingPlaceType](
+	[Id] [int] NOT NULL,
+	[Name] [nvarchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+--####
+
+USE [Fishinglogg]
+GO
+
+/****** Object:  Table [dbo].[FishingPlace]    Script Date: 31/05/2025 23:17:48 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[FishingPlace](
+	[Id] [int] NOT NULL,
+	[Name] [nvarchar](200) NOT NULL,
+	[Longitude] [nvarchar](50) NULL,
+	[Latitude] [nvarchar](50) NULL,
+	[NumberOfSpots] [int] NULL,
+	[Description] [nvarchar](250) NULL,
+	[FishingPlaceTypeID] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+--"""
+
+USE [Fishinglogg]
+GO
+
+/****** Object:  Table [dbo].[data]    Script Date: 31/05/2025 23:18:12 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[data](
+	[ID] [int] NOT NULL,
+	[Dags_fra] [datetime] NOT NULL,
+	[Dags_til] [datetime] NOT NULL,
+	[Lysing] [nvarchar](100) NOT NULL,
+	[Timastimpill] [datetime] NOT NULL,
+	[Ar] [int] NOT NULL,
+	[vet_id] [int] NOT NULL,
+	[vsid] [int] NULL,
+	[koid] [nvarchar](50) NULL,
+ CONSTRAINT [PK_data] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+--##
+
+USE [Fishinglogg]
+GO
+
+/****** Object:  Table [dbo].[DATA2]    Script Date: 31/05/2025 23:18:26 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[DATA2](
+	[vet_id] [int] NOT NULL,
+	[vet_texti] [nvarchar](max) NOT NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+

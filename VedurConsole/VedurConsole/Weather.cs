@@ -7,17 +7,17 @@ namespace VedurConsole
 {
     public partial class Weather
     {
-        public long WeatherId { get; set; }
+        public long Id { get; set; }
         public string Dags { get; set; }
         public string Breidd { get; set; }
         public string Daggarmark { get; set; }
         public string Haed { get; set; }
-        public double Hiti { get; set; }
+        public double? Hiti { get; set; }
         public string Lengd { get; set; }
         public string Loftthrystingur { get; set; }
         public string Nafn { get; set; }
         public int Nr { get; set; }
-        public string NrVedurstofa { get; set; }
+        public string Nr_Vedurstofa { get; set; }
         public string PntX { get; set; }
         public string PntY { get; set; }
         public string Raki { get; set; }
