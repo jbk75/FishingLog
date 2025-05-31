@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace VedurConsole
+namespace VedurConsole.Models
 {
     public class MassTransitOptions
     {

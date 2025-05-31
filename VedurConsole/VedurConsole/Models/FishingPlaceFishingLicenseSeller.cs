@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace VedurConsole
+namespace VedurConsole.Models
 {
     public partial class FishingPlaceFishingLicenseSeller
     {

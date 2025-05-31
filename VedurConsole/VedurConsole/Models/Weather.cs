@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace VedurConsole.Models
+#nullable disable
+
+namespace VedurConsole
 {
-    public class Weather
+    public partial class Weather
     {
-        public long WeatherID { get; set; }
+        public long Id { get; set; }
         public string Dags { get; set; }
         public string Breidd { get; set; }
         public string Daggarmark { get; set; }
         public string Haed { get; set; }
-        public double Hiti { get; set; }
+        public double? Hiti { get; set; }
         public string Lengd { get; set; }
         public string Loftthrystingur { get; set; }
         public string Nafn { get; set; }

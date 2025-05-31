@@ -44,21 +44,16 @@ namespace VedurConsole
             return builder.Build();
         }
 
-    //    private static T InitOptions<T>()
-    //where T : new()
-    //    {
-    //        var config = InitConfig();
-    //        return config.Get<T>();
-    //    }
-
         public static IConfigurationRoot Configuration;
 
         static  void Main(string[] args)
         {
 
-            Configuration = InitConfig(); // InitOptions<AppConfig>();
+            Configuration = InitConfig();
 
             //##################### 
+
+            var latestDate = WeatherRepo.GetLatestDags(Configuration.GetConnectionString("FishingLogDatabase"));
 
             var weatherAPIUrl = "https://gagnaveita.vegagerdin.is/api/vedur2014_1";
    
@@ -106,7 +101,6 @@ namespace VedurConsole
             {
                 Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
             }
-
 
 
             // Dispose once all HttpClient calls are complete. This is not necessary if the containing object will be disposed of; for example in this case the HttpClient instance will be disposed automatically when the application terminates so the following call is superfluous.

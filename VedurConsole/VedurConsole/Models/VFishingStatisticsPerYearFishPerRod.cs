@@ -3,10 +3,11 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace VedurConsole
+namespace VedurConsole.Models
 {
-    public partial class FishingStatisticsPerYear
+    public partial class VFishingStatisticsPerYearFishPerRod
     {
+        public string Name { get; set; }
         public long Id { get; set; }
         public int? FishingPlaceId { get; set; }
         public int? TotalSalmon { get; set; }
@@ -14,5 +15,7 @@ namespace VedurConsole
         public int? TotalRods { get; set; }
         public string Year { get; set; }
         public DateTime? DateOfStatistics { get; set; }
+        public int? SalmonPerRod { get; set; }
+        public int? SalmonPerRodPerDay { get; set; }
     }
 }
