@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using VedurConsole.Repos;
@@ -53,7 +54,29 @@ namespace VedurConsole
 
             //##################### 
 
-            var latestDate = WeatherRepo.GetLatestDags(Configuration.GetConnectionString("FishingLogDatabase"));
+            // Check if we should fetch
+            int fetchCountToday = WeatherRepo.GetTodayFetchCount(Configuration.GetConnectionString("FishingLogDatabase"));
+            DateTime now = DateTime.Now;
+
+            if (fetchCountToday >= 3)
+            {
+                Console.WriteLine("Fetch limit (3 times) for today reached. Skipping.");
+                return;
+            }
+
+            var lastFetch = WeatherRepo.GetLastFetchTime(Configuration.GetConnectionString("FishingLogDatabase"));
+
+            if (lastFetch.HasValue)
+            {
+                TimeSpan sinceLast = now - lastFetch.Value;
+
+                // Enforce 3-hour gap if it's earlier in the day
+                if (sinceLast.TotalHours < 3 && now.Hour < 21) // Give flexibility near end of day
+                {
+                    Console.WriteLine($"Last fetch was {sinceLast.TotalMinutes:F0} minutes ago. Waiting at least 3 hours between fetches.");
+                    return;
+                }
+            }
 
             var weatherAPIUrl = "https://gagnaveita.vegagerdin.is/api/vedur2014_1";
    
@@ -69,7 +92,8 @@ namespace VedurConsole
             if (response.IsSuccessStatusCode)
             {
                 // Parse the response body.
-                var dataObjects = response.Content.ReadAsAsync<IEnumerable<DataObject>>().Result;  //Make sure to add a reference to System.Net.Http.Formatting.dll
+                var dataObjects = response.Content.ReadAsAsync<IEnumerable<DataObject>>().Result;
+                
                 foreach (var d in dataObjects)
                 {
                     Console.WriteLine("{0}", d.Breidd);
@@ -96,6 +120,8 @@ namespace VedurConsole
 
                     WeatherRepo.Insert(weather, Configuration.GetConnectionString("FishingLogDatabase"));
                 }
+                // Log fetch after successful insert
+                WeatherRepo.LogFetch(Configuration.GetConnectionString("FishingLogDatabase"));
             }
             else
             {

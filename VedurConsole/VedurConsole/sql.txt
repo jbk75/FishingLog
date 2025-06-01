@@ -163,3 +163,9 @@ CREATE TABLE [dbo].[DATA2](
 GO
 
 
+--##
+
+CREATE TABLE [dbo].[WeatherFetchLog] (
+    [Id] INT IDENTITY(1,1) PRIMARY KEY,
+    [FetchedAt] DATETIME NOT NULL DEFAULT GETDATE()
+);

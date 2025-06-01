@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using VedurConsole.Models;
 
 namespace VedurConsole
 {
@@ -13,6 +14,7 @@ namespace VedurConsole
 
         ///public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Weather> Weather { get; set; }
+        public DbSet<WeatherFetchLog> WeatherFetchLog { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

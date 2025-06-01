@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,6 +30,36 @@ namespace VedurConsole.Repos
                               .FirstOrDefault();
             }
         }
+
+        public static int GetTodayFetchCount(string connectionString)
+        {
+            using (var context = new WeatherContext(connectionString))
+            {
+                var today = DateTime.Today;
+                return context.WeatherFetchLog.Count(f => f.FetchedAt.Date == today);
+            }
+        }
+
+        public static DateTime? GetLastFetchTime(string connectionString)
+        {
+            using (var context = new WeatherContext(connectionString))
+            {
+                return context.WeatherFetchLog
+                              .OrderByDescending(f => f.FetchedAt)
+                              .Select(f => (DateTime?)f.FetchedAt)
+                              .FirstOrDefault();
+            }
+        }
+
+        public static void LogFetch(string connectionString)
+        {
+            using (var context = new WeatherContext(connectionString))
+            {
+                context.WeatherFetchLog.Add(new WeatherFetchLog());
+                context.SaveChanges();
+            }
+        }
+
     }
 
 }
