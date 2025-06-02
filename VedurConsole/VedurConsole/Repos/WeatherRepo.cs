@@ -19,7 +19,7 @@ namespace VedurConsole.Repos
             }
         }
 
-        public static string GetLatestDags(string connectionString)
+        public static DateTime? GetLatestDags(string connectionString)
         {
             using (var context = new WeatherContext(connectionString))
             {

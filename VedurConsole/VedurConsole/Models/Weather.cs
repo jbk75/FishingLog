@@ -8,7 +8,7 @@ namespace VedurConsole
     public partial class Weather
     {
         public long Id { get; set; }
-        public string Dags { get; set; }
+        public DateTime? Dags { get; set; }
         public string Breidd { get; set; }
         public string Daggarmark { get; set; }
         public string Haed { get; set; }
