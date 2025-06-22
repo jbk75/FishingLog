@@ -11,7 +11,7 @@ using VedurConsole.Repos;
 
 namespace VedurConsole
 {
-    class Program
+    internal class Program
     {
         public static IConfigurationRoot Configuration;
 
