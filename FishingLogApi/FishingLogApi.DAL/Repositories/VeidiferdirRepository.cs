@@ -1,6 +1,7 @@
 ﻿
 using FishingLogApi.DAL.Models;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 
 namespace FishingLogApi.DAL.Repositories;
@@ -10,6 +11,17 @@ namespace FishingLogApi.DAL.Repositories;
 /// </summary>
 public class VeidiferdirRepository
 {
+    private readonly string _connectionString;
+
+    public VeidiferdirRepository(IConfiguration configuration)
+    {
+        _connectionString = configuration.GetConnectionString("DefaultConnection");
+    }
+
+    public VeidiferdirRepository()
+    {
+    }
+
     public void AddVeidiferd(Models.Veidiferd item)
     {
         try
@@ -33,9 +45,9 @@ public class VeidiferdirRepository
             //}
             //int vet_id = vt.AddVeidiferdTexti(item.Lysing);
 
-            using (SqlConnection con = new SqlConnection(Constants.connectionString))
+            using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand(
+                using (SqlCommand cmd = new(
                    "INSERT INTO Trip " +
                    @"VALUES(@id, @fishingplaceID, @datefrom, @dateTo, @Description, @datecreated)"
                    , con))
@@ -99,9 +111,9 @@ public class VeidiferdirRepository
             var veidiferd = GetVeidiferd(item.Id);
             //vt.UpdateVeidiferdTexti(item.Lysing, veidiferd.VetId);
 
-            using (SqlConnection con = new SqlConnection(Constants.connectionString))
+            using (SqlConnection con = new(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand(
+                using (SqlCommand cmd = new(
                    "update trip " +
                    @"set datefrom=@dateFrom, dateto=@dateTo, description=@Description, fishingplaceid=@vsid where id=@id"
                    , con))
@@ -133,7 +145,7 @@ public class VeidiferdirRepository
     public string NextVeidiferdId()
     {
         int i = -1;
-        using (SqlConnection con = new SqlConnection(Constants.connectionString))
+        using (SqlConnection con = new SqlConnection(_connectionString))
         {
             con.Open();
             using (SqlCommand cmd = new SqlCommand("SELECT MAX(id) FROM trip", con))
@@ -148,10 +160,10 @@ public class VeidiferdirRepository
     public bool IdExists(string id)
     {
         int i = -1;
-        using (SqlConnection con = new SqlConnection(Constants.connectionString))
+        using (SqlConnection con = new(_connectionString))
         {
             con.Open();
-            using (SqlCommand cmd = new SqlCommand("SELECT count(*) FROM trip where id = @id", con))
+            using (SqlCommand cmd = new("SELECT count(*) FROM trip where id = @id", con))
             {
                 cmd.Parameters.Add(new SqlParameter("id", id));
                 //Associate connection with your command an open it
@@ -170,11 +182,10 @@ public class VeidiferdirRepository
         Logger.Logg("Starting, Get Repo - Veidiferd by id " + id + "...");
         string strQuery = @"Select id, fishingplaceid, description, datefrom, dateto from trip where id = @id";
 
-        SqlCommand cmd = new SqlCommand(strQuery);
+        SqlCommand cmd = new(strQuery);
         cmd.Parameters.Add(new SqlParameter("id", id));
-        var connectionString = Constants.connectionString;
-        //Logger.Logg("Starting, GetCompany..., GetData, ConnectionString=" + connectionString);
-        DataTable dt = DatabaseService.GetData(cmd, connectionString);
+
+        DataTable dt = DatabaseService.GetData(cmd, _connectionString);
 
         List<Veidiferd> list = new List<Veidiferd>();
         if (dt != null && dt.Rows.Count > 0)
@@ -227,13 +238,12 @@ public class VeidiferdirRepository
 
         SqlCommand cmd = new SqlCommand(strQuery);
 
-        var connectionString = Constants.connectionString;
         List<Veidiferd> list = new List<Veidiferd>();
         //Logger.Logg("Starting, GetCompany..., GetData, ConnectionString=" + connectionString);
         try
         {
 
-            DataTable dt = DatabaseService.GetData(cmd, connectionString);
+            DataTable dt = DatabaseService.GetData(cmd, _connectionString);
 
             if (dt != null && dt.Rows.Count > 0)
             {
