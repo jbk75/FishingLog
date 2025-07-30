@@ -9,30 +9,12 @@ namespace FishingLogApi.Controllers;
 [Route("api/veidiferd")]
 public class VeidiFerdController : Controller
 {
-
-
-
     private readonly VeidiferdirRepository _repository;
 
     public VeidiFerdController(VeidiferdirRepository repository)
     {
         _repository = repository;
     }
-
-
-    // GET api/values
-    //[ActionName("nextid")]
-    //[HttpGet]
-    //public string GetNextId()
-    //{
-    //    DAL.Logger.Logg("Getting veidiferd nextId");
-    //    DAL.Repositories.VeidiferdirRepository veidiferdirRepo = new VeidiferdirRepository();
-    //    var nextId = veidiferdirRepo.NextVeidiferdId();
-    //    return nextId.ToString();
-    //    //DAL.Logger.Logg("Veidiferdir Get");
-    //    //return new string[] { "value1", "value2" };
-
-    //}
 
     // GET api/values
     [Route("")]
@@ -47,15 +29,6 @@ public class VeidiFerdController : Controller
         //return new string[] { "value1", "value2" };
     }
 
-    //public IHttpActionResult GetProduct(int id)
-    //{
-    //    var product = products.FirstOrDefault((p) => p.Id == id);
-    //    if (product == null)
-    //    {
-    //        return NotFound();
-    //    }
-    //    return Ok(product);
-    //}
     [Route("{id}")]
     [HttpGet]
     public Veidiferd GetVeidiferd(string id)
@@ -67,17 +40,6 @@ public class VeidiFerdController : Controller
         //DAL.Logger.Logg("Veidiferdir Get");
         //return new string[] { "value1", "value2" };
     }
-
-    //[HttpPost]
-    //public void Post(string veidiferd)
-    //{
-    //    //DAL.Repositories.
-    //    DAL.Repositories.VeidiferdirRepository veidiferdRepo = new DAL.Repositories.VeidiferdirRepository();
-    //    Veidiferd veidif = new Veidiferd();
-    //    veidif.Lysing = "wsfewf";
-    //    veidiferdRepo.AddVeidiferd(veidif);
-    //}
-
 
     /// <summary>  
     /// Delete employee from list.  
@@ -109,23 +71,42 @@ public class VeidiFerdController : Controller
         DAL.Logger.Logg("Dagsetning from er: " + veidiferd.DagsFra);
         DAL.Logger.Logg("Dagsetning to er: " + veidiferd.DagsTil);
 
-        //vantar þessa parameters.
-        //"VetId": null,
-        //"KoId": null,
-        //"vsId": null
-
-        //DAL.Logger.Logg("Timastimpill er: " + veidiferd.Timastimpill);
-        //DAL.Repositories.
-        //Veidiferd ve = new Veidiferd();
-        //ve.Lysing = veidiferd.Lysing;
-        //ve.DagsFra = veidiferd.DagsFra;
-        //ve.DagsTil = veidiferd.DagsTil;
-        //ve.Ar = veidiferd.DagsTil.Year.ToString();
-        //ve.vsId = veidiferd.VsId;
-        DAL.Repositories.VeidiferdirRepository veidiferdRepo = new DAL.Repositories.VeidiferdirRepository();
+        _ = new
+        DAL.Repositories.VeidiferdirRepository();
+        
         DAL.Logger.Logg("Adding veidiferd...");
         _repository.AddVeidiferd(veidiferd);
+
         DAL.Logger.Logg("Adding veidiferd - DONE!");
         DAL.Logger.Logg("Veidiferdir Post - Done");
     }
+
+    [Route("exists/{fishingplaceid}/{dateFrom}/{dateTo}")]
+    [HttpGet]
+    public ActionResult<bool> GetVeidiferdExists(string fishingplaceName, string dateFrom, string dateTo)
+    {
+        try
+        {
+            DAL.Logger.Logg("Checking if Veidiferd exists");
+
+            // Parse incoming date strings
+            if (!DateTime.TryParse(dateFrom, out DateTime fromDate) ||
+                !DateTime.TryParse(dateTo, out DateTime toDate))
+            {
+                return BadRequest("Invalid date format. Use ISO format: yyyy-MM-dd or yyyy-MM-ddTHH:mm:ss");
+            }
+
+            VeidiferdirRepository veidiferdirRepo = new();
+            bool exists = veidiferdirRepo.VeidiferdExists(fishingplaceName, fromDate, toDate);
+
+            return Ok(exists);
+        }
+        catch (Exception ex)
+        {
+            DAL.Logger.Logg("Error in GetVeidiferdExists: " + ex.Message);
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
+
 }

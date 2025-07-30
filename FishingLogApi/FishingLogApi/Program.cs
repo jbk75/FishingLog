@@ -15,6 +15,15 @@ builder.Services.AddCors();
 
 builder.Services.AddControllers();  // Modern replacement for AddMvc()
 
+// Add Swagger generation with XML comments support
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Enable XML comments (see next step)
+    var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
+
 // Add logging (Console and Debug)
 builder.Logging.ClearProviders();
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
@@ -28,6 +37,12 @@ builder.Services.AddScoped<VeidistadurRepository>();
 
 var app = builder.Build();
 
+// Enable middleware to serve generated Swagger as JSON endpoint
+app.UseSwagger();
+
+// Enable middleware to serve swagger-ui (HTML, JS, CSS)
+app.UseSwaggerUI();
+
 // Configure the HTTP request pipeline
 
 app.UseCors(builder => builder
@@ -36,6 +51,8 @@ app.UseCors(builder => builder
     .AllowAnyHeader());
 
 app.UseStaticFiles();
+
+app.UseAuthorization();
 
 app.MapControllers();  // replaces UseMvc()
 
