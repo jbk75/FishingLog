@@ -21,14 +21,41 @@ public class VeidistadurController : ControllerBase
 
     // GET: api/Veidistadur
     [HttpGet]
-    public ActionResult<IEnumerable<Veidistadur>> Get()
+    public ActionResult<IEnumerable<FishingPlace>> Get()
     {
         _logger.LogInformation("Veidistadir Get started");
 
-        var result = _repository.GetVeidistadir();
+        List<FishingPlace> result = _repository.GetVeidistadir();
 
         _logger.LogInformation("Veidistadir Get completed");
 
         return Ok(result);
+    }
+
+    // POST: api/Veidistadur
+    [HttpPost]
+    public ActionResult<int> Post([FromBody] FishingPlace model)
+    {
+        _logger.LogInformation("Veidistadur Post started");
+
+        if (model == null || string.IsNullOrWhiteSpace(model.Name))
+        {
+            _logger.LogWarning("Invalid model in POST");
+            return BadRequest("Heiti is required.");
+        }
+
+        try
+        {
+            int newId = _repository.AddVeidistadur(model.Name); // _repository.AddVeidistadur(model.Heiti);
+
+            _logger.LogInformation($"Veidistadur '{model.Name}' created with ID {newId}");
+
+            return Ok(newId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while adding Veidistadur");
+            return StatusCode(500, "An error occurred while saving the veiðistaður.");
+        }
     }
 }

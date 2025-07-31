@@ -45,4 +45,71 @@ public static class DatabaseService
             con.Dispose();
         }
     }
+
+    public static int ExecuteCommand(SqlCommand cmd, string connectionString)
+    {
+        int rowsAffected = 0;
+
+        using (SqlConnection con = new(connectionString))
+        {
+            cmd.CommandType = CommandType.Text;
+            cmd.Connection = con;
+
+            try
+            {
+                con.Open();
+                Logger.Logg("Executing non-query SQL command...");
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Logger.Logg("Error executing SQL command: " + ex.Message);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        return rowsAffected;
+    
+    }
+
+
+    /// <summary>
+    /// If you want to return the newly inserted Id, use this
+    /// </summary>
+    /// <param name="cmd"></param>
+    /// <param name="connectionString"></param>
+    /// <returns></returns>
+    public static int ExecuteInsertAndReturnId(SqlCommand cmd, string connectionString)
+    {
+        int insertedId = 0;
+
+        using (SqlConnection con = new(connectionString))
+        {
+            cmd.CommandType = CommandType.Text;
+            cmd.Connection = con;
+
+            try
+            {
+                con.Open();
+                Logger.Logg("Executing insert and retrieving new ID...");
+                object result = cmd.ExecuteScalar();
+                insertedId = Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                Logger.Logg("Error executing insert: " + ex.Message);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        return insertedId;
+    }
+
+
 }

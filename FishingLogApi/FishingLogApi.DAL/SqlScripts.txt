@@ -141,3 +141,20 @@ REFERENCES [dbo].[FishingPlace] ([Id])
 GO
 ALTER TABLE [dbo].[Trip] CHECK CONSTRAINT [FK_Trip_FishingPlace]
 GO
+
+
+--
+CREATE VIEW V_TripWithFishingPlaceName AS
+SELECT
+    t.Id AS TripId,
+    t.FishingPlaceId,
+    fp.Name AS FishingPlaceName,
+    t.DateFrom,
+    t.DateTo,
+    t.Description,
+    t.DateCreated,
+    t.LastModified
+FROM
+    Trip t
+JOIN
+    FishingPlace fp ON t.FishingPlaceId = fp.Id;

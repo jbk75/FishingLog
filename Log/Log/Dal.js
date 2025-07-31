@@ -1,11 +1,7 @@
 ﻿var APIBaseUrl = 'http://localhost:81/api/';
 
-
-//var APIBaseUrl = 'https://log20170517012354.azurewebsites.net/api/';
-
 //var APIBaseUrl = 'http://localhost:15749/api/';
-//var APIBaseUrl = 'https://fishingloggerapi20190710081131.azurewebsites.net/api/';
-//var APIBaseUrl = 'https://fishinglogaflakloapi.azurewebsites.net/api/';
+
 
 function GetVeidistadir() {
     $.ajax({
@@ -14,7 +10,7 @@ function GetVeidistadir() {
         dataType: 'json',
         success: function (data) {
             jQuery.each(data, function (i, val) {
-                $('#selectVeidiStadir').append($('<option value="' + val.vsId + '">' + val.heiti + '</option>'));
+                $('#selectVeidiStadir').append($('<option value="' + val.id + '">' + val.name + '</option>'));
             }
             );
             //   console.log(data);

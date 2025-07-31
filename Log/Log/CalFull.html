@@ -75,7 +75,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="event-modal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
+                        <div class="modal-dialog" role="document" style="margin-bottom:0px">
                             <div class="modal-content">
 
                                 <div class="modal-header">
@@ -93,8 +93,42 @@
                                             <label for="selectVeidiStadir" class="col-sm-4 col-form-label text-left">Veiðistaður</label>
                                             <div class="col-sm-8">
                                                 <select id="selectVeidiStadir" class="form-control" style="margin-bottom: 5px;">
-                                                    <!-- Options should be populated dynamically -->
+                                                    <!-- Options populated dynamically -->
                                                 </select>
+                                                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="openAddVeidistadurDialog()">+ Bæta við veiðistað</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Modal for adding new Veiðistaður -->
+                                        <div id="addVeidistadurModal" class="modal" tabindex="-1" role="dialog" style="display: none;">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content p-3">
+                                                    <h5 class="modal-title mb-3">Nýr veiðistaður</h5>
+
+                                                    <!-- Name -->
+                                                    <input type="text" id="newVeidistadurName" class="form-control mb-2" placeholder="Nafn veiðistaðar">
+
+                                                    <!-- Type (River / Lake) -->
+                                                    <select id="newVeidistadurType" class="form-control mb-2">
+                                                        <option value="">Veldu tegund</option>
+                                                        <option value="2">Á</option>
+                                                        <option value="1">Vatn</option>
+                                                    </select>
+
+                                                    <!-- Description -->
+                                                    <textarea id="newVeidistadurDescription" class="form-control mb-2" placeholder="Lýsing"></textarea>
+
+                                                    <!-- Coordinates -->
+                                                    <input type="text" id="newVeidistadurLatitude" class="form-control mb-2" placeholder="Breiddargráða (Latitude)">
+                                                    <input type="text" id="newVeidistadurLongitude" class="form-control mb-2" placeholder="Lengdargráða (Longitude)">
+
+                                                    <!-- Number of spots -->
+                                                    <input type="number" id="newVeidistadurSpots" class="form-control mb-3" placeholder="Fjöldi veiðistaða">
+
+                                                    <!-- Buttons -->
+                                                    <button type="button" class="btn btn-success" onclick="saveVeidistadur()">Vista</button>
+                                                    <button class="btn btn-secondary" onclick="closeAddVeidistadurDialog()">Hætta við</button>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -120,7 +154,8 @@
                                 </div>
 
                             </div>
-                        </div>                                <div class="modal-footer">
+                        </div>                                
+                        <div class="modal-footer" style="text-align:center;background:white">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                             <button type="button" class="btn btn-primary" id="save-event">
                                 Save
@@ -371,6 +406,77 @@
                                 GetVeidiferdir();
                             });
                         });
+
+
+                        //#### Scripts to add new veidistadur ################################
+
+                        function openAddVeidistadurDialog() {
+                            $('#addVeidistadurModal').show(); // or use Bootstrap's modal() if applicable
+                        }
+
+                        function closeAddVeidistadurDialog() {
+                            $('#addVeidistadurModal').hide();
+                            $('#newVeidistadurName').val('');
+                        }
+
+                        function saveVeidistadur() {
+                            var name = $('#newVeidistadurName').val().trim();
+                            var type = $('#newVeidistadurType').val();
+                            var description = $('#newVeidistadurDescription').val().trim();
+                            var latitude = $('#newVeidistadurLatitude').val().trim();
+                            var longitude = $('#newVeidistadurLongitude').val().trim();
+                            var spots = $('#newVeidistadurSpots').val();
+
+                            if (!name || !type) {
+                                alert("Nafn og tegund eru nauðsynleg.");
+                                return;
+                            }
+
+                            var data = {
+                                Name: name,
+                                FishingPlaceTypeId: type,
+                                description: description,
+                                latitude: latitude,
+                                longitude: longitude,
+                                NumberOfSpots: parseInt(spots) || 0
+                            };
+
+                            $.ajax({
+                                type: 'POST',
+                                url: APIBaseUrl + 'veidistadur', // adjust as needed
+                                data: JSON.stringify(data),
+                                contentType: 'application/json; charset=utf-8',
+                                //dataType: 'json',
+                                //contentType: dataType,
+                                success: function () {
+                                    closeAddVeidistadurDialog();
+                                    loadVeidistadir(); // reload dropdown
+                                },
+                                error: function (jqXHR, textStatus) {
+                                    console.error("Villa við að vista veiðistað:", textStatus);
+                                }
+                            });
+                        }
+
+                        // Call this on page load and after new additions
+                        function loadVeidistadir() {
+                            $.ajax({
+                                type: 'GET',
+                                url: APIBaseUrl + 'fishingplace', // adjust as needed
+                                success: function (data) {
+                                    var select = $('#selectVeidiStadir');
+                                    select.empty();
+                                    data.forEach(function (place) {
+                                        select.append(`<option value="${place.id}">${place.name}</option>`);
+                                    });
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.error("Villa við að sækja veiðistaði:", textStatus);
+                                }
+                            });
+                        }
+
+
                     </script>
                 </div>
             </div>

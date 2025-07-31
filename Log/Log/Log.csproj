@@ -88,9 +88,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="depricated_Calendr.html" />
+    <Content Include="zdepricated_Calendr.html" />
     <Content Include="CalFull.html" />
-    <Content Include="depricated_Main.html" />
+    <Content Include="zdepricated_Main.html" />
     <Content Include="Scripts\bootstrap-datepicker.min.css" />
     <Content Include="Scripts\bootstrap-datepicker.min.js" />
     <Content Include="Scripts\bootstrap-popover.js" />

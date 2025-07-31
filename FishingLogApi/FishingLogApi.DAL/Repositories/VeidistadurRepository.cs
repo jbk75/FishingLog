@@ -7,29 +7,39 @@ namespace FishingLogApi.DAL.Repositories;
 
 public class VeidistadurRepository
 {
-    public List<Veidistadur> GetVeidistadir()
+    public List<FishingPlace> GetVeidistadir()
     {
-        //Logger.Logg("Starting, Get Repo - Veidistadir...");
         string strQuery = @"Select id, name from fishingplace order by name asc";
+        SqlCommand cmd = new(strQuery);
 
-        SqlCommand cmd = new SqlCommand(strQuery);
+        DataTable dt = DatabaseService.GetData(cmd, Constants.connectionString);
 
-        var connectionString = Constants.connectionString;
-        //Logger.Logg("Starting, GetCompany..., GetData, ConnectionString=" + connectionString);
-        DataTable dt = DatabaseService.GetData(cmd, connectionString);
-
-        List<Veidistadur> vst = new List<Veidistadur>();
+        List<FishingPlace> vst = [];
         if (dt != null && dt.Rows.Count > 0)
         {
             foreach (DataRow row in dt.Rows)
             {
-                Veidistadur item = new Veidistadur();
-                item.Heiti = row["name"].ToString();
-                item.VsId = Convert.ToInt32(row["id"].ToString());
+                FishingPlace item = new FishingPlace();
+                item.Name = row["name"].ToString();
+                item.Id = Convert.ToInt32(row["id"]);
                 vst.Add(item);
             }
-
         }
         return vst;
+    }
+
+    public int AddVeidistadur(string name)
+    {
+        int rowsAffected = 0;
+        string query = @"INSERT INTO FishingPlace (Name, LastModified) VALUES (@name, @lastModified)";
+
+        using (SqlCommand cmd = new(query))
+        {
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.Parameters.AddWithValue("@lastModified", DateTime.Now);
+
+            rowsAffected = DatabaseService.ExecuteCommand(cmd, Constants.connectionString);
+        }
+        return rowsAffected;
     }
 }
