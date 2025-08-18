@@ -46,7 +46,7 @@ public class VeidistadurController : ControllerBase
 
         try
         {
-            int newId = _repository.AddVeidistadur(model.Name); // _repository.AddVeidistadur(model.Heiti);
+            int newId = VeidistadurRepository.AddVeidistadur(model);
 
             _logger.LogInformation($"Veidistadur '{model.Name}' created with ID {newId}");
 

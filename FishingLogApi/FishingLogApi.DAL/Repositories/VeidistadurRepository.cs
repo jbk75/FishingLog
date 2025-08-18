@@ -28,17 +28,31 @@ public class VeidistadurRepository
         return vst;
     }
 
-    public int AddVeidistadur(string name)
+    public static int AddVeidistadur(FishingPlace fishingPlace)
     {
         int rowsAffected = 0;
-        string query = @"INSERT INTO FishingPlace (Name, LastModified) VALUES (@name, @lastModified)";
+        string query = @"INSERT INTO FishingPlace (Name, FishingPlaceTypeId, longitude, latitude, NumberOfSpots, Description, LastModified) 
+                VALUES (@name, @FishingPlaceTypeId, @longitude, @latitude, @NumberOfSpots, @Description, @lastModified)";
 
-        using (SqlCommand cmd = new(query))
+        try
         {
-            cmd.Parameters.AddWithValue("@name", name);
-            cmd.Parameters.AddWithValue("@lastModified", DateTime.Now);
+            using (SqlCommand cmd = new(query))
+            {
+                cmd.Parameters.AddWithValue("@name", fishingPlace.Name);
+                cmd.Parameters.AddWithValue("@FishingPlaceTypeId", fishingPlace.FishingPlaceTypeID);
+                cmd.Parameters.AddWithValue("@longitude", fishingPlace.Longitude);
+                cmd.Parameters.AddWithValue("@Latitude", fishingPlace.Latitude);
+                cmd.Parameters.AddWithValue("@NumberOfSpots", fishingPlace.NumberOfSpots);
+                cmd.Parameters.AddWithValue("@Description", fishingPlace.Description);
 
-            rowsAffected = DatabaseService.ExecuteCommand(cmd, Constants.connectionString);
+                cmd.Parameters.AddWithValue("@lastModified", DateTime.Now);
+
+                rowsAffected = DatabaseService.ExecuteCommand(cmd, Constants.connectionString);
+            }
+        }
+        catch(Exception)
+        {
+            return -1;
         }
         return rowsAffected;
     }
