@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <!-- Latest MSTest packages for .NET 8 -->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.0.2" />
     <PackageReference Include="MSTest.TestFramework" Version="3.0.2" />
   </ItemGroup>

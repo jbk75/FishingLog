@@ -1,6 +1,6 @@
 ﻿using FishingLogApi.DAL.Repositories;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Configure appsettings.json and environment specific config files
 builder.Configuration
@@ -33,6 +33,7 @@ builder.Logging.AddDebug();
 
 builder.Services.AddScoped<VeidiferdirRepository>();
 builder.Services.AddScoped<VeidistadurRepository>();
+builder.Services.AddScoped<VeidiferdirRepository>();
 
 
 var app = builder.Build();

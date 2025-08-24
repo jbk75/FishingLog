@@ -7,7 +7,7 @@ namespace FishingLogApi.Controllers;
 
 [Produces("application/json")]
 [Route("api/veidiferd")]
-public class VeidiFerdController : Controller
+public class VeidiFerdController : ControllerBase
 {
     private readonly VeidiferdirRepository _repository;
 
@@ -22,7 +22,6 @@ public class VeidiFerdController : Controller
     public IEnumerable<Veidiferd> GetAllVeidiferd()
     {
         //DAL.Logger.Logg("Getting veidiferdir");
-        DAL.Repositories.VeidiferdirRepository veidiferdirRepo = new();
         var listVeidiferdir = _repository.GetVeidiferdir();
         return listVeidiferdir;
         //DAL.Logger.Logg("Veidiferdir Get");
@@ -31,10 +30,9 @@ public class VeidiFerdController : Controller
 
     [Route("{id}")]
     [HttpGet]
-    public Veidiferd GetVeidiferd(string id)
+    public Veidiferd GetVeidiferd(int id)
     {
         DAL.Logger.Logg("Getting veidiferdir");
-        DAL.Repositories.VeidiferdirRepository veidiferdirRepo = new VeidiferdirRepository();
         var listVeidiferdir = _repository.GetVeidiferd(id);//.GetVeidiferdir();
         return listVeidiferdir;
         //DAL.Logger.Logg("Veidiferdir Get");
@@ -47,18 +45,13 @@ public class VeidiFerdController : Controller
     /// <param name="Uid"></param>  
     /// <returns></returns>  
 
-    public HttpResponseMessage DeleteVeidiferd(string id)
+    public HttpResponseMessage DeleteVeidiferd(int id)
     {
-        DAL.Repositories.VeidiferdirRepository veidiferdirRepo = new VeidiferdirRepository();
         Veidiferd veidiferd = _repository.GetVeidiferd(id);
 
-        //if (veidiferd == null)
-        //{
-        //    throw new System.Web.HttpResponseException(HttpStatusCode.NotFound);
-        //}
-        //_emp.Remove(emp);
         var response = new HttpResponseMessage();
         response.Headers.Add("DeleteMessage", "Succsessfuly Deleted!!!");
+
         return response;
     }
 
@@ -67,13 +60,10 @@ public class VeidiFerdController : Controller
     public void Post([FromBody]Veidiferd veidiferd)
     {
         DAL.Logger.Logg("Veidiferdir Post");
-        DAL.Logger.Logg("Texti er: " + veidiferd.Lysing);
+        DAL.Logger.Logg("Texti er: " + veidiferd.Description);
         DAL.Logger.Logg("Dagsetning from er: " + veidiferd.DagsFra);
         DAL.Logger.Logg("Dagsetning to er: " + veidiferd.DagsTil);
-
-        _ = new
-        DAL.Repositories.VeidiferdirRepository();
-        
+       
         DAL.Logger.Logg("Adding veidiferd...");
         _repository.AddVeidiferd(veidiferd);
 
@@ -96,10 +86,29 @@ public class VeidiFerdController : Controller
                 return BadRequest("Invalid date format. Use ISO format: yyyy-MM-dd or yyyy-MM-ddTHH:mm:ss");
             }
 
-            VeidiferdirRepository veidiferdirRepo = new();
-            bool exists = veidiferdirRepo.VeidiferdExists(fishingplaceName, fromDate, toDate);
+            bool exists = _repository.VeidiferdExists(fishingplaceName, fromDate, toDate);
 
             return Ok(exists);
+        }
+        catch (Exception ex)
+        {
+            DAL.Logger.Logg("Error in GetVeidiferdExists: " + ex.Message);
+            return StatusCode(500, "Internal server error");
+        }
+    }
+
+    /// <summary>
+    /// Search for a veidiferd/Trip by text
+    /// </summary>
+    [Route("search")]
+    [HttpGet]
+    public ActionResult<bool> GetSearch(string searchText)
+    {
+        try
+        {
+            List<Veidiferd> trips = _repository.SearchTrips(searchText);
+
+            return Ok(trips);
         }
         catch (Exception ex)
         {

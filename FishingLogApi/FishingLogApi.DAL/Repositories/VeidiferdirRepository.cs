@@ -18,17 +18,13 @@ public class VeidiferdirRepository
         _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
 
-    public VeidiferdirRepository()
-    {
-    }
-
-    public void AddVeidiferd(Models.Veidiferd item)
+    public void AddVeidiferd(Veidiferd item)
     {
         try
         {
             DAL.Logger.Logg("AddVeidiferd");
             string nextId = string.Empty;
-            if (!string.IsNullOrWhiteSpace(item.Id))
+            if (item.Id != null)
             {
                 UpdateVeidiferd(item);
                 return;
@@ -56,17 +52,17 @@ public class VeidiferdirRepository
                     cmd.Parameters.Add(new SqlParameter("fishingPlaceID", item.VsId));
                     cmd.Parameters.Add(new SqlParameter("datefrom", item.DagsFra));
                     cmd.Parameters.Add(new SqlParameter("dateto", item.DagsTil));
-                    cmd.Parameters.Add(new SqlParameter("Description", item.Lysing));
+                    cmd.Parameters.Add(new SqlParameter("Description", item.Description));
 
                     cmd.ExecuteNonQuery();
                     con.Close();
                 }
-                DAL.Logger.Logg("AddVeidiferd - Done");
+                Logger.Logg("AddVeidiferd - Done");
             }
         }
         catch (Exception ex)
         {
-            Logger.Logg("Villa kom upp> " + ex.Message);
+            Logger.Logg("Error when adding trip: " + ex.Message);
             throw;
         }
     }
@@ -77,9 +73,9 @@ public class VeidiferdirRepository
         {
             DAL.Logger.Logg("UpdateVeidiferd");
 
-            if (String.IsNullOrWhiteSpace(item.Lysing))
+            if (string.IsNullOrWhiteSpace(item.Description))
             {
-                item.Lysing = "Engin lýsing";
+                item.Description = "Engin lýsing";
             }
             Veidiferd? veidiferd = GetVeidiferd(item.Id);
 
@@ -99,7 +95,7 @@ public class VeidiferdirRepository
                     cmd.Parameters.Add(new SqlParameter("id", item.Id));
                     cmd.Parameters.Add(new SqlParameter("datefrom", item.DagsFra));
                     cmd.Parameters.Add(new SqlParameter("dateto", item.DagsTil));
-                    cmd.Parameters.Add(new SqlParameter("description", item.Lysing));
+                    cmd.Parameters.Add(new SqlParameter("description", item.Description));
                     cmd.Parameters.Add(new SqlParameter("vsid", item.VsId));
 
                     cmd.ExecuteNonQuery();
@@ -177,7 +173,7 @@ public class VeidiferdirRepository
     }
 
 
-    public Veidiferd? GetVeidiferd(string id)
+    public Veidiferd? GetVeidiferd(int? id)
     {
         Logger.Logg("Starting, Get Repo - Veidiferd by id " + id + "...");
         string strQuery = @"Select id, fishingplaceid, description, datefrom, dateto from trip where id = @id";
@@ -193,14 +189,11 @@ public class VeidiferdirRepository
             foreach (DataRow row in dt.Rows)
             {
                 Veidiferd item = new Veidiferd();
-                item.Id = row["id"].ToString();
-                item.VsId = row["fishingplaceid"].ToString();
-                item.Lysing = row["description"].ToString();
+                item.Id = Convert.ToInt32(row["id"]);
+                item.VsId = Convert.ToInt32(row["fishingplaceid"]);
+                item.Description = row["description"].ToString();
                 item.DagsFra = GetDate(row["datefrom"].ToString());
                 item.DagsTil = GetDate(row["dateto"].ToString());
-
-                item.LysingLong = item.Lysing;
-
                 list.Add(item);
             }
 
@@ -229,9 +222,9 @@ public class VeidiferdirRepository
         Logger.Logg("Starting, Get Repo - Veidiferdir...");
         string strQuery = @"Select id, fishingplaceid, description, datefrom, dateto from trip order by datefrom asc";
 
-        SqlCommand cmd = new SqlCommand(strQuery);
+        SqlCommand cmd = new(strQuery);
 
-        List<Veidiferd> list = new List<Veidiferd>();
+        List<Veidiferd> list = new();
         //Logger.Logg("Starting, GetCompany..., GetData, ConnectionString=" + connectionString);
         try
         {
@@ -243,9 +236,9 @@ public class VeidiferdirRepository
                 foreach (DataRow row in dt.Rows)
                 {
                     Veidiferd item = new Veidiferd();
-                    item.Id = row["id"].ToString();
-                    item.VsId = row["fishingplaceid"].ToString();
-                    item.Lysing = row["description"].ToString();
+                    item.Id = Convert.ToInt32(row["id"]);
+                    item.VsId = Convert.ToInt32(row["fishingplaceid"]);
+                    item.Description = row["description"].ToString();
                     item.DagsFra = GetDate(row["datefrom"].ToString());
                     item.DagsTil = GetDate(row["dateto"].ToString());
                     list.Add(item);
@@ -260,6 +253,45 @@ public class VeidiferdirRepository
 
         }
         return list;
+    }
+
+    public List<Veidiferd> SearchTrips(string searchText)
+    {
+        var trips = new List<Veidiferd>();
+
+        using (SqlConnection con = new(_connectionString))
+        {
+            con.Open();
+
+            string query = @"
+            SELECT t.Description, t.DateFrom, t.DateTo, t.DateCreated, t.FishingPlaceId
+            FROM Trip t
+            INNER JOIN FishingPlace f ON t.FishingPlaceId = f.Id
+            WHERE t.Description LIKE @searchText";
+
+            using (SqlCommand cmd = new(query, con))
+            {
+                // Add wildcards for the LIKE search
+                cmd.Parameters.AddWithValue("@searchText", "%" + searchText + "%");
+
+                using SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    var trip = new Veidiferd
+                    {
+                        Description = reader.GetString(reader.GetOrdinal("Description")),
+                        DagsFra = reader.GetDateTime(reader.GetOrdinal("DateFrom")),
+                        DagsTil = reader.GetDateTime(reader.GetOrdinal("DateTo")),
+                        Timastimpill = reader.GetDateTime(reader.GetOrdinal("DateCreated")),
+                        VsId = reader.GetInt32("FishingPlaceId")
+                    };
+
+                    trips.Add(trip);
+                }
+            }
+        }
+
+        return trips;
     }
 
 }

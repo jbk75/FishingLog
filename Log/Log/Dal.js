@@ -32,7 +32,7 @@ function GetVeidiferd(id) {
         type: 'GET',
         dataType: 'json',
         success: function (data) {
-            $("#textVeidiferd").val(data.lysing);
+            $("#textVeidiferd").val(data.description);
             var vsid = Number(data.vsId);
             $('#event-modal input[name="event-location"]').val(vsid);
             $("#selectVeidiStadir").val(vsid);
@@ -71,7 +71,7 @@ function GetVeidiferdir()
 
                 var event = {
                     id: val.id - 0,
-                    name: val.lysing,
+                    name: val.description,
                     location: val.vsId,
                     startDate: new Date(dFromYear, dFromMonth, dFromDay),
                     endDate: new Date(dToYear, dToMonth, dToDay)
