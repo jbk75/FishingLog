@@ -1,6 +1,6 @@
-﻿var APIBaseUrl = 'http://localhost:81/api/';
+﻿//var APIBaseUrl = 'http://localhost:81/api/';
 
-//var APIBaseUrl = 'http://localhost:15749/api/';
+var APIBaseUrl = 'http://localhost:15749/api/';
 
 
 function GetVeidistadir() {

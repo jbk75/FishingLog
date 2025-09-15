@@ -57,18 +57,27 @@ public class VeidiFerdController : ControllerBase
 
     // POST api/values
     [HttpPost]
-    public void Post([FromBody]Veidiferd veidiferd)
+    public ActionResult PostTrip([FromBody]Veidiferd veidiferd)
     {
-        DAL.Logger.Logg("Veidiferdir Post");
-        DAL.Logger.Logg("Texti er: " + veidiferd.Description);
-        DAL.Logger.Logg("Dagsetning from er: " + veidiferd.DagsFra);
-        DAL.Logger.Logg("Dagsetning to er: " + veidiferd.DagsTil);
-       
-        DAL.Logger.Logg("Adding veidiferd...");
-        _repository.AddVeidiferd(veidiferd);
+        try
+        {
+            DAL.Logger.Logg("Veidiferdir Post");
+            DAL.Logger.Logg("Texti er: " + veidiferd.Description);
+            DAL.Logger.Logg("Dagsetning from er: " + veidiferd.DagsFra);
+            DAL.Logger.Logg("Dagsetning to er: " + veidiferd.DagsTil);
 
-        DAL.Logger.Logg("Adding veidiferd - DONE!");
-        DAL.Logger.Logg("Veidiferdir Post - Done");
+            DAL.Logger.Logg("Adding veidiferd...");
+            _repository.AddVeidiferd(veidiferd);
+
+            DAL.Logger.Logg("Adding veidiferd - DONE!");
+            DAL.Logger.Logg("Veidiferdir Post - Done");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        return Ok();
+        
     }
 
     [Route("exists/{fishingplaceid}/{dateFrom}/{dateTo}")]

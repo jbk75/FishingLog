@@ -297,18 +297,17 @@
                             var dayTo = FormatDay(endDate);
                             var monthTo = FormatMonth(endDate);
 
-                            var id = $('#event-modal input[name="event-index"]').val();
-                            //if (!id)
-                            //{
-                            //    id = GetVeidiferdNextId();
-                            //}
+                            var idRaw = $('#event-modal input[name="event-index"]').val();
+                            var id = idRaw ? parseInt(idRaw) : null;
+
+                            var vsidRaw = $("#selectVeidiStadir").val();
+                            var vsid = vsidRaw ? parseInt(vsidRaw) : null;
                             var data = {
                                 id: id,
-                                lysing: $('#textVeidiferd').val(),
+                                description: $('#textVeidiferd').val(),
                                 dagsFra: year + '-' + monthFrom + '-' + dayFrom + 'T01:01:01',
                                 dagsTil: year + '-' + monthTo + '-' + dayTo + 'T01:01:01',
-                                //DagsTil: '2001-01-01T01:01:01',
-                                vsid: $("#selectVeidiStadir").val(),
+                                vsid: vsid
                             }
                             var dataType = 'application/json; charset=utf-8';
                             var userName = 'Testari';
