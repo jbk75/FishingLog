@@ -2,7 +2,6 @@
 
 //var APIBaseUrl = 'http://localhost:15749/api/';
 
-
 function GetVeidistadir() {
     $.ajax({
         url: APIBaseUrl + 'veidistadur',
