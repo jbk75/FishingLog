@@ -11,15 +11,22 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 // Add services to the container
-builder.Services.AddCors();
+builder.Services.AddControllers();
 
-builder.Services.AddControllers();  // Modern replacement for AddMvc()
+// ✅ Add named CORS policy for frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy => policy
+            .WithOrigins("http://localhost:82","http://localhost:81", "http://localhost:15749", "http://localhost:38522") // your frontend URL
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 // Add Swagger generation with XML comments support
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    // Enable XML comments (see next step)
     var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
@@ -27,35 +34,28 @@ builder.Services.AddSwaggerGen(options =>
 // Add logging (Console and Debug)
 builder.Logging.ClearProviders();
 builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
 builder.Services.AddScoped<VeidiferdirRepository>();
 builder.Services.AddScoped<VeidistadurRepository>();
-
+builder.Services.AddScoped<VeidiferdirRepository>();
 
 var app = builder.Build();
 
 // Enable middleware to serve generated Swagger as JSON endpoint
 app.UseSwagger();
-
-// Enable middleware to serve swagger-ui (HTML, JS, CSS)
 app.UseSwaggerUI();
 
-// Configure the HTTP request pipeline
-
-app.UseCors(builder => builder
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader());
+// ✅ Enable CORS before controllers
+app.UseCors("AllowFrontend");
 
 app.UseStaticFiles();
 
 app.UseAuthorization();
 
-app.MapControllers();  // replaces UseMvc()
+app.MapControllers();
 
-#pragma warning disable S6966 // Awaitable method should be used
+#pragma warning disable S6966
 app.Run();
-#pragma warning restore S6966 // Awaitable method should be used
+#pragma warning restore S6966

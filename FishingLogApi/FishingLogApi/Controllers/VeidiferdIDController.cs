@@ -5,7 +5,7 @@ namespace FishingLogApi.Controllers;
 
 [Produces("application/json")]
 [Route("api/VeidiferdID")]
-public class VeidiferdIDController : Controller
+public class VeidiferdIDController : ControllerBase
 {
 
     private readonly VeidiferdirRepository _repository;
@@ -20,7 +20,7 @@ public class VeidiferdIDController : Controller
     public string Get()
     { 
         DAL.Logger.Logg("Getting veidiferd nextId");
-        DAL.Repositories.VeidiferdirRepository veidiferdirRepo = new VeidiferdirRepository();
+
         var nextId = _repository.NextVeidiferdId();
         return nextId.ToString();
     }
