@@ -354,3 +354,13 @@ hr {
 		margin-top: -10px;
 	}
 }
+
+.modal-footer {
+	text-align: center; /* center buttons horizontally */
+	width: 100%; /* make footer as wide as modal-content */
+}
+
+	.modal-footer .btn {
+		display: inline-block;
+		margin: 0 6px; /* space between buttons */
+	}
