@@ -9,9 +9,9 @@ namespace FishingLogApi.Controllers;
 [Route("api/veidiferd")]
 public class VeidiFerdController : ControllerBase
 {
-    private readonly VeidiferdirRepository _repository;
+    private readonly TripRepository _repository;
 
-    public VeidiFerdController(VeidiferdirRepository repository)
+    public VeidiFerdController(TripRepository repository)
     {
         _repository = repository;
     }
@@ -19,10 +19,10 @@ public class VeidiFerdController : ControllerBase
     // GET api/values
     [Route("")]
     [HttpGet]
-    public IEnumerable<Veidiferd> GetAllVeidiferd()
+    public IEnumerable<TripDto> GetAllVeidiferd()
     {
         //DAL.Logger.Logg("Getting veidiferdir");
-        var listVeidiferdir = _repository.GetVeidiferdir();
+        var listVeidiferdir = _repository.GetTrips();
         return listVeidiferdir;
         //DAL.Logger.Logg("Veidiferdir Get");
         //return new string[] { "value1", "value2" };
@@ -30,10 +30,10 @@ public class VeidiFerdController : ControllerBase
 
     [Route("{id}")]
     [HttpGet]
-    public Veidiferd GetVeidiferd(int id)
+    public TripDto GetVeidiferd(int id)
     {
         DAL.Logger.Logg("Getting veidiferdir");
-        var listVeidiferdir = _repository.GetVeidiferd(id);//.GetVeidiferdir();
+        var listVeidiferdir = _repository.GetTrip(id);//.GetVeidiferdir();
         return listVeidiferdir;
         //DAL.Logger.Logg("Veidiferdir Get");
         //return new string[] { "value1", "value2" };
@@ -47,7 +47,7 @@ public class VeidiFerdController : ControllerBase
 
     public HttpResponseMessage DeleteVeidiferd(int id)
     {
-        Veidiferd veidiferd = _repository.GetVeidiferd(id);
+        TripDto veidiferd = _repository.GetTrip(id);
 
         var response = new HttpResponseMessage();
         response.Headers.Add("DeleteMessage", "Succsessfuly Deleted!!!");
@@ -57,7 +57,7 @@ public class VeidiFerdController : ControllerBase
 
     // POST api/values
     [HttpPost]
-    public ActionResult PostTrip([FromBody]Veidiferd veidiferd)
+    public ActionResult PostTrip([FromBody]TripDto veidiferd)
     {
         try
         {
@@ -67,7 +67,7 @@ public class VeidiFerdController : ControllerBase
             DAL.Logger.Logg("Dagsetning to er: " + veidiferd.DagsTil);
 
             DAL.Logger.Logg("Adding veidiferd...");
-            _repository.AddVeidiferd(veidiferd);
+            _repository.AddTrip(veidiferd);
 
             DAL.Logger.Logg("Adding veidiferd - DONE!");
             DAL.Logger.Logg("Veidiferdir Post - Done");
@@ -80,7 +80,7 @@ public class VeidiFerdController : ControllerBase
         
     }
 
-    [Route("exists/{fishingplaceid}/{dateFrom}/{dateTo}")]
+    [Route("exists/{fishingplaceName}/{dateFrom}/{dateTo}")]
     [HttpGet]
     public ActionResult<bool> GetVeidiferdExists(string fishingplaceName, string dateFrom, string dateTo)
     {
@@ -95,7 +95,7 @@ public class VeidiFerdController : ControllerBase
                 return BadRequest("Invalid date format. Use ISO format: yyyy-MM-dd or yyyy-MM-ddTHH:mm:ss");
             }
 
-            bool exists = _repository.VeidiferdExists(fishingplaceName, fromDate, toDate);
+            bool exists = _repository.TripExists(fishingplaceName, fromDate, toDate);
 
             return Ok(exists);
         }
@@ -115,7 +115,7 @@ public class VeidiFerdController : ControllerBase
     {
         try
         {
-            List<Veidiferd> trips = _repository.SearchTrips(searchText);
+            List<TripDto> trips = _repository.SearchTrips(searchText);
 
             return Ok(trips);
         }

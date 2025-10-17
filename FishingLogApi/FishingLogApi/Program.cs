@@ -37,9 +37,9 @@ builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
-builder.Services.AddScoped<VeidiferdirRepository>();
+builder.Services.AddScoped<TripRepository>();
 builder.Services.AddScoped<VeidistadurRepository>();
-builder.Services.AddScoped<VeidiferdirRepository>();
+//builder.Services.AddScoped<VeidiferdirRepository>();
 
 var app = builder.Build();
 

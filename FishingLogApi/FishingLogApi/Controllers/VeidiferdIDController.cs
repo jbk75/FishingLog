@@ -8,9 +8,9 @@ namespace FishingLogApi.Controllers;
 public class VeidiferdIDController : ControllerBase
 {
 
-    private readonly VeidiferdirRepository _repository;
+    private readonly TripRepository _repository;
 
-    public VeidiferdIDController(VeidiferdirRepository repository)
+    public VeidiferdIDController(TripRepository repository)
     {
         _repository = repository;
     }
@@ -21,7 +21,7 @@ public class VeidiferdIDController : ControllerBase
     { 
         DAL.Logger.Logg("Getting veidiferd nextId");
 
-        var nextId = _repository.NextVeidiferdId();
+        var nextId = _repository.NextTripId();
         return nextId.ToString();
     }
 }

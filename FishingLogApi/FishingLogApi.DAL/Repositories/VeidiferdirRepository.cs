@@ -9,16 +9,16 @@ namespace FishingLogApi.DAL.Repositories;
 /// <summary>
 /// If item contains id we update the record else create new veidiferd
 /// </summary>
-public class VeidiferdirRepository
+public class TripRepository
 {
     private readonly string _connectionString;
 
-    public VeidiferdirRepository(IConfiguration configuration)
+    public TripRepository(IConfiguration configuration)
     {
         _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
 
-    public void AddVeidiferd(Veidiferd item)
+    public void AddTrip(TripDto item)
     {
         try
         {
@@ -26,12 +26,12 @@ public class VeidiferdirRepository
             string nextId = string.Empty;
             if (item.Id != null)
             {
-                UpdateVeidiferd(item);
+                UpdateTrip(item);
                 return;
             }
             else
             {
-                nextId = NextVeidiferdId();
+                nextId = NextTripId();
             }
             //    Veididagatal_textiRepository vt = new Veididagatal_textiRepository();
 
@@ -67,7 +67,7 @@ public class VeidiferdirRepository
         }
     }
 
-    public void UpdateVeidiferd(Models.Veidiferd item)
+    public void UpdateTrip(Models.TripDto item)
     {
         try
         {
@@ -77,7 +77,7 @@ public class VeidiferdirRepository
             {
                 item.Description = "Engin lýsing";
             }
-            Veidiferd? veidiferd = GetVeidiferd(item.Id);
+            TripDto? veidiferd = GetTrip(item.Id);
 
             if (veidiferd == null)
             {
@@ -111,13 +111,13 @@ public class VeidiferdirRepository
         }
     }
 
-    public string NextVeidiferdId()
+    public string NextTripId()
     {
         int i = -1;
         using (SqlConnection con = new SqlConnection(_connectionString))
         {
             con.Open();
-            using (SqlCommand cmd = new SqlCommand("SELECT MAX(id) FROM trip", con))
+            using (SqlCommand cmd = new("SELECT MAX(id) FROM trip", con))
             {
                 //Associate connection with your command an open it
                 i = (int)cmd.ExecuteScalar();
@@ -146,7 +146,7 @@ public class VeidiferdirRepository
         return false;
     }
 
-    public bool VeidiferdExists(string fishingPlaceName, DateTime dateFrom, DateTime dateTo)
+    public bool TripExists(string fishingPlaceName, DateTime dateFrom, DateTime dateTo)
     {
         using (SqlConnection con = new SqlConnection(_connectionString))
         {
@@ -173,7 +173,7 @@ public class VeidiferdirRepository
     }
 
 
-    public Veidiferd? GetVeidiferd(int? id)
+    public TripDto? GetTrip(int? id)
     {
         Logger.Logg("Starting, Get Repo - Veidiferd by id " + id + "...");
         string strQuery = @"Select id, fishingplaceid, description, datefrom, dateto from trip where id = @id";
@@ -183,12 +183,12 @@ public class VeidiferdirRepository
 
         DataTable dt = DatabaseService.GetData(cmd, _connectionString);
 
-        List<Veidiferd> list = [];
+        List<TripDto> list = [];
         if (dt != null && dt.Rows.Count > 0)
         {
             foreach (DataRow row in dt.Rows)
             {
-                Veidiferd item = new Veidiferd();
+                TripDto item = new();
                 item.Id = Convert.ToInt32(row["id"]);
                 item.VsId = Convert.ToInt32(row["fishingplaceid"]);
                 item.Description = row["description"].ToString();
@@ -217,14 +217,14 @@ public class VeidiferdirRepository
         return new DateTime(2999, 1, 1);
     }
 
-    public List<Veidiferd> GetVeidiferdir()
+    public List<TripDto> GetTrips()
     {
         Logger.Logg("Starting, Get Repo - Veidiferdir...");
         string strQuery = @"Select id, fishingplaceid, description, datefrom, dateto from trip order by datefrom asc";
 
         SqlCommand cmd = new(strQuery);
 
-        List<Veidiferd> list = new();
+        List<TripDto> list = new();
         //Logger.Logg("Starting, GetCompany..., GetData, ConnectionString=" + connectionString);
         try
         {
@@ -235,7 +235,7 @@ public class VeidiferdirRepository
             {
                 foreach (DataRow row in dt.Rows)
                 {
-                    Veidiferd item = new Veidiferd();
+                    TripDto item = new();
                     item.Id = Convert.ToInt32(row["id"]);
                     item.VsId = Convert.ToInt32(row["fishingplaceid"]);
                     item.Description = row["description"].ToString();
@@ -255,9 +255,9 @@ public class VeidiferdirRepository
         return list;
     }
 
-    public List<Veidiferd> SearchTrips(string searchText)
+    public List<TripDto> SearchTrips(string searchText)
     {
-        var trips = new List<Veidiferd>();
+        var trips = new List<TripDto>();
 
         using (SqlConnection con = new(_connectionString))
         {
@@ -277,7 +277,7 @@ public class VeidiferdirRepository
                 using SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    var trip = new Veidiferd
+                    var trip = new TripDto
                     {
                         Description = reader.GetString(reader.GetOrdinal("Description")),
                         DagsFra = reader.GetDateTime(reader.GetOrdinal("DateFrom")),
@@ -293,5 +293,77 @@ public class VeidiferdirRepository
 
         return trips;
     }
+
+    public async Task UpsertTripsAsync(List<TripDto> clientTrips)
+    {
+        using var con = new SqlConnection(_connectionString);
+        await con.OpenAsync();
+
+        foreach (var trip in clientTrips)
+        {
+            var cmd = new SqlCommand(@"
+            MERGE trip AS target
+            USING (SELECT @SyncId AS SyncId) AS source
+            ON target.SyncId = source.SyncId
+            WHEN MATCHED AND target.LastModifiedUtc < @LastModifiedUtc THEN
+                UPDATE SET 
+                    Description = @Description,
+                    Timastimpill = @Timastimpill,
+                    DagsFra = @DagsFra,
+                    DagsTil = @DagsTil,
+                    VsId = @VsId,
+                    LastModifiedUtc = @LastModifiedUtc,
+                    IsDeleted = @IsDeleted
+            WHEN NOT MATCHED THEN
+                INSERT (Description, Timastimpill, DagsFra, DagsTil, VsId, SyncId, LastModifiedUtc, IsDeleted)
+                VALUES (@Description, @Timastimpill, @DagsFra, @DagsTil, @VsId, @SyncId, @LastModifiedUtc, @IsDeleted);", con);
+
+            cmd.Parameters.AddWithValue("@Description", (object?)trip.Description ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@Timastimpill", trip.Timastimpill);
+            cmd.Parameters.AddWithValue("@DagsFra", trip.DagsFra);
+            cmd.Parameters.AddWithValue("@DagsTil", trip.DagsTil);
+            cmd.Parameters.AddWithValue("@VsId", trip.VsId);
+            cmd.Parameters.AddWithValue("@SyncId", trip.SyncId);
+            cmd.Parameters.AddWithValue("@LastModifiedUtc", trip.LastModifiedUtc);
+            cmd.Parameters.AddWithValue("@IsDeleted", trip.IsDeleted);
+
+            await cmd.ExecuteNonQueryAsync();
+        }
+    }
+
+    public async Task<List<TripDto>> GetTripsChangedSinceAsync(DateTime lastSyncUtc)
+    {
+        var trips = new List<TripDto>();
+
+        using var con = new SqlConnection(_connectionString);
+        await con.OpenAsync();
+
+        var cmd = new SqlCommand(@"
+        SELECT Id, Description, Timastimpill, DagsFra, DagsTil, VsId, SyncId, LastModifiedUtc, IsDeleted
+        FROM trip
+        WHERE LastModifiedUtc > @LastSyncUtc", con);
+
+        cmd.Parameters.AddWithValue("@LastSyncUtc", lastSyncUtc);
+
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            trips.Add(new TripDto
+            {
+                Id = reader.GetInt32(0),
+                Description = reader.IsDBNull(1) ? null : reader.GetString(1),
+                Timastimpill = reader.GetDateTime(2),
+                DagsFra = reader.GetDateTime(3),
+                DagsTil = reader.GetDateTime(4),
+                VsId = reader.GetInt32(5),
+                SyncId = reader.GetGuid(6),
+                LastModifiedUtc = reader.GetDateTime(7),
+                IsDeleted = reader.GetBoolean(8)
+            });
+        }
+
+        return trips;
+    }
+
 
 }
