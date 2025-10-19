@@ -44,7 +44,8 @@ public class VeidiFerdController : ControllerBase
     /// </summary>  
     /// <param name="Uid"></param>  
     /// <returns></returns>  
-
+    [Route("{id}")]
+    [HttpDelete]
     public HttpResponseMessage DeleteVeidiferd(int id)
     {
         TripDto veidiferd = _repository.GetTrip(id);

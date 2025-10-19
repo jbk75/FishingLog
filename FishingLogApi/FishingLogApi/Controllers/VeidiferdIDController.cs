@@ -21,7 +21,7 @@ public class VeidiferdIDController : ControllerBase
     { 
         DAL.Logger.Logg("Getting veidiferd nextId");
 
-        var nextId = _repository.NextTripId();
-        return nextId.ToString();
+        string nextId = _repository.NextTripId();
+        return nextId;
     }
 }

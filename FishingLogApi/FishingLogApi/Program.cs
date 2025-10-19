@@ -1,4 +1,5 @@
 ﻿using FishingLogApi.DAL.Repositories;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,13 +24,23 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod());
 });
 
-// Add Swagger generation with XML comments support
+// 👇 Add Swagger/OpenAPI service
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "My .NET 8 API",
+        Version = "v1",
+        Description = "API documentation for my application",
+        Contact = new OpenApiContact
+        {
+            Name = "Your Name",
+            Email = "you@example.com"
+        }
+    });
 });
+
 
 // Add logging (Console and Debug)
 builder.Logging.ClearProviders();
@@ -41,16 +52,22 @@ builder.Services.AddScoped<TripRepository>();
 builder.Services.AddScoped<VeidistadurRepository>();
 //builder.Services.AddScoped<VeidiferdirRepository>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
-// Enable middleware to serve generated Swagger as JSON endpoint
-app.UseSwagger();
-app.UseSwaggerUI();
+// Configure the HTTP request pipeline
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();             // 👈 Generate Swagger JSON
+    app.UseSwaggerUI(options =>   // 👈 Serve Swagger UI
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "My .NET 8 API v1");
+        //options.RoutePrefix = string.Empty; // serve Swagger UI at root (https://localhost:5001/)
+    });
+}
 
+app.UseHttpsRedirection();
 // ✅ Enable CORS before controllers
 app.UseCors("AllowFrontend");
-
-app.UseStaticFiles();
 
 app.UseAuthorization();
 

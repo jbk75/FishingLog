@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishingLogApi", "FishingLogApi\FishingLogApi.csproj", "{0365DD54-A41F-4601-AC33-9A5C5F23F0CF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishingLogApi.DAL", "FishingLogApi.DAL\FishingLogApi.DAL.csproj", "{4BB8452F-6407-48B2-A0B8-7A5C0993F2EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZUnitTest", "ZUnitTest\ZUnitTest.csproj", "{11309EB3-2DE9-4EB6-88E0-6FFB3442D38E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishingLogUnitTests", "ZUnitTest\FishingLogUnitTests.csproj", "{11309EB3-2DE9-4EB6-88E0-6FFB3442D38E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,19 +31,7 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://joh4nnbragi.visualstudio.com/
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = FishingLogApi\\FishingLogApi.csproj
-		SccProjectName1 = FishingLogApi
-		SccLocalPath1 = FishingLogApi
-		SccProjectUniqueName2 = FishingLogApi.DAL\\FishingLogApi.DAL.csproj
-		SccProjectName2 = FishingLogApi.DAL
-		SccLocalPath2 = FishingLogApi.DAL
-		SccProjectUniqueName3 = ZUnitTest\\ZUnitTest.csproj
-		SccProjectName3 = ZUnitTest
-		SccLocalPath3 = ZUnitTest
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {438DC174-CC34-4010-8B6D-A907E2F12D8E}
 	EndGlobalSection
 EndGlobal
