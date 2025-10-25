@@ -3,7 +3,6 @@ using FishingLogApi.DAL.Repositories;
 
 namespace FishingLogApi.Controllers;
 
-
 [Produces("application/json")]
 [Route("api/VeidiferdID")]
 public class VeidiferdIDController : ControllerBase
