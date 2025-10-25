@@ -88,7 +88,7 @@ public class VeidiFerdController : ControllerBase
     /// <param name="fishingplaceName">The name of the fishing place.</param>
     /// <param name="dateFrom">The start date of the trip (ISO format: yyyy-MM-dd or yyyy-MM-ddTHH:mm:ss).</param>
     /// <param name="dateTo">The end date of the trip (ISO format: yyyy-MM-dd or yyyy-MM-ddTHH:mm:ss).</param>
-    /// <returns>True if a trip exists for the specified criteria, otherwise false.</returns>
+    /// <returns>True if a trip exists for the specified criteria, otherwise returns false.</returns>
     [Route("exists/{fishingplaceName}/{dateFrom}/{dateTo}")]
     [HttpGet]
     public ActionResult<bool> GetVeidiferdExists(string fishingplaceName, string dateFrom, string dateTo)
