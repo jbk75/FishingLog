@@ -49,11 +49,11 @@
                         </div>
                     </div>
                     <div class="modal fade" id="event-modal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document" style="margin-bottom:0px">
+                        <div class="modal-dialog" role="document" style="margin-bottom:0px; max-width:900px; width:90%;">
                             <div class="modal-content">
 
                                 <div class="modal-header">
-                                    <h4 class="modal-title" id="eventModalLabel">Event</h4>
+                                    <h4 class="modal-title" id="eventModalLabel">Fishing event</h4>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>
@@ -117,9 +117,9 @@
                                             <label class="col-sm-4 col-form-label">Dates</label>
                                             <div class="col-sm-8">
                                                 <div class="input-group input-daterange" data-provide="datepicker">
-                                                    <input name="event-start-date" type="text" class="form-control datepicker" value="2012-04-05">
+                                                    <input name="event-start-date" type="text" class="form-control datepicker date-range-input" value="2012-04-05">
                                                     <span class="input-group-text">to</span>
-                                                    <input name="event-end-date" type="text" class="form-control datepicker" value="2012-04-19">
+                                                    <input name="event-end-date" type="text" class="form-control datepicker date-range-input" value="2012-04-19">
                                                 </div>
                                             </div>
                                         </div>
@@ -157,6 +157,12 @@
 
                         .event-tooltip-content .event-location {
                             font-size: 12px;
+                        }
+
+                        #event-modal .date-range-input {
+                            width: 50%;
+                            min-width: 140px;
+                            display: inline-block;
                         }
                     </style>
                     <script type="text/javascript" class="publish">
