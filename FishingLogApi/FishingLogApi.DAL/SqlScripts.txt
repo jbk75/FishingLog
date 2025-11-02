@@ -158,3 +158,18 @@ FROM
     Trip t
 JOIN
     FishingPlace fp ON t.FishingPlaceId = fp.Id;
+
+Go
+CREATE TABLE TripWeather (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    TripId INT NOT NULL,
+    RecordedAt DATETIME NOT NULL,
+    TemperatureCelsius REAL,
+    RelativeHumidityPercent REAL,
+    WindSpeedMetersPerSecond REAL,
+    WindDirectionDegrees REAL,
+    ConditionDescription TEXT,
+    PrecipitationMillimeters REAL,
+    IsRaining INT NOT NULL,
+    FOREIGN KEY (TripId) REFERENCES Trip(Id) ON DELETE CASCADE
+);
