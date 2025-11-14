@@ -21,7 +21,7 @@ public sealed class ScraperOptions
     /// <summary>
     /// Social media endpoints that should be queried for fishing news (e.g. Instagram, Facebook).
     /// </summary>
-    public IList<SocialMediaSourceOptions> SocialMediaSources { get; set; } = new List<SocialMediaSourceOptions>();
+    public IList<SocialMediaSourceOptions> SocialMediaSources { get; set; } = [];
 
     /// <summary>
     /// Keywords that should be matched when searching for relevant fishing news.

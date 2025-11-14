@@ -77,7 +77,7 @@ public sealed class SqlFishingNewsRepository : IFishingNewsRepository
             : string.Join("; ", record.WeatherDetails.Select(w => $"{w.ObservationTime:HH:mm}: {w.Summary}"));
 
         var command = new CommandDefinition(
-            "INSERT INTO dbo.FishingNews (Date, Time, FishingPlaceId, NumberOfFishesCaught, NumberOfFishesSeen, WeatherOnFishingDay, Description, TideState, PeakActivityTime, Source) VALUES (@Date, @Time, @FishingPlaceId, @NumberOfFishesCaught, @NumberOfFishesSeen, @WeatherSummary, @Description, @TideState, @PeakActivityTime, @Source); SELECT CAST(SCOPE_IDENTITY() AS INT);",
+            "INSERT INTO dbo.FishingNews (Date, Time, FishingPlaceId, NumberOfFishesCaught, NumberOfFishesSeen, WeatherOnFishingDay, Description, TideState, PeakActivityTime, SourceOfNews) VALUES (@Date, @Time, @FishingPlaceId, @NumberOfFishesCaught, @NumberOfFishesSeen, @WeatherSummary, @Description, @TideState, @PeakActivityTime, @SourceOfNews); SELECT CAST(SCOPE_IDENTITY() AS INT);",
             new
             {
                 Date = record.Date.ToDateTime(TimeOnly.MinValue),
@@ -89,7 +89,7 @@ public sealed class SqlFishingNewsRepository : IFishingNewsRepository
                 record.Description,
                 record.TideState,
                 PeakActivityTime = record.PeakActivityTime?.ToTimeSpan(),
-                Source = string.IsNullOrWhiteSpace(record.Source) ? null : record.Source
+                SourceOfNews = string.IsNullOrWhiteSpace(record.SourceOfNews) ? null : record.SourceOfNews
             },
             cancellationToken: cancellationToken);
 

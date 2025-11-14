@@ -11,7 +11,7 @@ public sealed class FishingNewsRecord
     public List<string> FishSpecies { get; } = new();
     public List<FishingNewsWeatherDetail> WeatherDetails { get; } = new();
     public string Description { get; set; } = string.Empty;
-    public string Source { get; set; } = string.Empty;
+    public string SourceOfNews { get; set; } = string.Empty;
     public List<FishingNewsImage> Images { get; } = new();
     public List<FishCatchDetail> CatchDetails { get; } = new();
     public string? TideState { get; set; }

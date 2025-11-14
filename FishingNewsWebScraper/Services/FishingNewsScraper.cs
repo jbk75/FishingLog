@@ -248,7 +248,7 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
                 Name = sourceName
             },
             Description = text,
-            Source = sourceReference ?? sourceName
+            SourceOfNews = sourceReference ?? sourceName
         };
 
         if (TimeRegex.Match(text) is { Success: true } timeMatch && TimeOnly.TryParse(timeMatch.Value.Replace('.', ':'), out var time))

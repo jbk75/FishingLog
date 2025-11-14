@@ -1,3 +1,4 @@
+using FishingNewsWebScraper.Infrastructure;
 using FishingNewsWebScraper.Models;
 using FishingNewsWebScraper.Options;
 using Microsoft.Extensions.Hosting;

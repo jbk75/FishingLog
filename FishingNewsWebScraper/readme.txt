@@ -33,7 +33,7 @@ CREATE TABLE [dbo].[FishingNews](
     [Description] NVARCHAR(MAX) NOT NULL,
     [TideState] NVARCHAR(200) NULL,
     [PeakActivityTime] TIME NULL,
-    [Source] NVARCHAR(500) NULL,
+    [SourceOfNews] NVARCHAR(500) NULL,
     CONSTRAINT [FK_FishingNews_FishingPlace] FOREIGN KEY ([FishingPlaceId]) REFERENCES [dbo].[FishingPlace]([Id])
 );
 
