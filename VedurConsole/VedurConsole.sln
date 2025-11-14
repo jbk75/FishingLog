@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VedurConsole", "VedurConsol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishingLog.Data", "FishingLog.Data\FishingLog.Data.csproj", "{D0904338-C64A-44FC-94E3-D475624348EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishingNewsWebScraper", "..\\FishingNewsWebScraper\\FishingNewsWebScraper.csproj", "{0FEF4EEE-EBA0-48A5-904E-9A844E1D64B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,9 +21,13 @@ Global
 		{7EAE9DF6-A79C-41E9-B8AB-44A947991C86}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D0904338-C64A-44FC-94E3-D475624348EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D0904338-C64A-44FC-94E3-D475624348EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D0904338-C64A-44FC-94E3-D475624348EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D0904338-C64A-44FC-94E3-D475624348EF}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
+                {D0904338-C64A-44FC-94E3-D475624348EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+                {D0904338-C64A-44FC-94E3-D475624348EF}.Release|Any CPU.Build.0 = Release|Any CPU
+                {0FEF4EEE-EBA0-48A5-904E-9A844E1D64B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+                {0FEF4EEE-EBA0-48A5-904E-9A844E1D64B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+                {0FEF4EEE-EBA0-48A5-904E-9A844E1D64B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+                {0FEF4EEE-EBA0-48A5-904E-9A844E1D64B6}.Release|Any CPU.Build.0 = Release|Any CPU
+        EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
