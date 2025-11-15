@@ -1,4 +1,4 @@
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using Dapper;
 using FishingNewsWebScraper.Models;
 using FishingNewsWebScraper.Options;
@@ -10,25 +10,20 @@ namespace FishingNewsWebScraper.Infrastructure;
 
 public sealed class SqlFishingNewsRepository : IFishingNewsRepository
 {
-    private readonly DatabaseOptions _databaseOptions;
+    private readonly string _connectionString;
     private readonly ILogger<SqlFishingNewsRepository> _logger;
 
     public SqlFishingNewsRepository(
         IOptions<DatabaseOptions> databaseOptions,
         ILogger<SqlFishingNewsRepository> logger)
     {
-        _databaseOptions = databaseOptions.Value;
+        _connectionString = databaseOptions.Value.BuildConnectionString();
         _logger = logger;
     }
 
     public async Task<int> EnsureFishingPlaceAsync(FishingPlaceDetails place, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(_databaseOptions.ConnectionString))
-        {
-            throw new InvalidOperationException("Database connection string is not configured.");
-        }
-
-        await using var connection = new SqlConnection(_databaseOptions.ConnectionString);
+        await using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync(cancellationToken);
 
         var existingId = await connection.ExecuteScalarAsync<int?>(
@@ -69,7 +64,7 @@ public sealed class SqlFishingNewsRepository : IFishingNewsRepository
             throw new InvalidOperationException("Fishing place id must be populated before inserting the news record.");
         }
 
-        await using var connection = new SqlConnection(_databaseOptions.ConnectionString);
+        await using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync(cancellationToken);
 
         var summary = record.WeatherDetails.Count == 0
@@ -105,7 +100,7 @@ public sealed class SqlFishingNewsRepository : IFishingNewsRepository
             return;
         }
 
-        await using var connection = new SqlConnection(_databaseOptions.ConnectionString);
+        await using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync(cancellationToken);
 
         await using var transaction = connection.BeginTransaction();
@@ -145,7 +140,7 @@ public sealed class SqlFishingNewsRepository : IFishingNewsRepository
             return;
         }
 
-        await using var connection = new SqlConnection(_databaseOptions.ConnectionString);
+        await using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync(cancellationToken);
 
         await using var transaction = connection.BeginTransaction();
