@@ -1,30 +1,37 @@
-using Microsoft.Data.SqlClient;
+using System;
+using System.Linq;
+using System.Threading;
 using Dapper;
 using FishingNewsWebScraper.Models;
 using FishingNewsWebScraper.Options;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Linq;
 
 namespace FishingNewsWebScraper.Infrastructure;
 
 public sealed class SqlFishingNewsRepository : IFishingNewsRepository
 {
-    private readonly string _connectionString;
+    private readonly string _primaryConnectionString;
+    private readonly string? _fallbackConnectionString;
+    private string _connectionString;
     private readonly ILogger<SqlFishingNewsRepository> _logger;
 
     public SqlFishingNewsRepository(
         IOptions<DatabaseOptions> databaseOptions,
         ILogger<SqlFishingNewsRepository> logger)
     {
-        _connectionString = databaseOptions.Value.BuildConnectionString();
+        var configuration = databaseOptions.Value.BuildConnectionConfiguration();
+
+        _primaryConnectionString = configuration.ConnectionString;
+        _fallbackConnectionString = configuration.FallbackConnectionString;
+        _connectionString = configuration.ConnectionString;
         _logger = logger;
     }
 
     public async Task<int> EnsureFishingPlaceAsync(FishingPlaceDetails place, CancellationToken cancellationToken)
     {
-        await using var connection = new SqlConnection(_connectionString);
-        await connection.OpenAsync(cancellationToken);
+        await using var connection = await OpenConnectionAsync(cancellationToken);
 
         var existingId = await connection.ExecuteScalarAsync<int?>(
             new CommandDefinition(
@@ -64,8 +71,7 @@ public sealed class SqlFishingNewsRepository : IFishingNewsRepository
             throw new InvalidOperationException("Fishing place id must be populated before inserting the news record.");
         }
 
-        await using var connection = new SqlConnection(_connectionString);
-        await connection.OpenAsync(cancellationToken);
+        await using var connection = await OpenConnectionAsync(cancellationToken);
 
         var summary = record.WeatherDetails.Count == 0
             ? record.TideState
@@ -100,8 +106,7 @@ public sealed class SqlFishingNewsRepository : IFishingNewsRepository
             return;
         }
 
-        await using var connection = new SqlConnection(_connectionString);
-        await connection.OpenAsync(cancellationToken);
+        await using var connection = await OpenConnectionAsync(cancellationToken);
 
         await using var transaction = connection.BeginTransaction();
 
@@ -140,8 +145,7 @@ public sealed class SqlFishingNewsRepository : IFishingNewsRepository
             return;
         }
 
-        await using var connection = new SqlConnection(_connectionString);
-        await connection.OpenAsync(cancellationToken);
+        await using var connection = await OpenConnectionAsync(cancellationToken);
 
         await using var transaction = connection.BeginTransaction();
 
@@ -177,5 +181,47 @@ public sealed class SqlFishingNewsRepository : IFishingNewsRepository
         }
 
         return 2;
+    }
+
+    private async Task<SqlConnection> OpenConnectionAsync(CancellationToken cancellationToken)
+    {
+        var connectionString = Volatile.Read(ref _connectionString);
+        var connection = new SqlConnection(connectionString);
+
+        try
+        {
+            await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
+            return connection;
+        }
+        catch (SqlException ex) when (ShouldFallbackToSqlAuthentication(ex, connectionString))
+        {
+            await connection.DisposeAsync().ConfigureAwait(false);
+
+            if (_fallbackConnectionString is null)
+            {
+                throw new InvalidOperationException(
+                    "Failed to connect using integrated security and no SQL authentication fallback was configured. Configure Database:UserId and Database:Password or disable Database:UseIntegratedSecurity.",
+                    ex);
+            }
+
+            _logger.LogWarning(ex, "Integrated security connection failed. Falling back to SQL authentication.");
+
+            var newConnectionString = _fallbackConnectionString;
+            Interlocked.Exchange(ref _connectionString, newConnectionString);
+
+            var fallbackConnection = new SqlConnection(newConnectionString);
+            await fallbackConnection.OpenAsync(cancellationToken).ConfigureAwait(false);
+            return fallbackConnection;
+        }
+    }
+
+    private bool ShouldFallbackToSqlAuthentication(SqlException exception, string attemptedConnectionString)
+    {
+        if (!ReferenceEquals(attemptedConnectionString, _primaryConnectionString) && attemptedConnectionString != _primaryConnectionString)
+        {
+            return false;
+        }
+
+        return exception.Message.Contains("SSPI", StringComparison.OrdinalIgnoreCase);
     }
 }

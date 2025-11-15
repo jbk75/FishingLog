@@ -41,7 +41,7 @@ public sealed class DatabaseOptions
     /// </summary>
     public bool TrustServerCertificate { get; set; } = true;
 
-    public string BuildConnectionString()
+    public DatabaseConnectionConfiguration BuildConnectionConfiguration()
     {
         if (!string.IsNullOrWhiteSpace(ConnectionString))
         {
@@ -61,7 +61,13 @@ public sealed class DatabaseOptions
                 builder.TrustServerCertificate = TrustServerCertificate;
             }
 
-            return builder.ConnectionString;
+            var usesIntegratedSecurity = builder.IntegratedSecurity;
+            var fallbackConnectionString = BuildFallbackConnectionString(builder, usesIntegratedSecurity);
+
+            return new DatabaseConnectionConfiguration(
+                builder.ConnectionString,
+                fallbackConnectionString,
+                usesIntegratedSecurity);
         }
 
         if (string.IsNullOrWhiteSpace(Server))
@@ -81,6 +87,8 @@ public sealed class DatabaseOptions
             TrustServerCertificate = TrustServerCertificate
         };
 
+        bool usesIntegratedSecurity;
+
         if (UseIntegratedSecurity)
         {
             if (!OperatingSystem.IsWindows())
@@ -89,14 +97,23 @@ public sealed class DatabaseOptions
             }
 
             connectionBuilder.IntegratedSecurity = true;
+            usesIntegratedSecurity = true;
         }
         else
         {
             ApplySqlAuthentication(connectionBuilder);
+            usesIntegratedSecurity = false;
         }
 
-        return connectionBuilder.ConnectionString;
+        var fallbackConnectionString = BuildFallbackConnectionString(connectionBuilder, usesIntegratedSecurity);
+
+        return new DatabaseConnectionConfiguration(
+            connectionBuilder.ConnectionString,
+            fallbackConnectionString,
+            usesIntegratedSecurity);
     }
+
+    public string BuildConnectionString() => BuildConnectionConfiguration().ConnectionString;
 
     private void ApplySqlAuthentication(SqlConnectionStringBuilder builder, bool requiredForNonWindows = false)
     {
@@ -118,4 +135,28 @@ public sealed class DatabaseOptions
         builder.Password = Password;
         builder.IntegratedSecurity = false;
     }
+
+    private string? BuildFallbackConnectionString(SqlConnectionStringBuilder builder, bool usesIntegratedSecurity)
+    {
+        if (!usesIntegratedSecurity)
+        {
+            return null;
+        }
+
+        if (string.IsNullOrWhiteSpace(UserId) || string.IsNullOrEmpty(Password))
+        {
+            return null;
+        }
+
+        var fallbackBuilder = new SqlConnectionStringBuilder(builder.ConnectionString)
+        {
+            UserID = UserId,
+            Password = Password,
+            IntegratedSecurity = false
+        };
+
+        return fallbackBuilder.ConnectionString;
+    }
 }
+
+public sealed record DatabaseConnectionConfiguration(string ConnectionString, string? FallbackConnectionString, bool UsesIntegratedSecurity);
