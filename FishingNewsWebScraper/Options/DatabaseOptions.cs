@@ -61,13 +61,13 @@ public sealed class DatabaseOptions
                 builder.TrustServerCertificate = TrustServerCertificate;
             }
 
-            var usesIntegratedSecurity = builder.IntegratedSecurity;
-            var fallbackConnectionString = BuildFallbackConnectionString(builder, usesIntegratedSecurity);
+            var builderUsesIntegratedSecurity = builder.IntegratedSecurity;
+            var builderFallbackConnectionString = BuildFallbackConnectionString(builder, builderUsesIntegratedSecurity);
 
             return new DatabaseConnectionConfiguration(
                 builder.ConnectionString,
-                fallbackConnectionString,
-                usesIntegratedSecurity);
+                builderFallbackConnectionString,
+                builderUsesIntegratedSecurity);
         }
 
         if (string.IsNullOrWhiteSpace(Server))
