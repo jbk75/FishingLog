@@ -74,7 +74,7 @@ public sealed class DatabaseOptions
             throw new InvalidOperationException("Database name is not configured. Provide Database:ConnectionString or Database:Database.");
         }
 
-        var builder = new SqlConnectionStringBuilder
+        var connectionBuilder = new SqlConnectionStringBuilder
         {
             DataSource = Server,
             InitialCatalog = Database,
@@ -88,14 +88,14 @@ public sealed class DatabaseOptions
                 throw new InvalidOperationException("Integrated security requires Windows. Disable Database:UseIntegratedSecurity or provide Database:ConnectionString for SQL authentication.");
             }
 
-            builder.IntegratedSecurity = true;
+            connectionBuilder.IntegratedSecurity = true;
         }
         else
         {
-            ApplySqlAuthentication(builder);
+            ApplySqlAuthentication(connectionBuilder);
         }
 
-        return builder.ConnectionString;
+        return connectionBuilder.ConnectionString;
     }
 
     private void ApplySqlAuthentication(SqlConnectionStringBuilder builder, bool requiredForNonWindows = false)
