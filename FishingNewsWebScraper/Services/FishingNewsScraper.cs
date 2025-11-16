@@ -159,7 +159,15 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
             try
             {
                 var response = await client.GetAsync(currentUrl, cancellationToken);
-                response.EnsureSuccessStatusCode();
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogWarning(
+                        "Skipping source page {Url} for {Name} because it returned status code {StatusCode}.",
+                        currentUrl,
+                        source.Name,
+                        (int)response.StatusCode);
+                    continue;
+                }
 
                 var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
@@ -222,6 +230,11 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
                 continue;
             }
 
+            if (!IsHttpOrHttps(uri))
+            {
+                continue;
+            }
+
             if (!string.Equals(uri.Host, rootHost, StringComparison.OrdinalIgnoreCase))
             {
                 continue;
@@ -238,6 +251,10 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
 
         return links;
     }
+
+    private static bool IsHttpOrHttps(Uri uri) =>
+        string.Equals(uri.Scheme, Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase);
 
     private IReadOnlyList<FishingNewsRecord> ParseHtmlContent(ScraperSourceOptions source, HtmlDocument document, DateTime fromDate, string pageUrl)
     {
