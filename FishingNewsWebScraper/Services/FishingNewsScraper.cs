@@ -36,12 +36,20 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
         var client = _httpClientFactory.CreateClient();
         var records = new List<FishingNewsRecord>();
 
+        _logger.LogInformation(
+            "Scraping {SourceCount} configured sources and {SocialSourceCount} social feeds newer than {FromDate}.",
+            _options.Sources.Count,
+            _options.SocialMediaSources.Count,
+            fromDate.ToString("yyyy-MM-dd"));
+
         foreach (var source in _options.Sources)
         {
             try
             {
+                _logger.LogInformation("Scraping source {Name} ({Url}).", source.Name, source.Url);
                 var sourceRecords = await ScrapeSourceAsync(client, source, fromDate, cancellationToken);
                 records.AddRange(sourceRecords);
+                _logger.LogInformation("Finished source {Name}, found {RecordCount} records.", source.Name, sourceRecords.Count);
             }
             catch (Exception ex)
             {
@@ -62,6 +70,11 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
 
                 try
                 {
+                    _logger.LogInformation(
+                        "Scraping social source {Platform} for query {Query} using {Url}.",
+                        socialSource.Platform,
+                        query,
+                        searchUrl);
                     var response = await client.GetAsync(searchUrl, cancellationToken);
                     response.EnsureSuccessStatusCode();
 
@@ -69,6 +82,11 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
                     var candidates = ParseSocialMediaContent(socialSource, query, searchUrl, content, fromDate);
 
                     records.AddRange(candidates);
+                    _logger.LogInformation(
+                        "Finished social scrape for {Platform} query {Query}, found {RecordCount} records.",
+                        socialSource.Platform,
+                        query,
+                        candidates.Count);
                 }
                 catch (Exception ex)
                 {
@@ -77,6 +95,7 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
             }
         }
 
+        _logger.LogInformation("Completed scraping run with {TotalRecords} total records.", records.Count);
         return records;
     }
 
