@@ -8,43 +8,45 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 
-var builder = Host.CreateApplicationBuilder(args);
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureAppConfiguration((hostingContext, config) =>
+    {
+        config
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables();
+    })
+    .UseSerilog((context, services, configuration) =>
+    {
+        var logDirectory = Path.Combine(AppContext.BaseDirectory, "Logs");
+        Directory.CreateDirectory(logDirectory);
 
-builder.Host.UseSerilog((context, services, configuration) =>
-{
-    var logDirectory = Path.Combine(AppContext.BaseDirectory, "Logs");
-    Directory.CreateDirectory(logDirectory);
+        configuration
+            .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services)
+            .Enrich.FromLogContext()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("System", LogEventLevel.Warning)
+            .WriteTo.Console()
+            .WriteTo.File(
+                Path.Combine(logDirectory, "fishingnews.log"),
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 14,
+                shared: true);
+    })
+    .ConfigureServices((context, services) =>
+    {
+        services.Configure<ScraperOptions>(context.Configuration.GetSection("Scraper"));
+        services.Configure<WeatherOptions>(context.Configuration.GetSection("Weather"));
+        services.Configure<DatabaseOptions>(context.Configuration.GetSection("Database"));
 
-    configuration
-        .ReadFrom.Configuration(context.Configuration)
-        .ReadFrom.Services(services)
-        .Enrich.FromLogContext()
-        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-        .MinimumLevel.Override("System", LogEventLevel.Warning)
-        .WriteTo.Console()
-        .WriteTo.File(
-            Path.Combine(logDirectory, "fishingnews.log"),
-            rollingInterval: RollingInterval.Day,
-            retainedFileCountLimit: 14,
-            shared: true);
-});
-
-builder.Configuration
-    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables();
-
-builder.Services.Configure<ScraperOptions>(builder.Configuration.GetSection("Scraper"));
-builder.Services.Configure<WeatherOptions>(builder.Configuration.GetSection("Weather"));
-builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("Database"));
-
-builder.Services.AddHttpClient();
-builder.Services.AddSingleton<IFishingNewsRepository, SqlFishingNewsRepository>();
-builder.Services.AddSingleton<IImageDownloader, ImageDownloader>();
-builder.Services.AddSingleton<IWeatherObservationService, OpenMeteoWeatherObservationService>();
-builder.Services.AddSingleton<IFishingNewsScraper, FishingNewsScraper>();
-builder.Services.AddHostedService<ScraperWorker>();
-
-var host = builder.Build();
+        services.AddHttpClient();
+        services.AddSingleton<IFishingNewsRepository, SqlFishingNewsRepository>();
+        services.AddSingleton<IImageDownloader, ImageDownloader>();
+        services.AddSingleton<IWeatherObservationService, OpenMeteoWeatherObservationService>();
+        services.AddSingleton<IFishingNewsScraper, FishingNewsScraper>();
+        services.AddHostedService<ScraperWorker>();
+    })
+    .Build();
 
 await host.RunAsync();
