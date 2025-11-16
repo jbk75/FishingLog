@@ -11,7 +11,8 @@ using Microsoft.Extensions.Options;
 namespace FishingNewsWebScraper.Services;
 
 public sealed class FishingNewsScraper : IFishingNewsScraper
-{
+{   
+    private const int MaxHtmlDepth = 2;
     private static readonly Regex DateRegex = new("(\\d{4})[-/.](\\d{1,2})[-/.](\\d{1,2})", RegexOptions.Compiled);
     private static readonly Regex TimeRegex = new("(\\d{1,2}[:.][0-5]\\d)", RegexOptions.Compiled);
     private static readonly Regex IntegerRegex = new("\\b(\\d{1,3})\\b", RegexOptions.Compiled);
@@ -39,16 +40,8 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
         {
             try
             {
-                var response = await client.GetAsync(source.Url, cancellationToken);
-                response.EnsureSuccessStatusCode();
-
-                var content = await response.Content.ReadAsStringAsync(cancellationToken);
-
-                var candidates = content.Contains("<rss", StringComparison.OrdinalIgnoreCase)
-                    ? ParseRssContent(source, content, fromDate)
-                    : ParseHtmlContent(source, content, fromDate);
-
-                records.AddRange(candidates);
+                var sourceRecords = await ScrapeSourceAsync(client, source, fromDate, cancellationToken);
+                records.AddRange(sourceRecords);
             }
             catch (Exception ex)
             {
@@ -126,11 +119,110 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
         return results;
     }
 
-    private IReadOnlyList<FishingNewsRecord> ParseHtmlContent(ScraperSourceOptions source, string content, DateTime fromDate)
+    private async Task<IReadOnlyList<FishingNewsRecord>> ScrapeSourceAsync(HttpClient client, ScraperSourceOptions source, DateTime fromDate, CancellationToken cancellationToken)
     {
         var results = new List<FishingNewsRecord>();
-        var document = new HtmlDocument();
-        document.LoadHtml(content);
+        var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var queue = new Queue<(string Url, int Depth)>();
+        queue.Enqueue((source.Url, 0));
+        var rootHost = Uri.TryCreate(source.Url, UriKind.Absolute, out var rootUri)
+            ? rootUri.Host
+            : null;
+
+        while (queue.Count > 0)
+        {
+            var (currentUrl, depth) = queue.Dequeue();
+            if (!visited.Add(currentUrl))
+            {
+                continue;
+            }
+
+            try
+            {
+                var response = await client.GetAsync(currentUrl, cancellationToken);
+                response.EnsureSuccessStatusCode();
+
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+                if (IsRssContent(content))
+                {
+                    results.AddRange(ParseRssContent(source, content, fromDate));
+                    continue;
+                }
+
+                var document = new HtmlDocument();
+                document.LoadHtml(content);
+                results.AddRange(ParseHtmlContent(source, document, fromDate, currentUrl));
+
+                if (depth >= MaxHtmlDepth || rootHost is null)
+                {
+                    continue;
+                }
+
+                foreach (var link in ExtractChildLinks(document, currentUrl, rootHost))
+                {
+                    if (!visited.Contains(link))
+                    {
+                        queue.Enqueue((link, depth + 1));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to download or parse source page {Url} for {Name}.", currentUrl, source.Name);
+            }
+        }
+
+        return results;
+    }
+
+    private static bool IsRssContent(string content) =>
+        content.Contains("<rss", StringComparison.OrdinalIgnoreCase) ||
+        content.Contains("<feed", StringComparison.OrdinalIgnoreCase);
+
+    private static IReadOnlyList<string> ExtractChildLinks(HtmlDocument document, string currentUrl, string rootHost)
+    {
+        var anchors = document.DocumentNode.SelectNodes("//a[@href]");
+        if (anchors is null)
+        {
+            return Array.Empty<string>();
+        }
+
+        var links = new List<string>();
+        foreach (var anchor in anchors)
+        {
+            var href = anchor.GetAttributeValue("href", null);
+            if (string.IsNullOrWhiteSpace(href))
+            {
+                continue;
+            }
+
+            var resolved = ResolveLink(currentUrl, href);
+            if (!Uri.TryCreate(resolved, UriKind.Absolute, out var uri))
+            {
+                continue;
+            }
+
+            if (!string.Equals(uri.Host, rootHost, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            var normalized = uri.GetLeftPart(UriPartial.Path);
+            if (!string.IsNullOrEmpty(uri.Query))
+            {
+                normalized += uri.Query;
+            }
+
+            links.Add(normalized);
+        }
+
+        return links;
+    }
+
+    private IReadOnlyList<FishingNewsRecord> ParseHtmlContent(ScraperSourceOptions source, HtmlDocument document, DateTime fromDate, string pageUrl)
+    {
+        var results = new List<FishingNewsRecord>();
         var nodes = !string.IsNullOrWhiteSpace(source.Query)
             ? document.DocumentNode.SelectNodes(source.Query)
             : document.DocumentNode.SelectNodes("//article") ?? document.DocumentNode.SelectNodes("//div[contains(@class,'news')]");
@@ -161,7 +253,7 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
 
             var anchor = node.SelectSingleNode(".//a[@href]");
             var link = anchor is null ? null : anchor.GetAttributeValue("href", string.Empty);
-            var record = BuildRecordFromText(source.Name, text, published, ResolveLink(source.Url, link));
+            var record = BuildRecordFromText(source.Name, text, published, ResolveLink(pageUrl, link));
 
             var imageNodes = node.SelectNodes(".//img[@src]");
             if (imageNodes is not null)
