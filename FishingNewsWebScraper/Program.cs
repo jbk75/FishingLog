@@ -1,12 +1,33 @@
+using System.IO;
 using FishingNewsWebScraper.Infrastructure;
 using FishingNewsWebScraper.Options;
 using FishingNewsWebScraper.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 
 var builder = Host.CreateApplicationBuilder(args);
+
+builder.Host.UseSerilog((context, services, configuration) =>
+{
+    var logDirectory = Path.Combine(AppContext.BaseDirectory, "Logs");
+    Directory.CreateDirectory(logDirectory);
+
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+        .MinimumLevel.Override("System", LogEventLevel.Warning)
+        .WriteTo.Console()
+        .WriteTo.File(
+            Path.Combine(logDirectory, "fishingnews.log"),
+            rollingInterval: RollingInterval.Day,
+            retainedFileCountLimit: 14,
+            shared: true);
+});
 
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -23,8 +44,6 @@ builder.Services.AddSingleton<IImageDownloader, ImageDownloader>();
 builder.Services.AddSingleton<IWeatherObservationService, OpenMeteoWeatherObservationService>();
 builder.Services.AddSingleton<IFishingNewsScraper, FishingNewsScraper>();
 builder.Services.AddHostedService<ScraperWorker>();
-
-builder.Logging.AddConsole();
 
 var host = builder.Build();
 

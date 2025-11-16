@@ -24,6 +24,7 @@ public sealed class ImageDownloader : IImageDownloader
     {
         if (record.Images.Count == 0)
         {
+            _logger.LogInformation("Skipping image download for news {NewsId} because there are no images.", newsId);
             return;
         }
 
@@ -34,6 +35,12 @@ public sealed class ImageDownloader : IImageDownloader
         Directory.CreateDirectory(basePath);
 
         var client = _httpClientFactory.CreateClient();
+
+        _logger.LogInformation(
+            "Downloading {ImageCount} images for news {NewsId} into {Directory}.",
+            record.Images.Count,
+            newsId,
+            basePath);
 
         for (var index = 0; index < record.Images.Count; index++)
         {
@@ -46,6 +53,13 @@ public sealed class ImageDownloader : IImageDownloader
                 await using var fileStream = File.Create(path);
                 await responseStream.CopyToAsync(fileStream, cancellationToken);
                 image.LocalPath = path;
+                _logger.LogInformation(
+                    "Downloaded image {Index}/{Total} for news {NewsId} from {Uri} to {Path}.",
+                    index + 1,
+                    record.Images.Count,
+                    newsId,
+                    image.SourceUri,
+                    path);
             }
             catch (Exception ex)
             {

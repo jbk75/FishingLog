@@ -41,6 +41,7 @@ public sealed class SqlFishingNewsRepository : IFishingNewsRepository
 
         if (existingId.HasValue)
         {
+            _logger.LogInformation("Found existing fishing place {Name} with id {Id}.", place.Name, existingId.Value);
             return existingId.Value;
         }
 
@@ -136,6 +137,11 @@ public sealed class SqlFishingNewsRepository : IFishingNewsRepository
         }
 
         await transaction.CommitAsync(cancellationToken);
+
+        _logger.LogInformation(
+            "Persisted {Count} weather observations for fishing news {NewsId}.",
+            weatherDetails.Count,
+            fishingNewsId);
     }
 
     public async Task UpsertImagesAsync(int fishingNewsId, IReadOnlyCollection<FishingNewsImage> images, CancellationToken cancellationToken)
@@ -171,6 +177,11 @@ public sealed class SqlFishingNewsRepository : IFishingNewsRepository
         }
 
         await transaction.CommitAsync(cancellationToken);
+
+        _logger.LogInformation(
+            "Persisted {Count} images for fishing news {NewsId}.",
+            images.Count,
+            fishingNewsId);
     }
 
     private static int InferFishingPlaceType(string name)

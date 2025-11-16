@@ -58,6 +58,10 @@ public sealed class ScraperWorker : BackgroundService
 
             try
             {
+                _logger.LogInformation(
+                    "Persisting news for {Place} on {Date}.",
+                    record.FishingPlace.Name,
+                    record.Date);
                 var placeId = await _repository.EnsureFishingPlaceAsync(record.FishingPlace, stoppingToken);
                 record.FishingPlaceId = placeId;
 
@@ -82,6 +86,12 @@ public sealed class ScraperWorker : BackgroundService
                     await _imageDownloader.DownloadAsync(newsId, record, stoppingToken);
                     await _repository.UpsertImagesAsync(newsId, record.Images, stoppingToken);
                 }
+
+                _logger.LogInformation(
+                    "Finished persisting news {NewsId} for {Place} on {Date}.",
+                    newsId,
+                    record.FishingPlace.Name,
+                    record.Date);
             }
             catch (Exception ex)
             {

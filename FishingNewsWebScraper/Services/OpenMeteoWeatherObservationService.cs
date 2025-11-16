@@ -49,11 +49,22 @@ public sealed class OpenMeteoWeatherObservationService : IWeatherObservationServ
 
         try
         {
+            _logger.LogInformation(
+                "Fetching weather observations for {Place} ({Lat},{Lon}) on {Date}.",
+                record.FishingPlace.Name,
+                latitude,
+                longitude,
+                date);
             using var response = await client.GetAsync(observationUrl, cancellationToken);
             response.EnsureSuccessStatusCode();
             await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
             using var document = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
             var details = ParseWeather(document, record);
+
+            _logger.LogInformation(
+                "Retrieved {Count} hourly weather entries for {Place}.",
+                details.Count,
+                record.FishingPlace.Name);
 
             if (!string.IsNullOrWhiteSpace(_options.TideEndpointTemplate))
             {
