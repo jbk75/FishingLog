@@ -9,37 +9,38 @@ public sealed class DatabaseOptions
     /// Raw connection string that, when provided, is used as-is.
     /// </summary>
     public string? ConnectionString { get; set; }
+        = "Data Source=localhost,1433;Initial Catalog=fishinglogg;User ID=SA;Password=YourStrong!Passw0rd;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False";
 
     /// <summary>
     /// Optional SQL Server host name.
     /// </summary>
-    public string? Server { get; set; }
+    public string? Server { get; set; } = "localhost,1433";
 
     /// <summary>
     /// Optional SQL Server database name.
     /// </summary>
-    public string? Database { get; set; }
+    public string? Database { get; set; } = "fishinglogg";
 
     /// <summary>
     /// Controls whether to use integrated security/Windows authentication.
     /// </summary>
-    public bool UseIntegratedSecurity { get; set; } = true;
+    public bool UseIntegratedSecurity { get; set; } = false;
 
     /// <summary>
     /// SQL login user id when <see cref="UseIntegratedSecurity"/> is <c>false</c>.
     /// </summary>
-    public string? UserId { get; set; }
+    public string? UserId { get; set; } = "SA";
 
     /// <summary>
     /// SQL login password when <see cref="UseIntegratedSecurity"/> is <c>false</c>.
     /// </summary>
-    public string? Password { get; set; }
+    public string? Password { get; set; } = "YourStrong!Passw0rd";
 
     /// <summary>
     /// Controls the TrustServerCertificate setting when building the connection string.
     /// Defaults to <c>true</c> to match the previous behaviour.
     /// </summary>
-    public bool TrustServerCertificate { get; set; } = true;
+    public bool TrustServerCertificate { get; set; } = false;
 
     public DatabaseConnectionConfiguration BuildConnectionConfiguration()
     {
