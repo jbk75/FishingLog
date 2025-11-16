@@ -27,7 +27,7 @@ var host = Host.CreateDefaultBuilder(args)
             .Enrich.FromLogContext()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("System", LogEventLevel.Warning)
-            .WriteTo.Console()
+            .WriteTo.Sink(new ConsoleLogEventSink())
             .WriteTo.File(
                 Path.Combine(logDirectory, "fishingnews.log"),
                 rollingInterval: RollingInterval.Day,
