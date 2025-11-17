@@ -16,6 +16,7 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
     private static readonly Regex DateRegex = new("(\\d{4})[-/.](\\d{1,2})[-/.](\\d{1,2})", RegexOptions.Compiled);
     private static readonly Regex TimeRegex = new("(\\d{1,2}[:.][0-5]\\d)", RegexOptions.Compiled);
     private static readonly Regex IntegerRegex = new("\\b(\\d{1,3})\\b", RegexOptions.Compiled);
+    private static readonly Regex LengthRegex = new("(?<!\\d)(\\d{2,3}(?:[.,]\\d+)?)\\s*(?:cm|sm)\\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ScraperOptions _options;
@@ -240,12 +241,11 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
                 continue;
             }
 
+            // Normalize by trimming query string parameters and fragments so that we only
+            // crawl the canonical path for an article. Some sources append tracking
+            // parameters (e.g. "?share=reddit") that would otherwise cause duplicate
+            // entries and unnecessary crawling.
             var normalized = uri.GetLeftPart(UriPartial.Path);
-            if (!string.IsNullOrEmpty(uri.Query))
-            {
-                normalized += uri.Query;
-            }
-
             links.Add(normalized);
         }
 
@@ -370,7 +370,7 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
     {
         var record = new FishingNewsRecord
         {
-            Date = DateOnly.FromDateTime(published),
+            Date = DetermineCatchDate(text, published),
             FishingPlace = placeOverride ?? new FishingPlaceDetails
             {
                 Name = sourceName
@@ -400,6 +400,8 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
 
         record.NumberOfFishesCaught = ExtractNumberNearKeywords(text, ["caught", "veiddist", "landaði", "fiskar"]);
         record.NumberOfFishesSeen = ExtractNumberNearKeywords(text, ["saw", "sást", "spotted", "fish seen"]);
+
+        PopulateCatchDetails(record, text);
 
         return record;
     }
@@ -532,6 +534,65 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
                 {
                     return number;
                 }
+            }
+        }
+
+        return null;
+    }
+
+    private DateOnly DetermineCatchDate(string text, DateTime published)
+    {
+        var publishedDate = DateOnly.FromDateTime(published);
+        foreach (Match match in DateRegex.Matches(text))
+        {
+            if (DateTime.TryParse(match.Value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var parsed))
+            {
+                var candidate = DateOnly.FromDateTime(parsed);
+                if (candidate <= publishedDate)
+                {
+                    return candidate;
+                }
+            }
+        }
+
+        return publishedDate;
+    }
+
+    private void PopulateCatchDetails(FishingNewsRecord record, string text)
+    {
+        foreach (Match match in LengthRegex.Matches(text))
+        {
+            if (!decimal.TryParse(match.Groups[1].Value.Replace(',', '.'), NumberStyles.Number, CultureInfo.InvariantCulture, out var lengthCm))
+            {
+                continue;
+            }
+
+            if (record.CatchDetails.Any(detail => detail.LengthCm == lengthCm))
+            {
+                continue;
+            }
+
+            var species = InferSpeciesNearIndex(text, match.Index) ?? record.FishSpecies.FirstOrDefault() ?? "Unknown";
+
+            record.CatchDetails.Add(new FishCatchDetail
+            {
+                Species = species,
+                LengthCm = lengthCm
+            });
+        }
+    }
+
+    private string? InferSpeciesNearIndex(string text, int index)
+    {
+        var start = Math.Max(0, index - 40);
+        var length = Math.Min(text.Length - start, 80);
+        var window = text.Substring(start, length);
+
+        foreach (var keyword in _options.FishKeywords)
+        {
+            if (window.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+            {
+                return keyword;
             }
         }
 
