@@ -12,7 +12,7 @@ namespace FishingNewsWebScraper.Services;
 
 public sealed class FishingNewsScraper : IFishingNewsScraper
 {   
-    private const int MaxHtmlDepth = 2;
+    private const int MaxHtmlDepth = 5;
     private static readonly Regex DateRegex = new("(\\d{4})[-/.](\\d{1,2})[-/.](\\d{1,2})", RegexOptions.Compiled);
     private static readonly Regex TimeRegex = new("(\\d{1,2}[:.][0-5]\\d)", RegexOptions.Compiled);
     private static readonly Regex IntegerRegex = new("\\b(\\d{1,3})\\b", RegexOptions.Compiled);
