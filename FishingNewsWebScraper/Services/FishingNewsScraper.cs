@@ -241,12 +241,11 @@ public sealed class FishingNewsScraper : IFishingNewsScraper
                 continue;
             }
 
+            // Normalize by trimming query string parameters and fragments so that we only
+            // crawl the canonical path for an article. Some sources append tracking
+            // parameters (e.g. "?share=reddit") that would otherwise cause duplicate
+            // entries and unnecessary crawling.
             var normalized = uri.GetLeftPart(UriPartial.Path);
-            if (!string.IsNullOrEmpty(uri.Query))
-            {
-                normalized += uri.Query;
-            }
-
             links.Add(normalized);
         }
 
