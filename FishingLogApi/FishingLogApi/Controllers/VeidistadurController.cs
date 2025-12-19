@@ -46,7 +46,7 @@ public class VeidistadurController : ControllerBase
 
         try
         {
-            int newId = VeidistadurRepository.AddVeidistadur(model);
+            int newId = _repository.AddVeidistadur(model);
 
             _logger.LogInformation($"Veidistadur '{model.Name}' created with ID {newId}");
 
@@ -55,7 +55,7 @@ public class VeidistadurController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while adding Veidistadur");
-            return StatusCode(500, "An error occurred while saving the veiðistaður.");
+            return StatusCode(500, "An error occurred while saving the veiÃ°istaÃ°ur.");
         }
     }
 }

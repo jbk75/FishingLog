@@ -11,13 +11,16 @@ namespace FishingLogApi.Controllers;
 public class FishingPlaceWishlistController : ControllerBase
 {
     private readonly FishingPlaceWishlistRepository _wishlistRepository;
+    private readonly VeidistadurRepository _veidistadurRepository;
     private readonly ILogger<FishingPlaceWishlistController> _logger;
 
     public FishingPlaceWishlistController(
         FishingPlaceWishlistRepository wishlistRepository,
+        VeidistadurRepository veidistadurRepository,
         ILogger<FishingPlaceWishlistController> logger)
     {
         _wishlistRepository = wishlistRepository;
+        _veidistadurRepository = veidistadurRepository;
         _logger = logger;
     }
 
@@ -61,7 +64,7 @@ public class FishingPlaceWishlistController : ControllerBase
             // Create new fishing place if needed
             if (fishingPlaceId == 0 && !string.IsNullOrWhiteSpace(request.FishingPlaceName))
             {
-                FishingPlace? existing = VeidistadurRepository.GetByName(request.FishingPlaceName);
+                FishingPlace? existing = _veidistadurRepository.GetByName(request.FishingPlaceName);
                 if (existing != null)
                 {
                     fishingPlaceId = existing.Id;
@@ -75,7 +78,7 @@ public class FishingPlaceWishlistController : ControllerBase
                         Description = request.Description ?? string.Empty
                     };
 
-                    fishingPlaceId = VeidistadurRepository.AddVeidistadur(newPlace);
+                    fishingPlaceId = _veidistadurRepository.AddVeidistadur(newPlace);
                     if (fishingPlaceId <= 0)
                     {
                         return StatusCode(500, "Failed to create fishing place.");
@@ -96,7 +99,7 @@ public class FishingPlaceWishlistController : ControllerBase
                 return StatusCode(500, "Failed to save wishlist item.");
             }
 
-            FishingPlace? fishingPlace = VeidistadurRepository.GetById(fishingPlaceId);
+            FishingPlace? fishingPlace = _veidistadurRepository.GetById(fishingPlaceId);
 
             item.Id = newId;
             item.FishingPlaceName = fishingPlace?.Name ?? request.FishingPlaceName ?? string.Empty;
