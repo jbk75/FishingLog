@@ -70,6 +70,7 @@
   <ItemGroup>
     <Content Include="Dal.js" />
     <Content Include="Dates.js" />
+    <Content Include="FishingPlaceSpots.html" />
     <Content Include="FishingPlaces.html" />
     <Content Include="packages.config">
       <SubType>Designer</SubType>
@@ -105,6 +106,7 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\font-awesome.min.css" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\FishingPlaceSpots.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\scripts.js" />
     <Content Include="Scripts\style.css" />
