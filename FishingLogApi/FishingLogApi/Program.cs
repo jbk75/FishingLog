@@ -51,6 +51,7 @@ builder.Logging.AddDebug();
 builder.Services.AddScoped<TripRepository>();
 builder.Services.AddScoped<VeidistadurRepository>();
 builder.Services.AddScoped<FishingPlaceSpotRepository>();
+builder.Services.AddScoped<FishingPlaceWishlistRepository>();
 //builder.Services.AddScoped<VeidiferdirRepository>();
 
 WebApplication app = builder.Build();
