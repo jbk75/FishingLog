@@ -179,6 +179,20 @@ body
     flex-wrap: wrap;
 }
 
+/*calendar header background color*/
+.calendar .calendar-header {
+	background-color: #8dd3b7;
+	color: white;
+	border: 0;
+}
+
+/*month header background color*/
+.calendar table.month .month-title {
+	background-color: green;
+	color: white;
+	padding: 5px;
+}
+
 .center {
 	text-align:center;
 }
