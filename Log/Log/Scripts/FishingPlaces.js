@@ -4,11 +4,17 @@ $(document).ready(function () {
     $('#savePlaceBtn').on('click', function () {
         saveFishingPlace();
     });
+
+    $('#refreshPlacesBtn').on('click', function () {
+        loadFishingPlaces();
+    });
 });
 
 function loadFishingPlaces() {
     const listContainer = $('#placeList');
+    const placeCount = $('#placeCount');
     listContainer.html('<span class="fa fa-spinner fa-spin"></span>');
+    placeCount.text('0');
 
     $.ajax({
         url: APIBaseUrl + 'veidistadur',
@@ -19,6 +25,8 @@ function loadFishingPlaces() {
                 listContainer.html('<p>No fishing places found.</p>');
                 return;
             }
+
+            placeCount.text(data.length);
 
             const table = $('<table class="table table-striped table-bordered"></table>');
             const thead = $('<thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>');
@@ -38,6 +46,7 @@ function loadFishingPlaces() {
         },
         error: function () {
             listContainer.html('<p class="text-danger">Unable to load fishing places.</p>');
+            placeCount.text('0');
         }
     });
 }
