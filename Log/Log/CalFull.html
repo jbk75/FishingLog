@@ -43,8 +43,14 @@
 
                 <div class="sub-content">
                     <div class="panel panel-default" style="margin:10px;">
-                        <div class="panel-heading"><b>Fishing Calendar</b> - <button onclick="location.href='FishingPlaces.html'">Fishing places list</button> <button onclick="location.href='FishingPlaceSpots.html'">Fishing place spots</button></div>
-                        <div class="panel-heading"><b>Fishing Calendar</b> - <button onclick="location.href='fishingplaces.html'">Fishing places list</button> <button onclick="location.href='FishingPlaceWishlist.html'">Fishing place wishlist</button></div>
+                        <div class="panel-heading calendar-menu">
+                            <span class="calendar-menu__title"><b>Fishing Calendar</b> -</span>
+                            <div class="calendar-menu__actions">
+                                <button class="btn btn-default" onclick="location.href='FishingPlaces.html'">Fishing places list</button>
+                                <button class="btn btn-default" onclick="location.href='FishingPlaceSpots.html'">Fishing place spots</button>
+                                <button class="btn btn-default" onclick="location.href='FishingPlaceWishlist.html'">Fishing place wishlist</button>
+                            </div>
+                        </div>
                         <div class="panel-body">
                             <div class="row" style="margin-bottom: 10px;">
                                 <div class="col-xs-12">
@@ -153,6 +159,7 @@
                     </div>
 
                     <style>
+
                         .event-tooltip-content:not(:last-child) {
                             border-bottom: 1px solid #ddd;
                             padding-bottom: 5px;
@@ -171,6 +178,10 @@
                             width: 50%;
                             min-width: 140px;
                             display: inline-block;
+                        }
+
+                        .calendar .day.has-event .day-content {
+                            font-weight: 700;
                         }
                     </style>
                     <script type="text/javascript" class="publish">
@@ -333,6 +344,53 @@
                             });
                         }
 
+                        function updateNavigationIcons(calendarElement) {
+                            const iconMap = [
+                                { selector: '.calendar-header .prev span', classes: 'fa fa-chevron-left' },
+                                { selector: '.calendar-header .next span', classes: 'fa fa-chevron-right' }
+                            ];
+
+                            iconMap.forEach(function (icon) {
+                                const iconElement = calendarElement.find(icon.selector);
+
+                                if (iconElement.length) {
+                                    iconElement.removeClass();
+                                    iconElement.addClass(icon.classes);
+                                    iconElement.attr('aria-hidden', 'true');
+                                }
+                            });
+                        }
+
+                        function emphasizeEventDays(calendarElement, calendarInstance) {
+                            if (!calendarElement || !calendarInstance) {
+                                return;
+                            }
+
+                            calendarElement.find('.day.has-event').removeClass('has-event');
+
+                            const year = calendarInstance.getYear();
+
+                            calendarElement.find('.month-container').each(function () {
+                                const monthId = $(this).data('month-id');
+
+                                $(this).find('.day-content').each(function () {
+                                    const dayContent = $(this);
+                                    const dayNumber = parseInt(dayContent.text(), 10);
+
+                                    if (isNaN(dayNumber)) {
+                                        return;
+                                    }
+
+                                    const currentDate = new Date(year, monthId, dayNumber);
+                                    const events = calendarInstance.getEvents(currentDate);
+
+                                    if (events.length > 0) {
+                                        dayContent.closest('.day').addClass('has-event');
+                                    }
+                                });
+                            });
+                        }
+
                         $(function () {
                             GetVeidiferdir();
 
@@ -347,6 +405,12 @@
                                 enableContextMenu: true,
                                 enableRangeSelection: true,
                                 renderEnd: function () { toggleFishingMonths(); },
+                                renderEnd: function () {
+                                    const calendarElement = $('#calendar');
+                                    const calendarInstance = calendarElement.data('calendar');
+                                    updateNavigationIcons(calendarElement);
+                                    emphasizeEventDays(calendarElement, calendarInstance);
+                                },
                                 contextMenuItems: [
                                     {
                                         text: 'Update',

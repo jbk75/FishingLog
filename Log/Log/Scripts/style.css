@@ -166,6 +166,19 @@ body
     height: 40px;
 }
 
+.calendar-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.calendar-menu__actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
 .center {
 	text-align:center;
 }
