@@ -28,18 +28,15 @@
         <div class="sub-content">
             <div class="panel panel-default" style="margin:10px;">
                 <div class="panel-heading calendar-menu">
-                    <div class="row">
-                        <div class="col-sm-6 col-xs-12">
-                            <span class="calendar-menu__title"><b>Fishing places</b></span>
-                            <div class="text-muted" style="margin-top: 4px;">Add new locations and browse everything already saved in the database.</div>
-                        </div>
-                        <div class="col-sm-6 col-xs-12 text-left calendar-menu__actions" style="margin-top: 5px;">
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button class="btn btn-default" onclick="location.href='CalFull.html'">Fishing calendar</button>
-                                <button class="btn btn-default" onclick="location.href='FishingPlaceSpots.html'">Fishing place spots</button>
-                                <button class="btn btn-default" onclick="location.href='FishingPlaceWishlist.html'">Fishing place wishlist</button>
-                            </div>
-                        </div>
+                    <div class="calendar-menu__title">
+                        <span class="calendar-menu__title-text"><b>Fishing places</b></span>
+                        <span class="calendar-menu__subtitle">Add new locations and browse everything already saved in the database.</span>
+                    </div>
+                    <div class="calendar-menu__actions btn-group btn-group-sm" role="group" aria-label="Navigation">
+                        <button class="btn btn-default" onclick="location.href='CalFull.html'">Fishing calendar</button>
+                        <button class="btn btn-default active" onclick="location.href='FishingPlaces.html'">Fishing places list</button>
+                        <button class="btn btn-default" onclick="location.href='FishingPlaceSpots.html'">Fishing place spots</button>
+                        <button class="btn btn-default" onclick="location.href='FishingPlaceWishlist.html'">Fishing place wishlist</button>
                     </div>
                 </div>
                 <div class="panel-body">

@@ -1,11 +1,11 @@
 ﻿<html>
 <head>
-    <link rel="stylesheet" type="text/css" href="scripts/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="scripts/bootstrap-datepicker.min.css">
-    <link rel="stylesheet" type="text/css" href="scripts/bootstrap-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="scripts/bootstrap-year-calendar.min.css">
-    <link rel="stylesheet" type="text/css" href="scripts/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="scripts/style.css">
+    <link rel="stylesheet" type="text/css" href="Scripts/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="Scripts/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="Scripts/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="Scripts/bootstrap-year-calendar.min.css">
+    <link rel="stylesheet" type="text/css" href="Scripts/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="Scripts/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,13 +15,13 @@
     <title>Year calendar</title>
 
 
-    <script src="scripts/respond.min.js"></script>
-    <script src="scripts/jquery-1.10.2.min.js"></script>
-    <script src="scripts/bootstrap.min.js"></script>
-    <script src="scripts/bootstrap-datepicker.min.js"></script>
-    <script src="scripts/bootstrap-year-calendar.min.js"></script>
-    <script src="scripts/bootstrap-popover.js"></script>
-    <script src="scripts/scripts.js"></script>
+    <script src="Scripts/respond.min.js"></script>
+    <script src="Scripts/jquery-1.10.2.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script src="Scripts/bootstrap-datepicker.min.js"></script>
+    <script src="Scripts/bootstrap-year-calendar.min.js"></script>
+    <script src="Scripts/bootstrap-popover.js"></script>
+    <script src="Scripts/scripts.js"></script>
     <script src="Dal.js"></script>
     <script src="Dates.js"></script>
 </head>
@@ -46,8 +46,12 @@
                 <div class="sub-content">
                     <div class="panel panel-default" style="margin:10px;">
                         <div class="panel-heading calendar-menu">
-                            <span class="calendar-menu__title"><b>Fishing Calendar</b> -</span>
-                            <div class="calendar-menu__actions">
+                            <div class="calendar-menu__title">
+                                <span class="calendar-menu__title-text"><b>Fishing calendar</b></span>
+                                <span class="calendar-menu__subtitle">Plan trips and navigate across fishing places.</span>
+                            </div>
+                            <div class="calendar-menu__actions btn-group btn-group-sm" role="group" aria-label="Navigation">
+                                <button class="btn btn-default active" onclick="location.href='CalFull.html'">Fishing calendar</button>
                                 <button class="btn btn-default" onclick="location.href='FishingPlaces.html'">Fishing places list</button>
                                 <button class="btn btn-default" onclick="location.href='FishingPlaceSpots.html'">Fishing place spots</button>
                                 <button class="btn btn-default" onclick="location.href='FishingPlaceWishlist.html'">Fishing place wishlist</button>
