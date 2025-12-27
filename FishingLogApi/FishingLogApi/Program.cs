@@ -54,6 +54,7 @@ builder.Services.AddScoped<VeidistadurRepository>();
 builder.Services.AddScoped<FishingPlaceSpotRepository>();
 builder.Services.AddScoped<FishingPlaceWishlistRepository>();
 builder.Services.AddHttpClient<WeatherHistoryService>();
+builder.Services.AddSingleton<TideCalculator>();
 //builder.Services.AddScoped<VeidiferdirRepository>();
 
 WebApplication app = builder.Build();
