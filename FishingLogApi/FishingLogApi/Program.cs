@@ -1,4 +1,5 @@
 ﻿using FishingLogApi.DAL.Repositories;
+using FishingLogApi.Services;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +53,7 @@ builder.Services.AddScoped<TripRepository>();
 builder.Services.AddScoped<VeidistadurRepository>();
 builder.Services.AddScoped<FishingPlaceSpotRepository>();
 builder.Services.AddScoped<FishingPlaceWishlistRepository>();
+builder.Services.AddHttpClient<WeatherHistoryService>();
 //builder.Services.AddScoped<VeidiferdirRepository>();
 
 WebApplication app = builder.Build();
