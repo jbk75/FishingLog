@@ -204,6 +204,20 @@ body
     min-width: 150px;
 }
 
+.weather-history__controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.weather-month .panel-heading {
+    font-weight: bold;
+}
+
+.weather-month .table {
+    margin-bottom: 0;
+}
+
 /*calendar header background color*/
 .calendar .calendar-header {
 	background-color: #8dd3b7;
