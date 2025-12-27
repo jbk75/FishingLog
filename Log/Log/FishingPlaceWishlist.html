@@ -115,6 +115,19 @@
                 }
             });
 
+            $('#newFishingPlaceName').on('blur', function () {
+                var nameValue = $(this).val().trim().toLowerCase();
+                if (!nameValue) {
+                    return;
+                }
+
+                if (nameValue.indexOf('vatn') !== -1) {
+                    $('#fishingPlaceType').val('1');
+                } else if (nameValue.indexOf('á') !== -1) {
+                    $('#fishingPlaceType').val('2');
+                }
+            });
+
             $('#saveWishlist').on('click', function () {
                 saveWishlistItem();
             });
