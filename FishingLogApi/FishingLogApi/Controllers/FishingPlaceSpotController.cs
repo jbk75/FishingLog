@@ -19,11 +19,24 @@ public class FishingPlaceSpotController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<FishingPlaceSpotDto>> Get([FromQuery] int? fishingPlaceId)
+    public ActionResult<IEnumerable<FishingPlaceSpotDto>> GetAll()
     {
-        _logger.LogInformation("Fetching fishing place spots with filter {FishingPlaceId}", fishingPlaceId);
-        List<FishingPlaceSpotDto> spots = _repository.GetSpots(fishingPlaceId);
+        _logger.LogInformation("Fetching all fishing place spots");
+        List<FishingPlaceSpotDto> spots = _repository.GetSpots();
         return Ok(spots);
+    }
+
+    [HttpGet("{id:int}")]
+    public ActionResult<FishingPlaceSpotDto> GetById([FromRoute] int id)
+    {
+        _logger.LogInformation("Fetching fishing place spot {SpotId}", id);
+        FishingPlaceSpotDto? spot = _repository.GetSpotById(id);
+        if (spot == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(spot);
     }
 
     [HttpGet("exists")]
