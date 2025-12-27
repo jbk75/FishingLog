@@ -153,8 +153,12 @@ body
 .sub-content-container 
 {
 	display:table-cell;
-	padding-left:20px;
+	padding-left:0;
 	width:100%;
+}
+
+.main-panel {
+	margin:0;
 }
 
 .sub-content  > span.fa-spinner

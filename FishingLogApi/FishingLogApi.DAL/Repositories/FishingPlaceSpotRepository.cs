@@ -14,7 +14,7 @@ public class FishingPlaceSpotRepository
         _connectionString = configuration.GetConnectionString("DefaultConnection") ?? Constants.connectionString;
     }
 
-    public List<FishingPlaceSpotDto> GetSpots(int? fishingPlaceId)
+    public List<FishingPlaceSpotDto> GetSpots()
     {
         const string query = @"
 SELECT fps.Id,
@@ -25,17 +25,34 @@ SELECT fps.Id,
        fp.Name AS FishingPlaceName
 FROM FishingPlaceSpot fps
 INNER JOIN FishingPlace fp ON fp.Id = fps.FishingPlaceId
-WHERE (@fishingPlaceId IS NULL OR fps.FishingPlaceId = @fishingPlaceId)
 ORDER BY fp.Name ASC, fps.Name ASC";
 
         using SqlCommand cmd = new(query);
-        SqlParameter fishingPlaceParam = new("@fishingPlaceId", SqlDbType.Int)
-        {
-            Value = fishingPlaceId ?? (object)DBNull.Value
-        };
-        cmd.Parameters.Add(fishingPlaceParam);
+        return ReadSpots(DatabaseService.GetData(cmd, _connectionString));
+    }
 
-        DataTable dt = DatabaseService.GetData(cmd, _connectionString);
+    public FishingPlaceSpotDto? GetSpotById(int id)
+    {
+        const string query = @"
+SELECT fps.Id,
+       fps.FishingPlaceId,
+       fps.Name,
+       fps.Description,
+       fps.LastModified,
+       fp.Name AS FishingPlaceName
+FROM FishingPlaceSpot fps
+INNER JOIN FishingPlace fp ON fp.Id = fps.FishingPlaceId
+WHERE fps.Id = @id";
+
+        using SqlCommand cmd = new(query);
+        cmd.Parameters.AddWithValue("@id", id);
+
+        List<FishingPlaceSpotDto> spots = ReadSpots(DatabaseService.GetData(cmd, _connectionString));
+        return spots.FirstOrDefault();
+    }
+
+    private static List<FishingPlaceSpotDto> ReadSpots(DataTable dt)
+    {
         List<FishingPlaceSpotDto> spots = [];
 
         if (dt == null || dt.Rows.Count == 0)
