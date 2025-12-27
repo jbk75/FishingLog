@@ -96,7 +96,7 @@ public class FishingPlaceWishlistController : ControllerBase
             int newId = _wishlistRepository.AddWishlistItem(item);
             if (newId <= 0)
             {
-                return StatusCode(500, "Failed to save wishlist item.");
+                return StatusCode(500, "Failed to save wishlist item. Mabey it exists already, check the dropdown box, see if you find it there :)");
             }
 
             FishingPlace? fishingPlace = _veidistadurRepository.GetById(fishingPlaceId);
