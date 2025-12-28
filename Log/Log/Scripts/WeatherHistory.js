@@ -1,10 +1,30 @@
 $(function () {
     var currentYear = new Date().getFullYear();
     var yearSelect = $('#weatherYearSelect');
+    var stationSelect = $('#weatherStationSelect');
+
+    var weatherStations = [
+        { name: 'Reykjavík', latitude: 64.1466, longitude: -21.9426 },
+        { name: 'Akureyri', latitude: 65.6885, longitude: -18.1262 },
+        { name: 'Keflavík', latitude: 63.9850, longitude: -22.6056 },
+        { name: 'Ísafjörður', latitude: 66.0749, longitude: -23.1350 },
+        { name: 'Egilsstaðir', latitude: 65.2669, longitude: -14.3948 },
+        { name: 'Höfn', latitude: 64.2539, longitude: -15.2121 },
+        { name: 'Vestmannaeyjar', latitude: 63.4420, longitude: -20.2730 }
+    ];
 
     for (var year = currentYear; year >= 1970; year--) {
         yearSelect.append($('<option>', { value: year, text: year }));
     }
+
+    $.each(weatherStations, function (index, station) {
+        stationSelect.append($('<option>', {
+            value: index,
+            text: station.name,
+            'data-latitude': station.latitude,
+            'data-longitude': station.longitude
+        }));
+    });
 
     function renderWeatherHistory(data) {
         var container = $('#weatherHistoryContainer');
@@ -61,13 +81,16 @@ $(function () {
 
     function loadWeatherHistory() {
         var selectedYear = yearSelect.val();
+        var selectedStation = stationSelect.find('option:selected');
+        var latitude = selectedStation.data('latitude');
+        var longitude = selectedStation.data('longitude');
         $('#weatherHistoryContainer').html('<span class="fa fa-spinner fa-spin"></span>');
 
         $.ajax({
             url: APIBaseUrl + 'weather-history',
             type: 'GET',
             dataType: 'json',
-            data: { year: selectedYear },
+            data: { year: selectedYear, latitude: latitude, longitude: longitude },
             success: function (data) {
                 renderWeatherHistory(data);
             },
@@ -78,6 +101,8 @@ $(function () {
     }
 
     yearSelect.on('change', loadWeatherHistory);
+    stationSelect.on('change', loadWeatherHistory);
     yearSelect.val(currentYear);
+    stationSelect.val('0');
     loadWeatherHistory();
 });
