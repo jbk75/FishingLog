@@ -1,14 +1,42 @@
 $(document).ready(function () {
-    loadTides();
+    initializeTideYearSelect();
+    loadTides(getSelectedTideYear());
 });
 
-function loadTides() {
-    var year = new Date().getFullYear();
-    $("#tideYear").text(year);
+function initializeTideYearSelect() {
+    var currentYear = new Date().getFullYear();
+    var startYear = currentYear - 5;
+    var endYear = currentYear + 1;
+    var options = [];
+
+    for (var year = startYear; year <= endYear; year++) {
+        options.push('<option value="' + year + '">' + year + '</option>');
+    }
+
+    var select = $("#tideYearSelect");
+    select.html(options.join(''));
+    select.val(currentYear);
+    select.on('change', function () {
+        loadTides(getSelectedTideYear());
+    });
+}
+
+function getSelectedTideYear() {
+    var selected = parseInt($("#tideYearSelect").val(), 10);
+    if (isNaN(selected)) {
+        return new Date().getFullYear();
+    }
+    return selected;
+}
+
+function loadTides(year) {
+    var selectedYear = year || new Date().getFullYear();
+    $("#tideYear").text(selectedYear);
+    $("#tideYearSelect").val(selectedYear);
     $("#tideError").hide().text("");
 
     $.ajax({
-        url: APIBaseUrl + 'tides/' + year,
+        url: APIBaseUrl + 'tides/' + selectedYear,
         type: 'GET',
         dataType: 'json',
         success: function (data) {
