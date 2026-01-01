@@ -21,11 +21,8 @@ public class VeidiFerdController : ControllerBase
     [HttpGet]
     public IEnumerable<TripDto> GetAllVeidiferd()
     {
-        //DAL.Logger.Logg("Getting veidiferdir");
         var listVeidiferdir = _repository.GetTrips();
         return listVeidiferdir;
-        //DAL.Logger.Logg("Veidiferdir Get");
-        //return new string[] { "value1", "value2" };
     }
 
     [Route("{id}")]
@@ -33,10 +30,8 @@ public class VeidiFerdController : ControllerBase
     public TripDto GetVeidiferd(int id)
     {
         DAL.Logger.Logg("Getting veidiferdir");
-        var listVeidiferdir = _repository.GetTrip(id);//.GetVeidiferdir();
+        var listVeidiferdir = _repository.GetTrip(id);
         return listVeidiferdir;
-        //DAL.Logger.Logg("Veidiferdir Get");
-        //return new string[] { "value1", "value2" };
     }
 
     /// <summary>  

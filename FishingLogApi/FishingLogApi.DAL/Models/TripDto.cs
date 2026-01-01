@@ -17,9 +17,6 @@ public class TripDto
     public bool IsDeleted { get; set; }
 
     /////// end of columns for syncing ///////////////////
-
-    //public int VetId { get; set; }
-    //public int KoId { get; set; }
 }
 
 public class TripSyncRequest

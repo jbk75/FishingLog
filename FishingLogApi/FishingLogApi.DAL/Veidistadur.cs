@@ -11,8 +11,4 @@ public class FishingPlace
     public string Description { get; set; } = string.Empty;
     public string Longitude { get; set; } = string.Empty;
     public string Latitude { get; set; } = string.Empty;
-
-    //public string VeidileyfiSimanumer { get; set; } = string.Empty;
-    //public string Veidileyfasali { get; set; } = string.Empty;
-    //public string Vefsidur { get; set; } = string.Empty;
 }

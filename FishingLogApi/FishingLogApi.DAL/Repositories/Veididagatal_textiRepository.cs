@@ -36,7 +36,6 @@ public class Veididagatal_textiRepository
         SqlCommand cmd = new SqlCommand(strQuery);
         cmd.Parameters.Add(new SqlParameter("id", vetid));
         var connectionString = Constants.connectionString;
-        //Logger.Logg("Starting, GetCompany..., GetData, ConnectionString=" + connectionString);
         DataTable dt = DatabaseService.GetData(cmd, connectionString);
 
         string texti = string.Empty;

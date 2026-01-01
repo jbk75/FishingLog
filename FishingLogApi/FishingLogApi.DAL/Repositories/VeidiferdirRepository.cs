@@ -33,13 +33,6 @@ public class TripRepository
             {
                 nextId = NextTripId();
             }
-            //    Veididagatal_textiRepository vt = new Veididagatal_textiRepository();
-
-            //if (String.IsNullOrWhiteSpace(item.Lysing))
-            //{
-            //    item.Lysing = "Engin lýsing";
-            //}
-            //int vet_id = vt.AddVeidiferdTexti(item.Lysing);
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
@@ -225,7 +218,6 @@ public class TripRepository
         SqlCommand cmd = new(strQuery);
 
         List<TripDto> list = new();
-        //Logger.Logg("Starting, GetCompany..., GetData, ConnectionString=" + connectionString);
         try
         {
 
