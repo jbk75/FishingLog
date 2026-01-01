@@ -109,6 +109,22 @@ VALUES (@fishingPlaceId, @name, @description, @lastModified)";
         return DatabaseService.ExecuteInsertAndReturnId(cmd, _connectionString);
     }
 
+    public bool UpdateSpotDescription(int spotId, string? description)
+    {
+        const string query = @"UPDATE FishingPlaceSpot
+SET Description = @description,
+    LastModified = @lastModified
+WHERE Id = @id";
+
+        using SqlCommand cmd = new(query);
+        cmd.Parameters.AddWithValue("@id", spotId);
+        string? updatedDescription = string.IsNullOrWhiteSpace(description) ? null : description;
+        cmd.Parameters.AddWithValue("@description", DatabaseService.GetColValueString(updatedDescription));
+        cmd.Parameters.AddWithValue("@lastModified", DateTime.UtcNow);
+
+        return DatabaseService.ExecuteCommand(cmd, _connectionString) > 0;
+    }
+
     public bool FishingPlaceExists(int fishingPlaceId)
     {
         const string query = "SELECT COUNT(*) FROM FishingPlace WHERE Id = @id";
