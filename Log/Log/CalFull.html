@@ -216,8 +216,9 @@
                         }
 
                         function DayClickEditEvent(event) {
+                            let tripId = 0;
                             if (event.events.length > 0) {
-                                let id = event.events[0].id;
+                                tripId = event.events[0].id;
 
                                 $('#event-modal input[name="event-index"]').val(event ? event.events[0].id : '');
                                 $('#event-modal input[name="event-name"]').val('wefwefewfwefwefew');
@@ -232,7 +233,7 @@
                             $('#event-modal input[name="event-start-date"]').datepicker('update', event ? event.date : '');
                             $('#event-modal input[name="event-end-date"]').datepicker('update', event ? event.date : '');
                             $('#event-modal').modal();
-                            GetVeidiferd(id);
+                            GetVeidiferd(tripId);
                         }
 
                         function deleteEvent(event) {
