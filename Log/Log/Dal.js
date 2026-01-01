@@ -43,6 +43,8 @@ function GetVeidiferd(id) {
 function GetVeidiferdir()
 {
     console.log('Getting veidiferdir...')
+    var calendarInstance = $('#calendar').data('calendar');
+    var selectedYear = calendarInstance ? calendarInstance.getYear() : null;
     $.ajax({
         url: APIBaseUrl + 'veidiferd',
         type: 'GET',
@@ -80,6 +82,9 @@ function GetVeidiferdir()
                 dataSource.push(event);
             });
             $('#calendar').data('calendar').setDataSource(dataSource);
+            if (selectedYear !== null) {
+                $('#calendar').data('calendar').setYear(selectedYear);
+            }
             //   console.log(data);
         }
     });
