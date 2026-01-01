@@ -21,6 +21,26 @@
     <script src="Scripts/scripts.js"></script>
     <script src="Dal.js"></script>
     <script src="Dates.js"></script>
+    <style>
+        #wishlistTable th.sortable {
+            cursor: pointer;
+        }
+
+        #wishlistTable .sort-indicator {
+            font-size: 10px;
+            margin-left: 4px;
+        }
+
+        #wishlistTable .wishlist-description {
+            width: 100%;
+            min-width: 220px;
+        }
+
+        #wishlistTable .wishlist-action {
+            white-space: nowrap;
+            width: 1%;
+        }
+    </style>
 </head>
 <body>
     <div class="sub-content-container">
@@ -76,14 +96,15 @@
                             <table class="table table-striped" id="wishlistTable">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Description</th>
+                                        <th class="sortable" data-sort="fishingPlaceName">Name<span class="sort-indicator"></span></th>
+                                        <th class="sortable" data-sort="fishingPlaceTypeName">Type<span class="sort-indicator"></span></th>
+                                        <th class="sortable" data-sort="description">Description<span class="sort-indicator"></span></th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td colspan="3">Loading...</td>
+                                        <td colspan="4">Loading...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -95,6 +116,12 @@
     </div>
 
     <script type="text/javascript">
+        var wishlistData = [];
+        var wishlistSortState = {
+            key: 'fishingPlaceName',
+            direction: 'asc'
+        };
+
         $(document).ready(function () {
             loadFishingPlaces();
             loadWishlist();
@@ -133,6 +160,24 @@
             $('#saveWishlist').on('click', function () {
                 saveWishlistItem();
             });
+
+            $('#wishlistTable thead').on('click', 'th.sortable', function () {
+                var newKey = $(this).data('sort');
+                if (wishlistSortState.key === newKey) {
+                    wishlistSortState.direction = wishlistSortState.direction === 'asc' ? 'desc' : 'asc';
+                } else {
+                    wishlistSortState.key = newKey;
+                    wishlistSortState.direction = 'asc';
+                }
+                renderWishlist();
+            });
+
+            $('#wishlistTable tbody').on('click', '.wishlist-save', function () {
+                var row = $(this).closest('tr');
+                var id = Number(row.data('id'));
+                var description = row.find('.wishlist-description').val().trim();
+                updateWishlistDescription(id, description, row);
+            });
         });
 
         function loadFishingPlaces() {
@@ -168,24 +213,82 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    var tbody = $('#wishlistTable tbody');
-                    tbody.empty();
-
-                    if (!data || data.length === 0) {
-                        tbody.append('<tr><td colspan=\"3\">No wishlist items found.</td></tr>');
-                        return;
-                    }
-
-                    jQuery.each(data, function (i, val) {
-                        var row = $('<tr>');
-                        row.append($('<td>').text(val.fishingPlaceName));
-                        row.append($('<td>').text(val.fishingPlaceTypeName || formatType(val.fishingPlaceTypeId)));
-                        row.append($('<td>').text(val.description));
-                        tbody.append(row);
-                    });
+                    wishlistData = data || [];
+                    renderWishlist();
                 },
                 error: function () {
                     alert('Failed to load wishlist.');
+                }
+            });
+        }
+
+        function renderWishlist() {
+            var tbody = $('#wishlistTable tbody');
+            tbody.empty();
+
+            if (!wishlistData || wishlistData.length === 0) {
+                tbody.append('<tr><td colspan=\"4\">No wishlist items found.</td></tr>');
+                updateSortIndicators();
+                return;
+            }
+
+            var sortedData = wishlistData.slice().sort(function (a, b) {
+                var key = wishlistSortState.key;
+                var direction = wishlistSortState.direction === 'asc' ? 1 : -1;
+                var valueA = getSortValue(a, key);
+                var valueB = getSortValue(b, key);
+
+                if (valueA < valueB) return -1 * direction;
+                if (valueA > valueB) return 1 * direction;
+                return 0;
+            });
+
+            jQuery.each(sortedData, function (i, val) {
+                var row = $('<tr>').attr('data-id', val.id);
+                row.append($('<td>').text(val.fishingPlaceName));
+                row.append($('<td>').text(val.fishingPlaceTypeName || formatType(val.fishingPlaceTypeId)));
+
+                var descriptionCell = $('<td>');
+                var descriptionInput = $('<textarea>')
+                    .addClass('form-control wishlist-description')
+                    .attr('rows', 2)
+                    .val(val.description || '');
+                descriptionCell.append(descriptionInput);
+                row.append(descriptionCell);
+
+                var actionCell = $('<td>').addClass('wishlist-action');
+                var saveButton = $('<button>')
+                    .addClass('btn btn-xs btn-primary wishlist-save')
+                    .text('Save');
+                actionCell.append(saveButton);
+                row.append(actionCell);
+
+                tbody.append(row);
+            });
+
+            updateSortIndicators();
+        }
+
+        function getSortValue(item, key) {
+            if (key === 'fishingPlaceTypeName') {
+                return (item.fishingPlaceTypeName || formatType(item.fishingPlaceTypeId) || '').toLowerCase();
+            }
+            if (key === 'fishingPlaceName') {
+                return (item.fishingPlaceName || '').toLowerCase();
+            }
+            if (key === 'description') {
+                return (item.description || '').toLowerCase();
+            }
+            return '';
+        }
+
+        function updateSortIndicators() {
+            $('#wishlistTable thead th.sortable').each(function () {
+                var indicator = $(this).find('.sort-indicator');
+                if ($(this).data('sort') === wishlistSortState.key) {
+                    indicator.text(wishlistSortState.direction === 'asc' ? '▲' : '▼');
+                } else {
+                    indicator.text('');
                 }
             });
         }
@@ -228,6 +331,35 @@
                 },
                 error: function () {
                     alert('Could not save wishlist item.');
+                }
+            });
+        }
+
+        function updateWishlistDescription(id, description, row) {
+            if (!id) {
+                alert('Could not find wishlist item.');
+                return;
+            }
+
+            $.ajax({
+                url: APIBaseUrl + 'FishingPlaceWishlist/' + id,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ description: description }),
+                success: function () {
+                    var item = wishlistData.find(function (entry) {
+                        return entry.id === id;
+                    });
+                    if (item) {
+                        item.description = description;
+                    }
+                    row.addClass('success');
+                    setTimeout(function () {
+                        row.removeClass('success');
+                    }, 1200);
+                },
+                error: function () {
+                    alert('Could not update wishlist item.');
                 }
             });
         }

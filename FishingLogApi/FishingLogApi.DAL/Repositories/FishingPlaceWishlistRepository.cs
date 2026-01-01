@@ -73,6 +73,27 @@ public class FishingPlaceWishlistRepository
         }
     }
 
+    public bool UpdateWishlistDescription(int id, string description)
+    {
+        const string query = @"
+            UPDATE FishingPlaceWishlist
+            SET Description = @Description
+            WHERE Id = @Id";
+
+        try
+        {
+            using SqlCommand cmd = new(query);
+            cmd.Parameters.AddWithValue("@Id", id);
+            cmd.Parameters.AddWithValue("@Description", description ?? string.Empty);
+
+            return DatabaseService.ExecuteCommand(cmd, _connectionString) > 0;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
     private static string GetFishingPlaceTypeName(int typeId)
     {
         return typeId switch

@@ -114,4 +114,34 @@ public class FishingPlaceWishlistController : ControllerBase
             return StatusCode(500, "An error occurred while saving the wishlist item.");
         }
     }
+
+    [HttpPut("{id:int}")]
+    public ActionResult Update(int id, [FromBody] FishingPlaceWishlistUpdateRequest request)
+    {
+        if (id <= 0)
+        {
+            return BadRequest("Wishlist item id is required.");
+        }
+
+        if (request == null)
+        {
+            return BadRequest("Request body is required.");
+        }
+
+        try
+        {
+            bool updated = _wishlistRepository.UpdateWishlistDescription(id, request.Description ?? string.Empty);
+            if (!updated)
+            {
+                return NotFound("Wishlist item not found.");
+            }
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating fishing place wishlist item.");
+            return StatusCode(500, "An error occurred while updating the wishlist item.");
+        }
+    }
 }
