@@ -17,21 +17,8 @@ namespace FishingLogApi.DAL
         /// </summary>
         /// <param name="oLogObject">Object of type Exception or String</param>
         /// <param name="iLogType">Witch Type to convert object to</param>
-        //public static void Logg(Object oLogObject, int iLogType)
-        //{
-        //    Logg(oLogObject, iLogType, DEFAULTDIRECTORY);
-        //}
-
-        //public static void Logg(Exception ex)
-        //{
-        //    Object oLogObject = ex as Object;
-        //    Logg(oLogObject, EXCEPTION, DEFAULTDIRECTORY);
-        //}
-
         public static void Logg(String sString)
         {
-            //Object oLogObject = sString as Object;
-            //Logg(oLogObject, STRING, DEFAULTDIRECTORY);
         }
         /// <summary>
         /// Writes a text log
@@ -53,7 +40,6 @@ namespace FishingLogApi.DAL
                     + Environment.NewLine + " * " + ex.InnerException + Environment.NewLine + " * " + ex.StackTrace
                     + Environment.NewLine + " * " + ex.Message
                     + Environment.NewLine + " * " + ex.Source;
-                    //message = ex.Message + " StackTrace: " + ex.StackTrace.ToString();
                 }
                 else if (iLogType == STRING)
                 {
@@ -91,9 +77,6 @@ namespace FishingLogApi.DAL
                 StreamWriter sw = File.AppendText(filePath);
                 var dateString = dt.ToString("dd.MM.yyyy HH:mm:ss");
                 sw.WriteLine(dateString + " | " + message);
-                //sw.WriteLine(dt.ToString("dd.MM.yyyy HH:mm:ss" + " | " + message));
-                //sw.WriteLine(dt.ToString("HH:mm:ss") + " | " + message);
-                //sw.WriteLine("#######################################");
                 sw.Flush();
                 sw.Close();
             }

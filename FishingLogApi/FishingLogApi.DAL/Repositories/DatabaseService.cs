@@ -17,7 +17,6 @@ public static class DatabaseService
 
     public static DataTable GetData(SqlCommand cmd, string connectionString)
     {
-        //Logger.Logg("Getting data from sql database..");
         DataTable dt = new DataTable();
 
         SqlConnection con = new(connectionString);

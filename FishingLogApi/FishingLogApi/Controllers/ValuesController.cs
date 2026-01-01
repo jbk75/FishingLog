@@ -9,7 +9,6 @@ namespace FishingLogApi.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            //DAL.Logger.Logg("Values Get");
             return new string[] { "value1", "value2" };
         }
 

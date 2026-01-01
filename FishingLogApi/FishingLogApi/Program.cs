@@ -56,7 +56,6 @@ builder.Services.AddScoped<FishingPlaceWishlistRepository>();
 builder.Services.AddScoped<FishingNewsRepository>();
 builder.Services.AddHttpClient<WeatherHistoryService>();
 builder.Services.AddSingleton<TideCalculator>();
-//builder.Services.AddScoped<VeidiferdirRepository>();
 
 WebApplication app = builder.Build();
 
@@ -67,7 +66,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options =>   // 👈 Serve Swagger UI
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "My .NET 8 API v1");
-        //options.RoutePrefix = string.Empty; // serve Swagger UI at root (https://localhost:5001/)
     });
 }
 
