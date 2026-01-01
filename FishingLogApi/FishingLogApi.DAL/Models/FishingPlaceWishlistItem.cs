@@ -17,3 +17,8 @@ public class FishingPlaceWishlistCreateRequest
     public int FishingPlaceTypeId { get; set; }
     public string? Description { get; set; }
 }
+
+public class FishingPlaceWishlistUpdateRequest
+{
+    public string? Description { get; set; }
+}
