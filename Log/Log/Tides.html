@@ -30,7 +30,7 @@
                 <div class="panel-heading calendar-menu">
                     <div class="calendar-menu__title">
                         <span class="calendar-menu__title-text"><b>Tides</b></span>
-                        <span class="calendar-menu__subtitle">Estimated high and low tides for the current year (UTC).</span>
+                        <span class="calendar-menu__subtitle">Estimated high and low tides for the selected year (UTC).</span>
                     </div>
                     <div class="calendar-menu__actions btn-group btn-group-sm" role="group" aria-label="Navigation">
                         <button class="btn btn-default" onclick="location.href='CalFull.html'">Fishing calendar</button>
@@ -43,7 +43,15 @@
                 <div class="panel-body">
                     <div class="panel panel-info">
                         <div class="panel-heading">
-                            <b>Tidal calendar for <span id="tideYear"></span></b>
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <b>Tidal calendar for <span id="tideYear"></span></b>
+                                </div>
+                                <div class="col-sm-4 text-right">
+                                    <label class="sr-only" for="tideYearSelect">Year</label>
+                                    <select id="tideYearSelect" class="form-control input-sm"></select>
+                                </div>
+                            </div>
                         </div>
                         <div class="panel-body">
                             <p class="text-muted" style="margin-top:0;">Times are approximate and based on a semi-diurnal cycle. Model: <span id="tideModel"></span></p>
