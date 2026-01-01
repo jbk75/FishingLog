@@ -73,4 +73,28 @@ public class FishingPlaceSpotController : ControllerBase
         _logger.LogInformation("Created fishing place spot {SpotName} for place {FishingPlaceId} with id {Id}", request.Name, request.FishingPlaceId, newId);
         return Ok(newId);
     }
+
+    [HttpPut("{id:int}/description")]
+    public ActionResult<FishingPlaceSpotDto> UpdateDescription([FromRoute] int id, [FromBody] UpdateFishingPlaceSpotDescriptionRequest request)
+    {
+        if (request == null)
+        {
+            return BadRequest("Description payload is required.");
+        }
+
+        bool updated = _repository.UpdateSpotDescription(id, request.Description);
+        if (!updated)
+        {
+            return NotFound();
+        }
+
+        FishingPlaceSpotDto? spot = _repository.GetSpotById(id);
+        if (spot == null)
+        {
+            return NotFound();
+        }
+
+        _logger.LogInformation("Updated description for fishing place spot {SpotId}", id);
+        return Ok(spot);
+    }
 }
