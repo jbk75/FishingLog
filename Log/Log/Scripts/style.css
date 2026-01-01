@@ -3,6 +3,22 @@ body
 	margin:0;
 }
 
+.home-link {
+	position: fixed;
+	top: 12px;
+	left: 12px;
+	z-index: 1000;
+	font-size: 22px;
+	color: #207BBC;
+	text-decoration: none;
+}
+
+.home-link:hover,
+.home-link:focus {
+	color: #185a8e;
+	text-decoration: none;
+}
+
 #banner
 {
 	font-family:'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;
