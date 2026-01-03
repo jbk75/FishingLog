@@ -1,5 +1,6 @@
 
 
+using FishingLogApi.DAL.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -110,5 +111,41 @@ public class VeidistadurRepository
             FishingPlaceTypeID = row["FishingPlaceTypeId"] == DBNull.Value ? 0 : Convert.ToInt32(row["FishingPlaceTypeId"]),
             Description = row["Description"]?.ToString() ?? string.Empty
         };
+    }
+
+    public FishingPlaceRelationCounts GetRelationCounts(int fishingPlaceId)
+    {
+        const string query = @"
+            SELECT
+                (SELECT COUNT(*) FROM FishingNews WHERE FishingPlaceId = @id) AS FishingNewsCount,
+                (SELECT COUNT(*) FROM FishingPlaceSpot WHERE FishingPlaceId = @id) AS FishingPlaceSpotCount,
+                (SELECT COUNT(*) FROM Trip WHERE FishingPlaceId = @id) AS TripCount";
+
+        SqlCommand cmd = new(query);
+        cmd.Parameters.AddWithValue("@id", fishingPlaceId);
+
+        DataTable dt = DatabaseService.GetData(cmd, _connectionString);
+        if (dt == null || dt.Rows.Count == 0)
+        {
+            return new FishingPlaceRelationCounts();
+        }
+
+        DataRow row = dt.Rows[0];
+        return new FishingPlaceRelationCounts
+        {
+            FishingNewsCount = row["FishingNewsCount"] == DBNull.Value ? 0 : Convert.ToInt32(row["FishingNewsCount"]),
+            FishingPlaceSpotCount = row["FishingPlaceSpotCount"] == DBNull.Value ? 0 : Convert.ToInt32(row["FishingPlaceSpotCount"]),
+            TripCount = row["TripCount"] == DBNull.Value ? 0 : Convert.ToInt32(row["TripCount"])
+        };
+    }
+
+    public bool DeleteVeidistadur(int id)
+    {
+        const string query = @"DELETE FROM FishingPlace WHERE Id = @id";
+        using SqlCommand cmd = new(query);
+        cmd.Parameters.AddWithValue("@id", id);
+
+        int rowsAffected = DatabaseService.ExecuteCommand(cmd, _connectionString);
+        return rowsAffected > 0;
     }
 }

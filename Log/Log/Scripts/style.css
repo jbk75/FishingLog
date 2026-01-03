@@ -200,6 +200,14 @@ body
     gap: 4px;
 }
 
+#placeContextMenu {
+    display: none;
+    position: absolute;
+    z-index: 2000;
+}
+
+#placeContextMenu > li > a {
+    cursor: pointer;
 .wind-direction-icon {
     margin-left: 6px;
     display: inline-block;

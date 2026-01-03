@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using FishingLogApi.DAL;
+using FishingLogApi.DAL.Models;
 using FishingLogApi.DAL.Repositories;
 using Microsoft.Extensions.Logging;
 
@@ -57,5 +58,46 @@ public class VeidistadurController : ControllerBase
             _logger.LogError(ex, "Error while adding Veidistadur");
             return StatusCode(500, "An error occurred while saving the veiðistaður.");
         }
+    }
+
+    [HttpGet("{id:int}/relations")]
+    public ActionResult<FishingPlaceRelationCounts> GetRelations([FromRoute] int id)
+    {
+        _logger.LogInformation("Veidistadur relation check started for {FishingPlaceId}", id);
+
+        FishingPlace? place = _repository.GetById(id);
+        if (place == null)
+        {
+            return NotFound();
+        }
+
+        FishingPlaceRelationCounts counts = _repository.GetRelationCounts(id);
+        return Ok(counts);
+    }
+
+    [HttpDelete("{id:int}")]
+    public IActionResult Delete([FromRoute] int id)
+    {
+        _logger.LogInformation("Veidistadur delete started for {FishingPlaceId}", id);
+
+        FishingPlace? place = _repository.GetById(id);
+        if (place == null)
+        {
+            return NotFound();
+        }
+
+        FishingPlaceRelationCounts counts = _repository.GetRelationCounts(id);
+        if (counts.FishingNewsCount > 0 || counts.FishingPlaceSpotCount > 0 || counts.TripCount > 0)
+        {
+            return Conflict(counts);
+        }
+
+        bool deleted = _repository.DeleteVeidistadur(id);
+        if (!deleted)
+        {
+            return StatusCode(500, "Unable to delete fishing place.");
+        }
+
+        return NoContent();
     }
 }
