@@ -17,7 +17,14 @@ public sealed class FishingNewsRepository
     public List<FishingNewsDto> GetFishingNews()
     {
         Logger.Logg("Starting, Get Repo - FishingNews...");
-        const string query = @"SELECT Id, FishingPlaceId, Date, Description FROM FishingNews ORDER BY Date ASC";
+        const string query = @"SELECT fn.Id,
+                                      fn.FishingPlaceId,
+                                      fp.Name AS FishingPlaceName,
+                                      fn.Date,
+                                      fn.Description
+                               FROM FishingNews fn
+                               LEFT JOIN FishingPlace fp ON fn.FishingPlaceId = fp.Id
+                               ORDER BY fn.Date ASC";
         var cmd = new SqlCommand(query);
         var list = new List<FishingNewsDto>();
 
@@ -33,6 +40,7 @@ public sealed class FishingNewsRepository
                     {
                         Id = Convert.ToInt32(row["Id"]),
                         FishingPlaceId = Convert.ToInt32(row["FishingPlaceId"]),
+                        FishingPlaceName = row["FishingPlaceName"]?.ToString(),
                         Date = Convert.ToDateTime(row["Date"]),
                         Description = row["Description"]?.ToString()
                     };
@@ -46,5 +54,43 @@ public sealed class FishingNewsRepository
         }
 
         return list;
+    }
+
+    public int AddFishingNews(FishingNewsDto item)
+    {
+        const string query = @"INSERT INTO FishingNews (FishingPlaceId, Date, Description)
+                               OUTPUT INSERTED.Id
+                               VALUES (@FishingPlaceId, @Date, @Description)";
+
+        try
+        {
+            using SqlCommand cmd = new(query);
+            cmd.Parameters.AddWithValue("@FishingPlaceId", item.FishingPlaceId);
+            cmd.Parameters.AddWithValue("@Date", item.Date);
+            cmd.Parameters.AddWithValue("@Description", item.Description ?? string.Empty);
+
+            return DatabaseService.ExecuteInsertAndReturnId(cmd, _connectionString);
+        }
+        catch (Exception)
+        {
+            return -1;
+        }
+    }
+
+    public bool DeleteFishingNews(int id)
+    {
+        const string query = @"DELETE FROM FishingNews WHERE Id = @Id";
+
+        try
+        {
+            using SqlCommand cmd = new(query);
+            cmd.Parameters.AddWithValue("@Id", id);
+
+            return DatabaseService.ExecuteCommand(cmd, _connectionString) > 0;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 }

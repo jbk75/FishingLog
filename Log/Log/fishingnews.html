@@ -8,9 +8,9 @@
     <link rel="stylesheet" type="text/css" href="Scripts/style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="Content-Type" content="text/html; charset=utf-8">
-    <meta name="title" content="Fishing places">
+    <meta name="title" content="Fishing news">
 
-    <title>Fishing places</title>
+    <title>Fishing news</title>
 
     <script src="Scripts/respond.min.js"></script>
     <script src="Scripts/jquery-1.10.2.min.js"></script>
@@ -21,7 +21,22 @@
     <script src="Scripts/scripts.js"></script>
     <script src="Dal.js"></script>
     <script src="Dates.js"></script>
-    <script src="Scripts/FishingPlaces.js"></script>
+    <script src="Scripts/FishingNews.js"></script>
+    <style>
+        #fishingNewsTable th.sortable {
+            cursor: pointer;
+        }
+
+        #fishingNewsTable .sort-indicator {
+            font-size: 10px;
+            margin-left: 4px;
+        }
+
+        #fishingNewsTable td:last-child {
+            white-space: nowrap;
+            width: 1%;
+        }
+    </style>
 </head>
 <body>
     <a class="home-link" href="CalFull.html" aria-label="Home">
@@ -33,45 +48,43 @@
             <div class="panel panel-default main-panel">
                 <div class="panel-heading calendar-menu">
                     <div class="calendar-menu__title">
-                        <span class="calendar-menu__title-text"><b>Fishing places</b></span>
-                        <span class="calendar-menu__subtitle">Add new locations and browse everything already saved in the database.</span>
+                        <span class="calendar-menu__title-text"><b>Fishing news</b></span>
+                        <span class="calendar-menu__subtitle">Capture memorable catches and updates from each fishing spot.</span>
                     </div>
                     <div class="calendar-menu__actions btn-group btn-group-sm" role="group" aria-label="Navigation">
                         <button class="btn btn-default" onclick="location.href='CalFull.html'">Fishing calendar</button>
-                        <button class="btn btn-default active" onclick="location.href='FishingPlaces.html'">Fishing places list</button>
+                        <button class="btn btn-default" onclick="location.href='FishingPlaces.html'">Fishing places list</button>
                         <button class="btn btn-default" onclick="location.href='FishingPlaceSpots.html'">Fishing place spots</button>
                         <button class="btn btn-default" onclick="location.href='FishingPlaceWishlist.html'">Fishing place wishlist</button>
                         <button class="btn btn-default" onclick="location.href='WeatherHistory.html'">Weather history</button>
                         <button class="btn btn-default" onclick="location.href='Tides.html'">Tides</button>
                         <button class="btn btn-default" onclick="location.href='SuggestedFishingTrips.html'">Suggested trips</button>
-                        <button class="btn btn-default" onclick="location.href='fishingnews.html'">Fishing news</button>
+                        <button class="btn btn-default active" onclick="location.href='fishingnews.html'">Fishing news</button>
                     </div>
                 </div>
                 <div class="panel-body">
                     <div class="panel panel-info">
                         <div class="panel-heading">
-                            <b>Add fishing place</b>
+                            <b>Add fishing news</b>
                         </div>
                         <div class="panel-body">
                             <div class="form-group">
-                                <label for="placeName">Fishing place name</label>
-                                <input type="text" id="placeName" class="form-control" placeholder="Enter fishing place name" />
-                            </div>
-                            <div class="form-group">
-                                <label for="placeType">Type</label>
-                                <select id="placeType" class="form-control">
-                                    <option value="">-- Select type --</option>
-                                    <option value="2">River</option>
-                                    <option value="1">Lake</option>
+                                <label for="newsFishingPlace">Fishing place</label>
+                                <select id="newsFishingPlace" class="form-control">
+                                    <option value="">-- Select fishing place --</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="placeDescription">Description</label>
-                                <textarea id="placeDescription" class="form-control" rows="3" placeholder="Enter description (optional)"></textarea>
+                                <label for="newsDate">Date</label>
+                                <input type="date" id="newsDate" class="form-control" />
                             </div>
-                            <button class="btn btn-primary" id="savePlaceBtn">Save</button>
-                            <span id="placeSaveMessage" class="text-success" style="margin-left:10px; display:none;">Saved!</span>
-                            <span id="placeErrorMessage" class="text-danger" style="margin-left:10px; display:none;"></span>
+                            <div class="form-group">
+                                <label for="newsDescription">Description</label>
+                                <textarea id="newsDescription" class="form-control" rows="3" placeholder="What happened on this fishing day?"></textarea>
+                            </div>
+                            <button class="btn btn-primary" id="saveFishingNewsBtn">Save</button>
+                            <span id="fishingNewsSaveMessage" class="text-success" style="margin-left:10px; display:none;"></span>
+                            <span id="fishingNewsErrorMessage" class="text-danger" style="margin-left:10px; display:none;"></span>
                         </div>
                     </div>
 
@@ -79,49 +92,23 @@
                         <div class="panel-heading" style="padding-top: 10px; padding-bottom: 10px;">
                             <div class="row">
                                 <div class="col-sm-6 col-xs-12">
-                                    <b>All fishing places</b>
-                                    <span id="placeCount" class="badge" style="margin-left:5px;">0</span>
+                                    <b>All fishing news</b>
+                                    <span id="fishingNewsCount" class="badge" style="margin-left:5px;">0</span>
                                 </div>
                                 <div class="col-sm-6 col-xs-12 text-right">
-                                    <button class="btn btn-default btn-sm" id="refreshPlacesBtn">
+                                    <button class="btn btn-default btn-sm" id="refreshFishingNewsBtn">
                                         <span class="glyphicon glyphicon-refresh"></span> Refresh list
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <div class="panel-body">
-                            <p class="text-muted" style="margin-top:0;">The table below shows every fishing place currently stored in the database.</p>
-                            <div id="placeList" class="table-responsive">
+                            <p class="text-muted" style="margin-top:0;">Sort by any column to organize the news entries.</p>
+                            <div id="fishingNewsList" class="table-responsive">
                                 <span class="fa fa-spinner fa-spin"></span>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <ul id="placeContextMenu" class="dropdown-menu" role="menu" aria-label="Fishing place actions">
-        <li><a href="#" class="place-context-delete">Delete fishing place</a></li>
-    </ul>
-
-    <div class="modal fade" id="placeDeleteModal" tabindex="-1" role="dialog" aria-labelledby="placeDeleteModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="placeDeleteModalLabel">Delete fishing place</h4>
-                </div>
-                <div class="modal-body">
-                    <p id="placeDeleteMessage"></p>
-                    <ul id="placeDeleteRelations" class="list-unstyled"></ul>
-                    <div id="placeDeleteError" class="text-danger" style="display:none;"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeletePlaceBtn">Delete</button>
                 </div>
             </div>
         </div>
