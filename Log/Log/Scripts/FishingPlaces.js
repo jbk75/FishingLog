@@ -75,6 +75,24 @@ function loadFishingPlaces() {
 
             placeCount.text(placeData.length);
             loadNewsCounts();
+            placeCount.text(data.length);
+
+            const table = $('<table class="table table-striped table-bordered"></table>');
+            const thead = $('<thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>');
+            table.append(thead);
+
+            const tbody = $('<tbody></tbody>');
+            $.each(data, function (i, place) {
+                const row = $('<tr></tr>');
+                const typeId = place.fishingPlaceTypeID || place.fishingPlaceTypeId;
+                row.append('<td>' + place.name + '</td>');
+                row.append('<td>' + formatTypeIcon(typeId) + ' ' + formatType(typeId) + '</td>');
+                row.append('<td>' + (place.description || '') + '</td>');
+                tbody.append(row);
+            });
+
+            table.append(tbody);
+            listContainer.html(table);
         },
         error: function () {
             listContainer.html('<p class="text-danger">Unable to load fishing places.</p>');
@@ -275,4 +293,8 @@ function deleteFishingPlace(placeId) {
         $('#placeDeleteError').text(message).show();
         $('#confirmDeletePlaceBtn').prop('disabled', false);
     });
+function formatTypeIcon(typeId) {
+    if (typeId === 2) return '<span class="fa fa-long-arrow-right text-info" aria-hidden="true" title="River"></span>';
+    if (typeId === 1) return '<span class="fa fa-tint text-primary" aria-hidden="true" title="Lake"></span>';
+    return '<span class="fa fa-question-circle text-muted" aria-hidden="true" title="Unknown"></span>';
 }

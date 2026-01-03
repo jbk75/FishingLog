@@ -90,6 +90,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="SuggestedFishingTrips.html" />
+    <Content Include="Tides.html" />
+    <Content Include="WeatherHistory.html" />
     <Content Include="zdepricated_Calendr.html" />
     <Content Include="CalFull.html" />
     <Content Include="zdepricated_Main.html" />
