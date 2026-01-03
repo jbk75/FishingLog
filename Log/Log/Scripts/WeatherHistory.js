@@ -26,6 +26,34 @@ $(function () {
         }));
     });
 
+    function getWindDirectionDegrees(direction) {
+        if (!direction) {
+            return null;
+        }
+
+        var normalized = direction.toUpperCase();
+        var directionMap = {
+            N: 0,
+            NNE: 22.5,
+            NE: 45,
+            ENE: 67.5,
+            E: 90,
+            ESE: 112.5,
+            SE: 135,
+            SSE: 157.5,
+            S: 180,
+            SSW: 202.5,
+            SW: 225,
+            WSW: 247.5,
+            W: 270,
+            WNW: 292.5,
+            NW: 315,
+            NNW: 337.5
+        };
+
+        return directionMap.hasOwnProperty(normalized) ? directionMap[normalized] : null;
+    }
+
     function renderWeatherHistory(data) {
         var container = $('#weatherHistoryContainer');
         container.empty();
@@ -46,6 +74,7 @@ $(function () {
 
             $.each(month.days, function (dayIndex, day) {
                 var windText = 'N/A';
+                var windDirectionDegrees = getWindDirectionDegrees(day.windDirection);
                 if (day.windSpeedMax !== null && day.windSpeedMax !== undefined) {
                     windText = day.windSpeedMax.toFixed(1) + ' km/h';
                     if (day.windDirection) {
@@ -64,7 +93,16 @@ $(function () {
                 var row = $('<tr></tr>');
                 row.append($('<td></td>').text(day.date));
                 row.append($('<td></td>').text(day.condition));
-                row.append($('<td></td>').text(windText));
+                var windCell = $('<td></td>').text(windText);
+                if (windDirectionDegrees !== null) {
+                    var windIcon = $('<span></span>')
+                        .addClass('fa fa-long-arrow-up wind-direction-icon')
+                        .attr('aria-hidden', 'true')
+                        .css('transform', 'rotate(' + windDirectionDegrees + 'deg)')
+                        .attr('title', 'Wind direction: ' + day.windDirection);
+                    windCell.append(windIcon);
+                }
+                row.append(windCell);
                 row.append($('<td></td>').text(humidityText));
                 row.append($('<td></td>').text(pressureText));
                 tbody.append(row);
