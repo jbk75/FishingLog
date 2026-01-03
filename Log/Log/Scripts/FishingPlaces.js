@@ -35,8 +35,9 @@ function loadFishingPlaces() {
             const tbody = $('<tbody></tbody>');
             $.each(data, function (i, place) {
                 const row = $('<tr></tr>');
+                const typeId = place.fishingPlaceTypeID || place.fishingPlaceTypeId;
                 row.append('<td>' + place.name + '</td>');
-                row.append('<td>' + formatType(place.fishingPlaceTypeID || place.fishingPlaceTypeId) + '</td>');
+                row.append('<td>' + formatTypeIcon(typeId) + ' ' + formatType(typeId) + '</td>');
                 row.append('<td>' + (place.description || '') + '</td>');
                 tbody.append(row);
             });
@@ -101,4 +102,10 @@ function formatType(typeId) {
     if (typeId === 2) return 'River';
     if (typeId === 1) return 'Lake';
     return 'Unknown';
+}
+
+function formatTypeIcon(typeId) {
+    if (typeId === 2) return '<span class="fa fa-long-arrow-right text-info" aria-hidden="true" title="River"></span>';
+    if (typeId === 1) return '<span class="fa fa-tint text-primary" aria-hidden="true" title="Lake"></span>';
+    return '<span class="fa fa-question-circle text-muted" aria-hidden="true" title="Unknown"></span>';
 }

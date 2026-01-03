@@ -200,6 +200,11 @@ body
     gap: 4px;
 }
 
+.wind-direction-icon {
+    margin-left: 6px;
+    display: inline-block;
+}
+
 .calendar-menu__title-text {
     font-size: 16px;
 }
