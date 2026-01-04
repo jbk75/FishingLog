@@ -86,8 +86,8 @@ function renderTides(events) {
         var entry = days[dateKey];
         rows.push('<tr>' +
             '<td>' + dateKey + '</td>' +
-            '<td>' + (entry.highs.length ? entry.highs.join(', ') : '-') + '</td>' +
-            '<td>' + (entry.lows.length ? entry.lows.join(', ') : '-') + '</td>' +
+            '<td>' + renderTideTimes(entry.highs, 'high') + '</td>' +
+            '<td>' + renderTideTimes(entry.lows, 'low') + '</td>' +
             '</tr>');
     });
 
@@ -105,6 +105,21 @@ function formatTideTime(timestamp) {
         minute: '2-digit',
         timeZone: 'UTC'
     });
+}
+
+function renderTideTimes(times, type) {
+    if (!times.length) {
+        return '-';
+    }
+
+    var iconClass = type === 'high' ? 'fa-arrow-up text-primary' : 'fa-arrow-down text-info';
+    var label = type === 'high' ? 'High tide' : 'Low tide';
+    var iconHtml = '<span class="fa ' + iconClass + '" aria-hidden="true"></span>' +
+        '<span class="sr-only">' + label + '</span>';
+
+    return times.map(function (time) {
+        return iconHtml + ' ' + time;
+    }).join(', ');
 }
 
 function showTideError(message) {
