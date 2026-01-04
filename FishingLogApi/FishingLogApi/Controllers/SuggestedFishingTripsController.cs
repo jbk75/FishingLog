@@ -1,3 +1,4 @@
+using FishingLogApi.DAL;
 using FishingLogApi.DAL.Models;
 using FishingLogApi.DAL.Repositories;
 using FishingLogApi.Models;
