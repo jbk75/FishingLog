@@ -34,6 +34,8 @@
                 <div class="panel-heading calendar-menu">
                     <div class="calendar-menu__title">
                         <span class="calendar-menu__title-text"><b>Tides</b></span>
+                        <span class="fa fa-moon-o text-muted" aria-hidden="true" title="Full moon"></span>
+                        <span class="sr-only">Full moon</span>
                         <span class="calendar-menu__subtitle">Estimated high and low tides for the selected year (UTC).</span>
                     </div>
                     <div class="calendar-menu__actions btn-group btn-group-sm" role="group" aria-label="Navigation">
@@ -65,8 +67,8 @@
                                     <thead>
                                         <tr>
                                             <th>Date</th>
-                                            <th>High tides (UTC)</th>
-                                            <th>Low tides (UTC)</th>
+                                            <th><span class="fa fa-arrow-up text-primary" aria-hidden="true"></span> High tides (UTC)</th>
+                                            <th><span class="fa fa-arrow-down text-info" aria-hidden="true"></span> Low tides (UTC)</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tideTableBody">
