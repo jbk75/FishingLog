@@ -20,11 +20,11 @@ public sealed class FishingNewsRepository
         const string query = @"SELECT fn.Id,
                                       fn.FishingPlaceId,
                                       fp.Name AS FishingPlaceName,
-                                      fn.Date,
+                                      fn.[Date],
                                       fn.Description
                                FROM FishingNews fn
                                LEFT JOIN FishingPlace fp ON fn.FishingPlaceId = fp.Id
-                               ORDER BY fn.Date ASC";
+                               ORDER BY fn.[Date] ASC";
         var cmd = new SqlCommand(query);
         var list = new List<FishingNewsDto>();
 
@@ -58,7 +58,7 @@ public sealed class FishingNewsRepository
 
     public int AddFishingNews(FishingNewsDto item)
     {
-        const string query = @"INSERT INTO FishingNews (FishingPlaceId, Date, Description)
+        const string query = @"INSERT INTO FishingNews (FishingPlaceId, [Date], Description)
                                OUTPUT INSERTED.Id
                                VALUES (@FishingPlaceId, @Date, @Description)";
 
