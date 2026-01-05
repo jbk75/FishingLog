@@ -247,6 +247,18 @@ body
     margin-bottom: 0;
 }
 
+.weather-condition-icon {
+    margin-right: 6px;
+}
+
+.weather-condition-icon--sunny {
+    color: #f0ad4e;
+}
+
+.weather-condition-icon--rain {
+    color: #5bc0de;
+}
+
 /*calendar header background color*/
 .calendar .calendar-header {
 	background-color: #8dd3b7;

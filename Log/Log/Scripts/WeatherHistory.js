@@ -54,6 +54,29 @@ $(function () {
         return directionMap.hasOwnProperty(normalized) ? directionMap[normalized] : null;
     }
 
+    function getConditionIcon(condition) {
+        if (!condition) {
+            return null;
+        }
+
+        var normalized = condition.toLowerCase();
+        if (normalized === 'sunny') {
+            return $('<span></span>')
+                .addClass('fa fa-sun-o weather-condition-icon weather-condition-icon--sunny')
+                .attr('aria-hidden', 'true')
+                .attr('title', 'Sunny');
+        }
+
+        if (normalized === 'rain') {
+            return $('<span></span>')
+                .addClass('fa fa-umbrella weather-condition-icon weather-condition-icon--rain')
+                .attr('aria-hidden', 'true')
+                .attr('title', 'Rain');
+        }
+
+        return null;
+    }
+
     function renderWeatherHistory(data) {
         var container = $('#weatherHistoryContainer');
         container.empty();
@@ -92,7 +115,13 @@ $(function () {
 
                 var row = $('<tr></tr>');
                 row.append($('<td></td>').text(day.date));
-                row.append($('<td></td>').text(day.condition));
+                var conditionCell = $('<td></td>');
+                var conditionIcon = getConditionIcon(day.condition);
+                if (conditionIcon) {
+                    conditionCell.append(conditionIcon);
+                }
+                conditionCell.append($('<span></span>').text(day.condition));
+                row.append(conditionCell);
                 var windCell = $('<td></td>').text(windText);
                 if (windDirectionDegrees !== null) {
                     var windIcon = $('<span></span>')
