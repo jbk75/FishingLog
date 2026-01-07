@@ -99,41 +99,75 @@ function loadTides(year, location) {
 
     var startEpoch = Date.UTC(selectedYear, 0, 1) / 1000;
     var endEpoch = Date.UTC(selectedYear + 1, 0, 1) / 1000 - 1;
-    var url = tideApiConfig.baseUrl +
-        '?lat=' + selectedLocation.lat +
-        '&lng=' + selectedLocation.lon +
-        '&start=' + startEpoch +
-        '&end=' + endEpoch;
 
-    $.ajax({
-        url: url,
-        type: 'GET',
-        dataType: 'json',
-        headers: {
-            Authorization: apiKey
-        },
-        success: function (data) {
-            if (!data || !data.data || !data.data.length) {
+    fetchTideEvents(startEpoch, endEpoch, selectedLocation, apiKey)
+        .done(function (events) {
+            if (!events.length) {
                 showTideError('No tide data returned from the API.');
                 return;
             }
-
-            var events = data.data.map(function (entry) {
-                return {
-                    timestamp: entry.time,
-                    level: entry.type === 'high' ? 'High' : 'Low'
-                };
-            });
             renderTides(events);
-        },
-        error: function (xhr) {
+        })
+        .fail(function (xhr) {
             var message = 'Failed to load tide information.';
             if (xhr && xhr.responseText) {
                 message += ' ' + xhr.responseText;
             }
             showTideError(message);
+        });
+}
+
+function fetchTideEvents(startEpoch, endEpoch, location, apiKey) {
+    var deferred = $.Deferred();
+    var chunkSeconds = 7 * 24 * 60 * 60;
+    var currentStart = startEpoch;
+    var events = [];
+    var seen = {};
+
+    function fetchNext() {
+        if (currentStart > endEpoch) {
+            deferred.resolve(events);
+            return;
         }
-    });
+
+        var currentEnd = Math.min(currentStart + chunkSeconds - 1, endEpoch);
+        var url = tideApiConfig.baseUrl +
+            '?lat=' + location.lat +
+            '&lng=' + location.lon +
+            '&start=' + currentStart +
+            '&end=' + currentEnd;
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                Authorization: apiKey
+            },
+            success: function (data) {
+                if (data && data.data && data.data.length) {
+                    data.data.forEach(function (entry) {
+                        var key = entry.time + '-' + entry.type;
+                        if (!seen[key]) {
+                            seen[key] = true;
+                            events.push({
+                                timestamp: entry.time,
+                                level: entry.type === 'high' ? 'High' : 'Low'
+                            });
+                        }
+                    });
+                }
+                currentStart = currentEnd + 1;
+                fetchNext();
+            },
+            error: function (xhr) {
+                deferred.reject(xhr);
+            }
+        });
+    }
+
+    fetchNext();
+    return deferred.promise();
 }
 
 function renderTides(events) {
