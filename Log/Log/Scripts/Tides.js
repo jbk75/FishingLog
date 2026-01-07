@@ -3,15 +3,9 @@ var tideLocations = [
     { id: 'akureyri', name: 'Akureyri', lat: 65.6885, lon: -18.1262 }
 ];
 
-var tideApiConfig = {
-    baseUrl: 'https://api.stormglass.io/v2/tide/extremes/point',
-    keyStorage: '1a08bf46-ec0d-11f0-a0d3-0242ac130003-1a08bff0-ec0d-11f0-a0d3-0242ac130003'
-};
-
 $(document).ready(function () {
     initializeTideYearSelect();
     initializeTideLocationSelect();
-    initializeTideApiKeyInput();
     loadTides(getSelectedTideYear(), getSelectedLocation());
 });
 
@@ -53,27 +47,6 @@ function initializeTideLocationSelect() {
     });
 }
 
-function initializeTideApiKeyInput() {
-    var storedKey = getStoredApiKey();
-    var input = $("#tideApiKeyInput");
-    if (storedKey) {
-        input.val(storedKey);
-    }
-    input.on('change', function () {
-        var value = input.val().trim();
-        if (value) {
-            localStorage.setItem(tideApiConfig.keyStorage, value);
-        } else {
-            localStorage.removeItem(tideApiConfig.keyStorage);
-        }
-        loadTides(getSelectedTideYear(), getSelectedLocation());
-    });
-}
-
-function getStoredApiKey() {
-    return localStorage.getItem(tideApiConfig.keyStorage);
-}
-
 function getSelectedLocation() {
     var selectedId = $("#tideLocationSelect").val();
     for (var i = 0; i < tideLocations.length; i++) {
@@ -87,7 +60,6 @@ function getSelectedLocation() {
 function loadTides(year, location) {
     var selectedYear = year || new Date().getFullYear();
     var selectedLocation = location || tideLocations[0];
-    var apiKey = getStoredApiKey();
 
     $("#tideYear").text(selectedYear);
     $("#tideLocation").text(selectedLocation.name);
@@ -96,21 +68,13 @@ function loadTides(year, location) {
     $("#tideError").hide().text("");
     $("#tideModel").text("Stormglass");
 
-    if (!apiKey) {
-        showTideError('Enter a Stormglass API key to load tide predictions.');
-        return;
-    }
-
-    var startEpoch = Date.UTC(selectedYear, 0, 1) / 1000;
-    var endEpoch = Date.UTC(selectedYear + 1, 0, 1) / 1000 - 1;
-
-    fetchTideEvents(startEpoch, endEpoch, selectedLocation, apiKey)
-        .done(function (events) {
-            if (!events.length) {
+    fetchTideEvents(selectedYear, selectedLocation)
+        .done(function (response) {
+            if (!response || !response.events || !response.events.length) {
                 showTideError('No tide data returned from the API.');
                 return;
             }
-            renderTides(events);
+            renderTides(response.events);
         })
         .fail(function (xhr) {
             var message = 'Failed to load tide information.';
@@ -121,57 +85,12 @@ function loadTides(year, location) {
         });
 }
 
-function fetchTideEvents(startEpoch, endEpoch, location, apiKey) {
-    var deferred = $.Deferred();
-    var chunkSeconds = 7 * 24 * 60 * 60;
-    var currentStart = startEpoch;
-    var events = [];
-    var seen = {};
-
-    function fetchNext() {
-        if (currentStart > endEpoch) {
-            deferred.resolve(events);
-            return;
-        }
-
-        var currentEnd = Math.min(currentStart + chunkSeconds - 1, endEpoch);
-        var url = tideApiConfig.baseUrl +
-            '?lat=' + location.lat +
-            '&lng=' + location.lon +
-            '&start=' + currentStart +
-            '&end=' + currentEnd;
-
-        $.ajax({
-            url: url,
-            type: 'GET',
-            dataType: 'json',
-            headers: {
-                Authorization: apiKey
-            },
-            success: function (data) {
-                if (data && data.data && data.data.length) {
-                    data.data.forEach(function (entry) {
-                        var key = entry.time + '-' + entry.type;
-                        if (!seen[key]) {
-                            seen[key] = true;
-                            events.push({
-                                timestamp: entry.time,
-                                level: entry.type === 'high' ? 'High' : 'Low'
-                            });
-                        }
-                    });
-                }
-                currentStart = currentEnd + 1;
-                fetchNext();
-            },
-            error: function (xhr) {
-                deferred.reject(xhr);
-            }
-        });
-    }
-
-    fetchNext();
-    return deferred.promise();
+function fetchTideEvents(year, location) {
+    return $.ajax({
+        url: APIBaseUrl + 'tides/stormglass/' + year + '?lat=' + location.lat + '&lon=' + location.lon,
+        type: 'GET',
+        dataType: 'json'
+    });
 }
 
 function renderTides(events) {
