@@ -54,7 +54,7 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-sm-8">
-                                    <b>Tidal calendar for <span id="tideYear"></span></b>
+                                    <b>Tidal calendar for <span id="tideYear"></span> (<span id="tideLocation"></span>)</b>
                                 </div>
                                 <div class="col-sm-4 text-right">
                                     <label class="sr-only" for="tideYearSelect">Year</label>
@@ -63,6 +63,16 @@
                             </div>
                         </div>
                         <div class="panel-body">
+                            <div class="row" style="margin-bottom:10px;">
+                                <div class="col-sm-6">
+                                    <label class="sr-only" for="tideLocationSelect">Location</label>
+                                    <select id="tideLocationSelect" class="form-control input-sm"></select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="sr-only" for="tideApiKeyInput">Tide API key</label>
+                                    <input id="tideApiKeyInput" type="password" class="form-control input-sm" placeholder="Stormglass API key">
+                                </div>
+                            </div>
                             <p class="text-muted" style="margin-top:0;">Times are approximate and based on a semi-diurnal cycle. Model: <span id="tideModel"></span></p>
                             <div class="table-responsive">
                                 <table class="table table-striped">
