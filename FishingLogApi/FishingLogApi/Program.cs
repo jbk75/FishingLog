@@ -55,7 +55,9 @@ builder.Services.AddScoped<FishingPlaceSpotRepository>();
 builder.Services.AddScoped<FishingPlaceWishlistRepository>();
 builder.Services.AddScoped<FishingNewsRepository>();
 builder.Services.AddHttpClient<WeatherHistoryService>();
+builder.Services.AddHttpClient<StormglassTideService>();
 builder.Services.AddSingleton<TideCalculator>();
+builder.Services.Configure<StormglassOptions>(builder.Configuration.GetSection("Stormglass"));
 
 WebApplication app = builder.Build();
 
