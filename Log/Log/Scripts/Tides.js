@@ -5,7 +5,7 @@ var tideLocations = [
 
 var tideApiConfig = {
     baseUrl: 'https://api.stormglass.io/v2/tide/extremes/point',
-    keyStorage: 'tideApiKey'
+    keyStorage: '1a08bf46-ec0d-11f0-a0d3-0242ac130003-1a08bff0-ec0d-11f0-a0d3-0242ac130003'
 };
 
 $(document).ready(function () {
@@ -80,14 +80,10 @@ function getSelectedLocation() {
     return tideLocations[0];
 }
 
-function getStoredApiKey() {
-    return localStorage.getItem(tideApiConfig.keyStorage) || '';
-}
-
 function loadTides(year, location) {
     var selectedYear = year || new Date().getFullYear();
     var selectedLocation = location || tideLocations[0];
-    var apiKey = getStoredApiKey();
+    var apiKey = tideApiConfig.keyStorage;
 
     $("#tideYear").text(selectedYear);
     $("#tideLocation").text(selectedLocation.name);
