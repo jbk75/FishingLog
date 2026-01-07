@@ -70,6 +70,10 @@ function initializeTideApiKeyInput() {
     });
 }
 
+function getStoredApiKey() {
+    return localStorage.getItem(tideApiConfig.keyStorage);
+}
+
 function getSelectedLocation() {
     var selectedId = $("#tideLocationSelect").val();
     for (var i = 0; i < tideLocations.length; i++) {
@@ -83,7 +87,7 @@ function getSelectedLocation() {
 function loadTides(year, location) {
     var selectedYear = year || new Date().getFullYear();
     var selectedLocation = location || tideLocations[0];
-    var apiKey = tideApiConfig.keyStorage;
+    var apiKey = getStoredApiKey();
 
     $("#tideYear").text(selectedYear);
     $("#tideLocation").text(selectedLocation.name);
