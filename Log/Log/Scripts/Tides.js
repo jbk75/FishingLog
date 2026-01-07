@@ -1,6 +1,18 @@
+var tideLocations = [
+    { id: 'reykjavik', name: 'Reykjavík', lat: 64.1466, lon: -21.9426 },
+    { id: 'akureyri', name: 'Akureyri', lat: 65.6885, lon: -18.1262 }
+];
+
+var tideApiConfig = {
+    baseUrl: 'https://api.stormglass.io/v2/tide/extremes/point',
+    keyStorage: 'tideApiKey'
+};
+
 $(document).ready(function () {
     initializeTideYearSelect();
-    loadTides(getSelectedTideYear());
+    initializeTideLocationSelect();
+    initializeTideApiKeyInput();
+    loadTides(getSelectedTideYear(), getSelectedLocation());
 });
 
 function initializeTideYearSelect() {
@@ -17,7 +29,7 @@ function initializeTideYearSelect() {
     select.html(options.join(''));
     select.val(currentYear);
     select.on('change', function () {
-        loadTides(getSelectedTideYear());
+        loadTides(getSelectedTideYear(), getSelectedLocation());
     });
 }
 
@@ -29,24 +41,94 @@ function getSelectedTideYear() {
     return selected;
 }
 
-function loadTides(year) {
+function initializeTideLocationSelect() {
+    var select = $("#tideLocationSelect");
+    var options = tideLocations.map(function (location) {
+        return '<option value="' + location.id + '">' + location.name + '</option>';
+    });
+    select.html(options.join(''));
+    select.val(tideLocations[0].id);
+    select.on('change', function () {
+        loadTides(getSelectedTideYear(), getSelectedLocation());
+    });
+}
+
+function initializeTideApiKeyInput() {
+    var storedKey = getStoredApiKey();
+    var input = $("#tideApiKeyInput");
+    if (storedKey) {
+        input.val(storedKey);
+    }
+    input.on('change', function () {
+        var value = input.val().trim();
+        if (value) {
+            localStorage.setItem(tideApiConfig.keyStorage, value);
+        } else {
+            localStorage.removeItem(tideApiConfig.keyStorage);
+        }
+        loadTides(getSelectedTideYear(), getSelectedLocation());
+    });
+}
+
+function getSelectedLocation() {
+    var selectedId = $("#tideLocationSelect").val();
+    for (var i = 0; i < tideLocations.length; i++) {
+        if (tideLocations[i].id === selectedId) {
+            return tideLocations[i];
+        }
+    }
+    return tideLocations[0];
+}
+
+function getStoredApiKey() {
+    return localStorage.getItem(tideApiConfig.keyStorage) || '';
+}
+
+function loadTides(year, location) {
     var selectedYear = year || new Date().getFullYear();
+    var selectedLocation = location || tideLocations[0];
+    var apiKey = getStoredApiKey();
+
     $("#tideYear").text(selectedYear);
+    $("#tideLocation").text(selectedLocation.name);
     $("#tideYearSelect").val(selectedYear);
+    $("#tideLocationSelect").val(selectedLocation.id);
     $("#tideError").hide().text("");
+    $("#tideModel").text("Stormglass");
+
+    if (!apiKey) {
+        showTideError('Enter a Stormglass API key to load tide predictions.');
+        return;
+    }
+
+    var startEpoch = Date.UTC(selectedYear, 0, 1) / 1000;
+    var endEpoch = Date.UTC(selectedYear + 1, 0, 1) / 1000 - 1;
+    var url = tideApiConfig.baseUrl +
+        '?lat=' + selectedLocation.lat +
+        '&lng=' + selectedLocation.lon +
+        '&start=' + startEpoch +
+        '&end=' + endEpoch;
 
     $.ajax({
-        url: APIBaseUrl + 'tides/' + selectedYear,
+        url: url,
         type: 'GET',
         dataType: 'json',
+        headers: {
+            Authorization: apiKey
+        },
         success: function (data) {
-            if (!data || !data.events) {
+            if (!data || !data.data || !data.data.length) {
                 showTideError('No tide data returned from the API.');
                 return;
             }
 
-            $("#tideModel").text(data.model || 'N/A');
-            renderTides(data.events);
+            var events = data.data.map(function (entry) {
+                return {
+                    timestamp: entry.time,
+                    level: entry.type === 'high' ? 'High' : 'Low'
+                };
+            });
+            renderTides(events);
         },
         error: function (xhr) {
             var message = 'Failed to load tide information.';
@@ -59,10 +141,13 @@ function loadTides(year) {
 }
 
 function renderTides(events) {
+    var sortedEvents = events.slice().sort(function (a, b) {
+        return new Date(a.timestamp) - new Date(b.timestamp);
+    });
     var days = {};
     var order = [];
 
-    jQuery.each(events, function (_, item) {
+    jQuery.each(sortedEvents, function (_, item) {
         if (!item || !item.timestamp) {
             return;
         }
