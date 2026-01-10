@@ -1,7 +1,13 @@
 var tideLocations = [
-    { id: 'reykjavik', name: 'Reykjavík', lat: 64.1466, lon: -21.9426 },
-    { id: 'akureyri', name: 'Akureyri', lat: 65.6885, lon: -18.1262 }
+    { id: 'reykjavik', name: 'Reykjavik' }
 ];
+
+var monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+var weekdayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 $(document).ready(function () {
     initializeTideYearSelect();
@@ -66,15 +72,16 @@ function loadTides(year, location) {
     $("#tideYearSelect").val(selectedYear);
     $("#tideLocationSelect").val(selectedLocation.id);
     $("#tideError").hide().text("");
-    $("#tideModel").text("Stormglass");
+    $("#tideModel").text("SpringTides");
+    $("#tideMonthGrid").html('<div class="tide-loading"><span class="fa fa-spinner fa-spin"></span> Loading tides...</div>');
 
-    fetchTideEvents(selectedYear, selectedLocation)
-        .done(function (response) {
-            if (!response || !response.events || !response.events.length) {
-                showTideError('No tide data returned from the API.');
-                return;
+    fetchSpringTideYear(selectedYear, selectedLocation)
+        .done(function () {
+            var months = {};
+            for (var i = 0; i < arguments.length; i++) {
+                months[i + 1] = arguments[i][0];
             }
-            renderTides(response.events);
+            renderSpringTideYear(selectedYear, months);
         })
         .fail(function (xhr) {
             var message = 'Failed to load tide information.';
@@ -85,82 +92,92 @@ function loadTides(year, location) {
         });
 }
 
-function fetchTideEvents(year, location) {
+function fetchSpringTideYear(year, location) {
+    var requests = [];
+    for (var month = 1; month <= 12; month++) {
+        requests.push(fetchSpringTideMonth(year, month, location));
+    }
+    return $.when.apply($, requests);
+}
+
+function fetchSpringTideMonth(year, month, location) {
     return $.ajax({
-        url: APIBaseUrl + 'tides/stormglass/' + year + '?lat=' + location.lat + '&lon=' + location.lon,
+        url: APIBaseUrl + 'spring-tides/' + year + '/' + month + '?location=' + encodeURIComponent(location.name),
         type: 'GET',
         dataType: 'json'
     });
 }
 
-function renderTides(events) {
-    var sortedEvents = events.slice().sort(function (a, b) {
-        return new Date(a.timestamp) - new Date(b.timestamp);
-    });
-    var days = {};
-    var order = [];
+function renderSpringTideYear(year, months) {
+    var monthCards = [];
+    for (var month = 1; month <= 12; month++) {
+        var monthData = months[month] || [];
+        var springDays = buildSpringDayMap(monthData);
+        monthCards.push(renderMonthCard(year, month, springDays));
+    }
+    $("#tideMonthGrid").html(monthCards.join(''));
+}
 
-    jQuery.each(sortedEvents, function (_, item) {
-        if (!item || !item.timestamp) {
+function buildSpringDayMap(monthData) {
+    var map = {};
+    jQuery.each(monthData, function (_, item) {
+        if (!item || !item.date) {
             return;
         }
-
-        var dateKey = item.timestamp.substring(0, 10);
-        if (!days[dateKey]) {
-            days[dateKey] = { highs: [], lows: [] };
-            order.push(dateKey);
-        }
-
-        var timeLabel = formatTideTime(item.timestamp);
-        if (item.level === 'High') {
-            days[dateKey].highs.push(timeLabel);
-        } else {
-            days[dateKey].lows.push(timeLabel);
+        var day = parseInt(item.date.substring(8, 10), 10);
+        if (!isNaN(day)) {
+            map[day] = item;
         }
     });
+    return map;
+}
 
+function renderMonthCard(year, month, springDays) {
+    var daysInMonth = new Date(year, month, 0).getDate();
     var rows = [];
-    order.forEach(function (dateKey) {
-        var entry = days[dateKey];
-        rows.push('<tr>' +
-            '<td>' + dateKey + '</td>' +
-            '<td>' + renderTideTimes(entry.highs, 'high') + '</td>' +
-            '<td>' + renderTideTimes(entry.lows, 'low') + '</td>' +
-            '</tr>');
-    });
-
-    if (!rows.length) {
-        rows.push('<tr><td colspan="3">No tide entries found.</td></tr>');
+    for (var day = 1; day <= daysInMonth; day++) {
+        var date = new Date(Date.UTC(year, month - 1, day));
+        var weekday = weekdayNames[date.getUTCDay()];
+        var springInfo = springDays[day];
+        var isSpring = !!springInfo && springInfo.isSpringTide;
+        var reason = springInfo && springInfo.reason ? springInfo.reason : '';
+        rows.push(
+            '<div class="tide-day' + (isSpring ? ' tide-day--spring' : '') + '" title="' + escapeHtml(reason) + '">' +
+            '<span class="tide-day__number">' + day + '</span>' +
+            '<span class="tide-day__weekday">' + weekday + '</span>' +
+            '<span class="tide-day__marker" aria-hidden="true"></span>' +
+            '</div>'
+        );
     }
 
-    $("#tideTableBody").html(rows.join(''));
+    return (
+        '<div class="tide-month" style="--month-days:' + daysInMonth + ';">' +
+        '<div class="tide-month__header">' + monthNames[month - 1] + '</div>' +
+        '<div class="tide-month__body">' +
+        '<div class="tide-wave">' + buildWaveSvg() + '</div>' +
+        '<div class="tide-day-list">' + rows.join('') + '</div>' +
+        '</div>' +
+        '</div>'
+    );
 }
 
-function formatTideTime(timestamp) {
-    var date = new Date(timestamp);
-    return date.toLocaleTimeString('en-GB', {
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'UTC'
-    });
+function buildWaveSvg() {
+    return '<svg viewBox="0 0 120 100" preserveAspectRatio="none" aria-hidden="true">' +
+        '<path d="M0 50 Q 15 0 30 50 T 60 50 T 90 50 T 120 50" />' +
+        '<path d="M0 50 Q 15 100 30 50 T 60 50 T 90 50 T 120 50" />' +
+        '</svg>';
 }
 
-function renderTideTimes(times, type) {
-    if (!times.length) {
-        return '-';
-    }
-
-    var iconClass = type === 'high' ? 'fa-arrow-up text-primary' : 'fa-arrow-down text-info';
-    var label = type === 'high' ? 'High tide' : 'Low tide';
-    var iconHtml = '<span class="fa ' + iconClass + '" aria-hidden="true"></span>' +
-        '<span class="sr-only">' + label + '</span>';
-
-    return times.map(function (time) {
-        return iconHtml + ' ' + time;
-    }).join(', ');
+function escapeHtml(value) {
+    return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
 }
 
 function showTideError(message) {
-    $("#tideTableBody").html('<tr><td colspan="3">Unable to load tides.</td></tr>');
+    $("#tideMonthGrid").html('<div class="tide-loading">Unable to load tides.</div>');
     $("#tideError").text(message).show();
 }
