@@ -134,14 +134,14 @@ function buildSpringDayMap(monthData) {
 
 function renderMonthCard(year, month, springDays) {
     var daysInMonth = new Date(year, month, 0).getDate();
-    var rows = [];
+    var dayCells = [];
     for (var day = 1; day <= daysInMonth; day++) {
         var date = new Date(Date.UTC(year, month - 1, day));
         var weekday = weekdayNames[date.getUTCDay()];
         var springInfo = springDays[day];
         var isSpring = !!springInfo && springInfo.isSpringTide;
         var reason = springInfo && springInfo.reason ? springInfo.reason : '';
-        rows.push(
+        dayCells.push(
             '<div class="tide-day' + (isSpring ? ' tide-day--spring' : '') + '" title="' + escapeHtml(reason) + '">' +
             '<span class="tide-day__number">' + day + '</span>' +
             '<span class="tide-day__weekday">' + weekday + '</span>' +
@@ -153,18 +153,35 @@ function renderMonthCard(year, month, springDays) {
     return (
         '<div class="tide-month" style="--month-days:' + daysInMonth + ';">' +
         '<div class="tide-month__header">' + monthNames[month - 1] + '</div>' +
-        '<div class="tide-month__body">' +
-        '<div class="tide-wave">' + buildWaveSvg() + '</div>' +
-        '<div class="tide-day-list">' + rows.join('') + '</div>' +
+        '<div class="tide-month__days">' + dayCells.join('') + '</div>' +
+        '<div class="tide-month__chart">' +
+        '<div class="tide-wave">' + buildWaveSvg(daysInMonth) + '</div>' +
         '</div>' +
         '</div>'
     );
 }
 
-function buildWaveSvg() {
-    return '<svg viewBox="0 0 120 100" preserveAspectRatio="none" aria-hidden="true">' +
-        '<path d="M0 50 Q 15 0 30 50 T 60 50 T 90 50 T 120 50" />' +
-        '<path d="M0 50 Q 15 100 30 50 T 60 50 T 90 50 T 120 50" />' +
+function buildWaveSvg(daysInMonth) {
+    var dayWidth = 12;
+    var viewWidth = Math.max(1, daysInMonth) * dayWidth;
+    var midY = 42;
+    var peakY = 12;
+    var troughY = 72;
+    var path = 'M0 ' + midY;
+    var gridLines = [];
+
+    for (var day = 0; day < daysInMonth; day++) {
+        var x0 = day * dayWidth;
+        var x1 = x0 + dayWidth / 2;
+        var x2 = x0 + dayWidth;
+        var controlY = day % 2 === 0 ? peakY : troughY;
+        path += ' Q ' + x1 + ' ' + controlY + ' ' + x2 + ' ' + midY;
+        gridLines.push('<line x1="' + x2 + '" y1="0" x2="' + x2 + '" y2="84" />');
+    }
+
+    return '<svg viewBox="0 0 ' + viewWidth + ' 84" preserveAspectRatio="none" aria-hidden="true">' +
+        '<g class="tide-wave__grid">' + gridLines.join('') + '</g>' +
+        '<path class="tide-wave__path" d="' + path + '" />' +
         '</svg>';
 }
 
