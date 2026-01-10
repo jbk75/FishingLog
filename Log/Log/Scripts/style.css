@@ -235,9 +235,9 @@ body
 
 .tide-month-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
-    padding: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 20px;
+    padding: 16px;
     background: #2f2f2f;
     color: #f5f5f5;
     border-radius: 8px;
@@ -252,32 +252,40 @@ body
 .tide-month {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px;
+    gap: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 12px 14px 16px;
     background: #3b3b3b;
-    min-height: 320px;
+    min-height: 220px;
 }
 
 .tide-month__header {
-    font-size: 14px;
+    font-size: 15px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    text-align: center;
+    text-align: left;
     color: #f2f2f2;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.tide-month__body {
+.tide-month__days {
     display: grid;
-    grid-template-columns: 40px 1fr;
-    gap: 8px;
-    align-items: start;
-    min-height: calc(var(--month-days, 31) * 18px);
+    grid-template-columns: repeat(var(--month-days, 31), minmax(18px, 1fr));
+    gap: 4px;
+    font-size: 12px;
+    padding-top: 4px;
+}
+
+.tide-month__chart {
+    position: relative;
+    min-height: 120px;
+    padding-top: 6px;
 }
 
 .tide-wave {
-    width: 40px;
-    height: calc(var(--month-days, 31) * 18px);
+    width: 100%;
+    height: 120px;
     display: flex;
     align-items: stretch;
 }
@@ -285,23 +293,26 @@ body
 .tide-wave svg {
     width: 100%;
     height: 100%;
+}
+
+.tide-wave__grid line {
+    stroke: rgba(255, 255, 255, 0.08);
+    stroke-width: 1;
+}
+
+.tide-wave__path {
     stroke: #d7dc3f;
     stroke-width: 2;
     fill: none;
 }
 
-.tide-day-list {
-    display: grid;
-    grid-template-rows: repeat(var(--month-days, 31), 18px);
-    font-size: 12px;
-}
-
 .tide-day {
     display: grid;
-    grid-template-columns: 26px 40px 1fr;
+    grid-template-rows: auto auto;
     align-items: center;
-    gap: 6px;
+    gap: 2px;
     color: #e0e0e0;
+    text-align: center;
 }
 
 .tide-day__number {
@@ -314,10 +325,11 @@ body
 }
 
 .tide-day__marker {
-    height: 6px;
-    width: 6px;
+    height: 5px;
+    width: 5px;
     border-radius: 50%;
     background: transparent;
+    margin: 0 auto;
 }
 
 .tide-day--spring {
