@@ -37,7 +37,7 @@
                         <span class="calendar-menu__title-text"><b>Tides</b></span>
                         <span class="fa fa-moon-o text-muted" aria-hidden="true" title="Full moon"></span>
                         <span class="sr-only">Full moon</span>
-                        <span class="calendar-menu__subtitle">Estimated high and low tides for the selected year (UTC).</span>
+                        <span class="calendar-menu__subtitle">Spring tide windows for the selected year (UTC).</span>
                     </div>
                     <div class="calendar-menu__actions btn-group btn-group-sm" role="group" aria-label="Navigation">
                         <button class="btn btn-default" onclick="location.href='CalFull.html'">Fishing calendar</button>
@@ -54,7 +54,7 @@
                         <div class="panel-heading">
                             <div class="row">
                                 <div class="col-sm-8">
-                                    <b>Tidal calendar for <span id="tideYear"></span> (<span id="tideLocation"></span>)</b>
+                                    <b>Spring tides for <span id="tideYear"></span> (<span id="tideLocation"></span>)</b>
                                 </div>
                                 <div class="col-sm-4 text-right">
                                     <label class="sr-only" for="tideYearSelect">Year</label>
@@ -69,22 +69,11 @@
                                     <select id="tideLocationSelect" class="form-control input-sm"></select>
                                 </div>
                             </div>
-                            <p class="text-muted" style="margin-top:0;">Times are approximate and based on a semi-diurnal cycle. Model: <span id="tideModel"></span></p>
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th><span class="fa fa-arrow-up text-primary" aria-hidden="true"></span> High tides (UTC)</th>
-                                            <th><span class="fa fa-arrow-down text-info" aria-hidden="true"></span> Low tides (UTC)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tideTableBody">
-                                        <tr>
-                                            <td colspan="3"><span class="fa fa-spinner fa-spin"></span> Loading tides...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <p class="text-muted" style="margin-top:0;">Highlighted days mark spring tide windows. Model: <span id="tideModel"></span></p>
+                            <div id="tideMonthGrid" class="tide-month-grid">
+                                <div class="tide-loading">
+                                    <span class="fa fa-spinner fa-spin"></span> Loading tides...
+                                </div>
                             </div>
                             <div id="tideError" class="text-danger" style="display:none;"></div>
                         </div>
