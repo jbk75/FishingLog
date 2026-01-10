@@ -30,12 +30,14 @@ function renderSuggestions(suggestions, year) {
         rows += '<tr>' +
             '<td>' + (suggestion.placeName || suggestion.PlaceName || 'Unknown place') + '</td>' +
             '<td>' + formatSuggestedDate(dateValue) + '</td>' +
+            '<td>' + (suggestion.tripCount || suggestion.TripCount || 0) + '</td>' +
+            '<td>' + (suggestion.newsCount || suggestion.NewsCount || 0) + '</td>' +
             '<td>' + (suggestion.reason || suggestion.Reason || '') + '</td>' +
             '</tr>';
     });
 
     var table = '<table class="table table-striped">' +
-        '<thead><tr><th>Fishing place</th><th>Suggested date</th><th>Why this day</th></tr></thead>' +
+        '<thead><tr><th>Fishing place</th><th>Suggested date</th><th>Trips</th><th>Fishing news</th><th>Why this day</th></tr></thead>' +
         '<tbody>' + rows + '</tbody>' +
         '</table>';
 

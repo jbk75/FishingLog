@@ -191,7 +191,9 @@ public class SuggestedFishingTripsController : ControllerBase
                 PlaceId = placeId,
                 PlaceName = placeMap.TryGetValue(placeId, out var name) ? name : "Unknown place",
                 Date = suggestedDate,
-                Reason = BuildReason(bestEntry)
+                Reason = BuildReason(bestEntry),
+                TripCount = bestEntry.TripCount,
+                NewsCount = bestEntry.NewsCount
             });
         }
 
@@ -259,7 +261,9 @@ public class SuggestedFishingTripsController : ControllerBase
                 PlaceId = placeId,
                 PlaceName = placeMap[placeId],
                 Date = date,
-                Reason = "Suggested for the upcoming April-November season based on available fishing places."
+                Reason = "Suggested for the upcoming April-November season based on available fishing places.",
+                TripCount = 0,
+                NewsCount = 0
             });
         }
 
