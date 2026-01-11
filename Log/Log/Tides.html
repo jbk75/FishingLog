@@ -68,8 +68,14 @@
                                     <label class="sr-only" for="tideLocationSelect">Location</label>
                                     <select id="tideLocationSelect" class="form-control input-sm"></select>
                                 </div>
+                                <div class="col-sm-6 text-right tide-filter">
+                                    <label class="tide-filter__label" for="tideFishingMonthsOnly">
+                                        <input type="checkbox" id="tideFishingMonthsOnly">
+                                        Show fishing months only (Apr - Oct)
+                                    </label>
+                                </div>
                             </div>
-                            <p class="text-muted" style="margin-top:0;">Highlighted days mark spring tide windows. Model: <span id="tideModel"></span></p>
+                            <p class="text-muted" style="margin-top:0;">Spring tide windows are marked with “Stórstraumur”. Model: <span id="tideModel"></span></p>
                             <div id="tideMonthGrid" class="tide-month-grid">
                                 <div class="tide-loading">
                                     <span class="fa fa-spinner fa-spin"></span> Loading tides...

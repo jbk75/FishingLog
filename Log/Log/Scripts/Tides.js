@@ -8,10 +8,13 @@ var monthNames = [
 ];
 
 var weekdayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+var currentTideYear = new Date().getFullYear();
+var currentTideMonths = null;
 
 $(document).ready(function () {
     initializeTideYearSelect();
     initializeTideLocationSelect();
+    initializeFishingMonthToggle();
     loadTides(getSelectedTideYear(), getSelectedLocation());
 });
 
@@ -63,10 +66,19 @@ function getSelectedLocation() {
     return tideLocations[0];
 }
 
+function initializeFishingMonthToggle() {
+    $("#tideFishingMonthsOnly").on('change', function () {
+        if (currentTideMonths) {
+            renderSpringTideYear(currentTideYear, currentTideMonths);
+        }
+    });
+}
+
 function loadTides(year, location) {
     var selectedYear = year || new Date().getFullYear();
     var selectedLocation = location || tideLocations[0];
 
+    currentTideYear = selectedYear;
     $("#tideYear").text(selectedYear);
     $("#tideLocation").text(selectedLocation.name);
     $("#tideYearSelect").val(selectedYear);
@@ -81,6 +93,7 @@ function loadTides(year, location) {
             for (var i = 0; i < arguments.length; i++) {
                 months[i + 1] = arguments[i][0];
             }
+            currentTideMonths = months;
             renderSpringTideYear(selectedYear, months);
         })
         .fail(function (xhr) {
@@ -111,6 +124,9 @@ function fetchSpringTideMonth(year, month, location) {
 function renderSpringTideYear(year, months) {
     var monthCards = [];
     for (var month = 1; month <= 12; month++) {
+        if (!shouldShowMonth(month)) {
+            continue;
+        }
         var monthData = months[month] || [];
         var springDays = buildSpringDayMap(monthData);
         monthCards.push(renderMonthCard(year, month, springDays));
@@ -141,48 +157,46 @@ function renderMonthCard(year, month, springDays) {
         var springInfo = springDays[day];
         var isSpring = !!springInfo && springInfo.isSpringTide;
         var reason = springInfo && springInfo.reason ? springInfo.reason : '';
+        var phase = springInfo ? springInfo.phase : null;
+        var phaseIcon = getPhaseIcon(phase);
+        var springLabel = isSpring ? '<span class="tide-day__spring">Stórstraumur</span>' : '';
         dayCells.push(
-            '<div class="tide-day' + (isSpring ? ' tide-day--spring' : '') + '" title="' + escapeHtml(reason) + '">' +
-            '<span class="tide-day__number">' + day + '</span>' +
+            '<li class="tide-day' + (isSpring ? ' tide-day--spring' : '') + '" title="' + escapeHtml(reason) + '">' +
+            '<span class="tide-day__date">' + monthNames[month - 1] + ' ' + day + '</span>' +
             '<span class="tide-day__weekday">' + weekday + '</span>' +
-            '<span class="tide-day__marker" aria-hidden="true"></span>' +
-            '</div>'
+            phaseIcon +
+            springLabel +
+            '</li>'
         );
     }
 
     return (
-        '<div class="tide-month" style="--month-days:' + daysInMonth + ';">' +
+        '<div class="tide-month">' +
         '<div class="tide-month__header">' + monthNames[month - 1] + '</div>' +
-        '<div class="tide-month__days">' + dayCells.join('') + '</div>' +
-        '<div class="tide-month__chart">' +
-        '<div class="tide-wave">' + buildWaveSvg(daysInMonth) + '</div>' +
-        '</div>' +
+        '<ul class="tide-month__list">' + dayCells.join('') + '</ul>' +
         '</div>'
     );
 }
 
-function buildWaveSvg(daysInMonth) {
-    var dayWidth = 12;
-    var viewWidth = Math.max(1, daysInMonth) * dayWidth;
-    var midY = 42;
-    var peakY = 12;
-    var troughY = 72;
-    var path = 'M0 ' + midY;
-    var gridLines = [];
-
-    for (var day = 0; day < daysInMonth; day++) {
-        var x0 = day * dayWidth;
-        var x1 = x0 + dayWidth / 2;
-        var x2 = x0 + dayWidth;
-        var controlY = day % 2 === 0 ? peakY : troughY;
-        path += ' Q ' + x1 + ' ' + controlY + ' ' + x2 + ' ' + midY;
-        gridLines.push('<line x1="' + x2 + '" y1="0" x2="' + x2 + '" y2="84" />');
+function getPhaseIcon(phase) {
+    if (phase === null || phase === undefined) {
+        return '';
     }
+    if (phase === 0 || phase === 'NewMoon') {
+        return '<span class="tide-day__icon" aria-label="New moon"><span class="fa fa-circle" aria-hidden="true"></span></span>';
+    }
+    if (phase === 2 || phase === 'FullMoon') {
+        return '<span class="tide-day__icon" aria-label="Full moon"><span class="fa fa-moon-o" aria-hidden="true"></span></span>';
+    }
+    return '';
+}
 
-    return '<svg viewBox="0 0 ' + viewWidth + ' 84" preserveAspectRatio="none" aria-hidden="true">' +
-        '<g class="tide-wave__grid">' + gridLines.join('') + '</g>' +
-        '<path class="tide-wave__path" d="' + path + '" />' +
-        '</svg>';
+function shouldShowMonth(month) {
+    var fishingOnly = $("#tideFishingMonthsOnly").is(':checked');
+    if (!fishingOnly) {
+        return true;
+    }
+    return month >= 4 && month <= 10;
 }
 
 function escapeHtml(value) {

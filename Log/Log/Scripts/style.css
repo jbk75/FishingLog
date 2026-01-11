@@ -243,6 +243,18 @@ body
     border-radius: 8px;
 }
 
+.tide-filter {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 6px;
+}
+
+.tide-filter__label {
+    font-weight: 600;
+    margin: 0;
+}
+
 .tide-loading {
     color: #f5f5f5;
     text-align: center;
@@ -269,76 +281,52 @@ body
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.tide-month__days {
-    display: grid;
-    grid-template-columns: repeat(var(--month-days, 31), minmax(18px, 1fr));
-    gap: 4px;
-    font-size: 12px;
-    padding-top: 4px;
-}
-
-.tide-month__chart {
-    position: relative;
-    min-height: 120px;
-    padding-top: 6px;
-}
-
-.tide-wave {
-    width: 100%;
-    height: 120px;
+.tide-month__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
-    align-items: stretch;
-}
-
-.tide-wave svg {
-    width: 100%;
-    height: 100%;
-}
-
-.tide-wave__grid line {
-    stroke: rgba(255, 255, 255, 0.08);
-    stroke-width: 1;
-}
-
-.tide-wave__path {
-    stroke: #d7dc3f;
-    stroke-width: 2;
-    fill: none;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
 }
 
 .tide-day {
-    display: grid;
-    grid-template-rows: auto auto;
+    display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 10px;
     color: #e0e0e0;
-    text-align: center;
+    text-align: left;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.04);
 }
 
-.tide-day__number {
-    font-weight: 600;
+.tide-day__date {
+    font-weight: 700;
+    min-width: 110px;
 }
 
 .tide-day__weekday {
     font-size: 11px;
     color: #bfbfbf;
+    min-width: 40px;
 }
 
-.tide-day__marker {
-    height: 5px;
-    width: 5px;
-    border-radius: 50%;
-    background: transparent;
-    margin: 0 auto;
+.tide-day__icon {
+    color: #d7dc3f;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tide-day__spring {
+    font-weight: 600;
+    color: #ffffff;
 }
 
 .tide-day--spring {
     color: #ffffff;
-}
-
-.tide-day--spring .tide-day__marker {
-    background: #d7dc3f;
-    box-shadow: 0 0 4px rgba(215, 220, 63, 0.8);
 }
 
 .weather-history__controls {
