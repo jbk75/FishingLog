@@ -294,7 +294,7 @@ body
 .tide-day {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 18px;
     color: #e0e0e0;
     text-align: left;
     padding: 6px 8px;
@@ -304,13 +304,13 @@ body
 
 .tide-day__date {
     font-weight: 700;
-    min-width: 110px;
+    min-width: 140px;
 }
 
 .tide-day__weekday {
     font-size: 11px;
     color: #bfbfbf;
-    min-width: 40px;
+    min-width: 50px;
 }
 
 .tide-day__icon {
