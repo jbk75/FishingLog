@@ -363,7 +363,8 @@ body
 
 .tide-meta__label .fa {
     margin-right: 6px;
-    color: #2f5f4f;
+    color: #6f7dff;
+    text-shadow: 0 0 6px rgba(111, 125, 255, 0.35);
 }
 
 .tide-meta__model {
@@ -373,7 +374,7 @@ body
 .tide-month-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 16px;
+    gap: 28px;
     padding: 20px;
     background: #f7f6f2;
 }
@@ -444,7 +445,8 @@ body
 }
 
 .tide-day__icon {
-    color: #d7b24a;
+    color: #6f7dff;
+    text-shadow: 0 0 6px rgba(111, 125, 255, 0.35);
     width: 40px;
     text-align: center;
 }
