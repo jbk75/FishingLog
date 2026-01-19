@@ -233,153 +233,30 @@ body
     min-width: 150px;
 }
 
-.tide-page {
-    background: #f4f1ea;
-    color: #2c2c2c;
-    font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    min-height: 100vh;
+.tide-month-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 20px;
+    padding: 16px;
+    background: #2f2f2f;
+    color: #f5f5f5;
+    border-radius: 8px;
 }
 
-.tide-hero {
-    background: #2f5f4f;
-    color: #ffffff;
-    padding: 28px 0 36px;
-}
-
-.tide-hero__inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px 12px;
-}
-
-.tide-hero__title {
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-}
-
-.tide-hero__subtitle {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.75);
-    margin-top: 6px;
-}
-
-.tide-nav {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
+.tide-filter {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 6px;
 }
 
-.tide-nav a {
-    color: rgba(255, 255, 255, 0.85);
-    text-decoration: none;
-    font-size: 13px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-.tide-nav a:hover,
-.tide-nav a:focus {
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
-.tide-nav a.is-active {
-    background: #ffffff;
-    color: #2f5f4f;
-    border-color: #ffffff;
+.tide-filter__label {
     font-weight: 600;
-}
-
-.tide-main {
-    max-width: 1100px;
-    margin: -24px auto 40px;
-    padding: 0 16px 32px;
-}
-
-.tide-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 20px 24px;
-    box-shadow: 0 10px 24px rgba(47, 40, 30, 0.12);
-    margin-bottom: 18px;
-}
-
-.tide-card--plain {
-    padding: 0;
-    overflow: hidden;
-}
-
-.tide-controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 16px;
-}
-
-.tide-controls__inputs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.tide-control label {
-    display: block;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: #5a5347;
-    margin-bottom: 6px;
-}
-
-.tide-control .form-control {
-    min-width: 200px;
-}
-
-.tide-toggle {
-    align-self: center;
-    font-weight: 600;
-    color: #3a352d;
     margin: 0;
 }
 
-.tide-toggle input {
-    margin-right: 6px;
-}
-
-.tide-meta {
-    margin-top: 16px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 20px;
-    font-size: 13px;
-    color: #5a5347;
-}
-
-.tide-meta__label .fa {
-    margin-right: 6px;
-    color: #2f5f4f;
-}
-
-.tide-meta__model {
-    font-weight: 600;
-}
-
-.tide-month-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 16px;
-    padding: 20px;
-    background: #f7f6f2;
-}
-
 .tide-loading {
-    color: #6b6254;
+    color: #f5f5f5;
     text-align: center;
     padding: 24px;
 }
@@ -388,38 +265,37 @@ body
     display: flex;
     flex-direction: column;
     gap: 10px;
-    border: 1px solid #e2ddd2;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     padding: 12px 14px 16px;
-    background: #ffffff;
-    border-radius: 10px;
+    background: #3b3b3b;
     min-height: 220px;
 }
 
 .tide-month__header {
-    font-size: 14px;
+    font-size: 15px;
     text-transform: uppercase;
-    letter-spacing: 0.9px;
+    letter-spacing: 1px;
     text-align: left;
-    color: #2f5f4f;
+    color: #f2f2f2;
     padding-bottom: 6px;
-    border-bottom: 1px solid #efe9dc;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .tide-month__table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0 6px;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .tide-day {
-    color: #4d463c;
+    color: #e0e0e0;
     text-align: left;
 }
 
 .tide-day td {
     padding: 6px 8px;
-    background: #f3f1ec;
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .tide-day td:first-child {
@@ -439,12 +315,12 @@ body
 
 .tide-day__weekday {
     font-size: 11px;
-    color: #827a6d;
+    color: #bfbfbf;
     width: 60px;
 }
 
 .tide-day__icon {
-    color: #d7b24a;
+    color: #d7dc3f;
     width: 40px;
     text-align: center;
 }
@@ -457,21 +333,12 @@ body
 
 .tide-day__spring {
     font-weight: 600;
-    color: #2f5f4f;
+    color: #ffffff;
     width: 140px;
 }
 
 .tide-day--spring {
-    color: #2f5f4f;
-}
-
-.tide-day--spring td {
-    background: #e6efe9;
-}
-
-.tide-error {
-    padding: 12px 20px 20px;
-    color: #b21f2d;
+    color: #ffffff;
 }
 
 .weather-history__controls {
