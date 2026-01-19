@@ -281,40 +281,51 @@ body
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.tide-month__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+.tide-month__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 6px;
     font-size: 13px;
 }
 
 .tide-day {
-    display: flex;
-    align-items: center;
-    gap: 18px;
     color: #e0e0e0;
     text-align: left;
+}
+
+.tide-day td {
     padding: 6px 8px;
-    border-radius: 6px;
     background: rgba(255, 255, 255, 0.04);
+}
+
+.tide-day td:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.tide-day td:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
 .tide-day__date {
     font-weight: 700;
-    min-width: 140px;
+    width: 150px;
 }
 
 .tide-day__weekday {
     font-size: 11px;
     color: #bfbfbf;
-    min-width: 50px;
+    width: 60px;
 }
 
 .tide-day__icon {
     color: #d7dc3f;
+    width: 40px;
+    text-align: center;
+}
+
+.tide-day__icon-marker {
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -323,6 +334,7 @@ body
 .tide-day__spring {
     font-weight: 600;
     color: #ffffff;
+    width: 140px;
 }
 
 .tide-day--spring {

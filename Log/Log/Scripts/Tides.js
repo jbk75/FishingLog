@@ -150,7 +150,7 @@ function buildSpringDayMap(monthData) {
 
 function renderMonthCard(year, month, springDays) {
     var daysInMonth = new Date(year, month, 0).getDate();
-    var dayCells = [];
+    var dayRows = [];
     for (var day = 1; day <= daysInMonth; day++) {
         var date = new Date(Date.UTC(year, month - 1, day));
         var weekday = weekdayNames[date.getUTCDay()];
@@ -159,21 +159,23 @@ function renderMonthCard(year, month, springDays) {
         var reason = springInfo && springInfo.reason ? springInfo.reason : '';
         var phase = springInfo ? springInfo.phase : null;
         var phaseIcon = getPhaseIcon(phase);
-        var springLabel = isSpring ? '<span class="tide-day__spring">Stórstraumur</span>' : '';
-        dayCells.push(
-            '<li class="tide-day' + (isSpring ? ' tide-day--spring' : '') + '" title="' + escapeHtml(reason) + '">' +
-            '<span class="tide-day__date">' + monthNames[month - 1] + ' ' + day + '</span>' +
-            '<span class="tide-day__weekday">' + weekday + '</span>' +
-            phaseIcon +
-            springLabel +
-            '</li>'
+        var springLabel = isSpring ? 'Stórstraumur' : '';
+        dayRows.push(
+            '<tr class="tide-day' + (isSpring ? ' tide-day--spring' : '') + '" title="' + escapeHtml(reason) + '">' +
+            '<td class="tide-day__date">' + monthNames[month - 1] + ' ' + day + '</td>' +
+            '<td class="tide-day__weekday">' + weekday + '</td>' +
+            '<td class="tide-day__icon">' + phaseIcon + '</td>' +
+            '<td class="tide-day__spring">' + springLabel + '</td>' +
+            '</tr>'
         );
     }
 
     return (
         '<div class="tide-month">' +
         '<div class="tide-month__header">' + monthNames[month - 1] + '</div>' +
-        '<ul class="tide-month__list">' + dayCells.join('') + '</ul>' +
+        '<table class="tide-month__table">' +
+        '<tbody>' + dayRows.join('') + '</tbody>' +
+        '</table>' +
         '</div>'
     );
 }
@@ -183,10 +185,10 @@ function getPhaseIcon(phase) {
         return '';
     }
     if (phase === 0 || phase === 'NewMoon') {
-        return '<span class="tide-day__icon" aria-label="New moon"><span class="fa fa-circle" aria-hidden="true"></span></span>';
+        return '<span class="tide-day__icon-marker" aria-label="New moon"><span class="fa fa-circle" aria-hidden="true"></span></span>';
     }
     if (phase === 2 || phase === 'FullMoon') {
-        return '<span class="tide-day__icon" aria-label="Full moon"><span class="fa fa-moon-o" aria-hidden="true"></span></span>';
+        return '<span class="tide-day__icon-marker" aria-label="Full moon"><span class="fa fa-moon-o" aria-hidden="true"></span></span>';
     }
     return '';
 }
