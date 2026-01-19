@@ -1,4 +1,4 @@
-﻿<html>
+<html>
 <head>
     <link rel="stylesheet" type="text/css" href="Scripts/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="Scripts/bootstrap-datepicker.min.css">
@@ -24,69 +24,59 @@
     <script src="Dates.js"></script>
     <script src="Scripts/Tides.js"></script>
 </head>
-<body>
+<body class="tide-page">
     <a class="home-link" href="CalFull.html" aria-label="Home">
         <span class="fa fa-home" aria-hidden="true"></span>
     </a>
 
-    <div class="sub-content-container">
-        <div class="sub-content">
-            <div class="panel panel-default main-panel">
-                <div class="panel-heading calendar-menu">
-                    <div class="calendar-menu__title">
-                        <span class="calendar-menu__title-text"><b>Tides</b></span>
-                        <span class="fa fa-moon-o text-muted" aria-hidden="true" title="Full moon"></span>
-                        <span class="sr-only">Full moon</span>
-                        <span class="calendar-menu__subtitle">Spring tide windows for the selected year (UTC).</span>
+    <header class="tide-hero">
+        <div class="tide-hero__inner">
+            <div class="tide-hero__title">Dagatal</div>
+            <div class="tide-hero__subtitle">Spring tide windows for <span id="tideYear"></span> (<span id="tideLocation"></span>)</div>
+        </div>
+        <nav class="tide-nav" aria-label="Primary">
+            <a href="CalFull.html">Fishing calendar</a>
+            <a href="FishingPlaces.html">Fishing places list</a>
+            <a href="FishingPlaceSpots.html">Fishing place spots</a>
+            <a href="FishingPlaceWishlist.html">Fishing place wishlist</a>
+            <a class="is-active" href="Tides.html">Tides</a>
+            <a href="SuggestedFishingTrips.html">Suggested trips</a>
+            <a href="fishingnews.html">Fishing news</a>
+        </nav>
+    </header>
+
+    <main class="tide-main">
+        <section class="tide-card">
+            <div class="tide-controls">
+                <div class="tide-controls__inputs">
+                    <div class="tide-control">
+                        <label for="tideYearSelect">Year</label>
+                        <select id="tideYearSelect" class="form-control input-sm"></select>
                     </div>
-                    <div class="calendar-menu__actions btn-group btn-group-sm" role="group" aria-label="Navigation">
-                        <button class="btn btn-default" onclick="location.href='CalFull.html'">Fishing calendar</button>
-                        <button class="btn btn-default" onclick="location.href='FishingPlaces.html'">Fishing places list</button>
-                        <button class="btn btn-default" onclick="location.href='FishingPlaceSpots.html'">Fishing place spots</button>
-                        <button class="btn btn-default" onclick="location.href='FishingPlaceWishlist.html'">Fishing place wishlist</button>
-                        <button class="btn btn-default active" onclick="location.href='Tides.html'">Tides</button>
-                        <button class="btn btn-default" onclick="location.href='SuggestedFishingTrips.html'">Suggested trips</button>
-                        <button class="btn btn-default" onclick="location.href='fishingnews.html'">Fishing news</button>
+                    <div class="tide-control">
+                        <label for="tideLocationSelect">Location</label>
+                        <select id="tideLocationSelect" class="form-control input-sm"></select>
                     </div>
                 </div>
-                <div class="panel-body">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-sm-8">
-                                    <b>Spring tides for <span id="tideYear"></span> (<span id="tideLocation"></span>)</b>
-                                </div>
-                                <div class="col-sm-4 text-right">
-                                    <label class="sr-only" for="tideYearSelect">Year</label>
-                                    <select id="tideYearSelect" class="form-control input-sm"></select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row" style="margin-bottom:10px;">
-                                <div class="col-sm-6">
-                                    <label class="sr-only" for="tideLocationSelect">Location</label>
-                                    <select id="tideLocationSelect" class="form-control input-sm"></select>
-                                </div>
-                                <div class="col-sm-6 text-right tide-filter">
-                                    <label class="tide-filter__label" for="tideFishingMonthsOnly">
-                                        <input type="checkbox" id="tideFishingMonthsOnly">
-                                        Show fishing months only (Apr - Oct)
-                                    </label>
-                                </div>
-                            </div>
-                            <p class="text-muted" style="margin-top:0;">Spring tide windows are marked with “Stórstraumur”. Model: <span id="tideModel"></span></p>
-                            <div id="tideMonthGrid" class="tide-month-grid">
-                                <div class="tide-loading">
-                                    <span class="fa fa-spinner fa-spin"></span> Loading tides...
-                                </div>
-                            </div>
-                            <div id="tideError" class="text-danger" style="display:none;"></div>
-                        </div>
-                    </div>
+                <label class="tide-toggle" for="tideFishingMonthsOnly">
+                    <input type="checkbox" id="tideFishingMonthsOnly">
+                    Show fishing months only (Apr - Oct)
+                </label>
+            </div>
+            <div class="tide-meta">
+                <span class="tide-meta__label"><span class="fa fa-moon-o" aria-hidden="true"></span> Spring tide windows are marked with “Stórstraumur”.</span>
+                <span class="tide-meta__model">Model: <span id="tideModel"></span></span>
+            </div>
+        </section>
+
+        <section class="tide-card tide-card--plain">
+            <div id="tideMonthGrid" class="tide-month-grid">
+                <div class="tide-loading">
+                    <span class="fa fa-spinner fa-spin"></span> Loading tides...
                 </div>
             </div>
-        </div>
-    </div>
+            <div id="tideError" class="tide-error" style="display:none;"></div>
+        </section>
+    </main>
 </body>
 </html>
