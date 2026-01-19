@@ -1,5 +1,15 @@
 var tideLocations = [
-    { id: 'reykjavik', name: 'Reykjavik' }
+    { id: 'reykjavik', name: 'Reykjavík' },
+    { id: 'seydisfjordur', name: 'Seyðisfjörður' },
+    { id: 'raufarhofn', name: 'Raufarhöfn' },
+    { id: 'borgarnes', name: 'Borgarnes' },
+    { id: 'isafjordur', name: 'Ísafjörður' },
+    { id: 'vik-i-myrdal', name: 'Vík í mýrdal' },
+    { id: 'klaustur', name: 'Klaustur' },
+    { id: 'egilsstadir', name: 'Egilsstaðir' },
+    { id: 'blondous', name: 'Blönduós' },
+    { id: 'akureyri', name: 'Akureyri' },
+    { id: 'budardalur', name: 'Búðardalur' }
 ];
 
 var monthNames = [
