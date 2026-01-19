@@ -278,8 +278,11 @@ body
     letter-spacing: 1px;
     text-align: left;
     color: #f2f2f2;
-    padding-bottom: 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 700;
+    padding: 8px 10px;
+    background: linear-gradient(135deg, #1e6bb8 0%, #1b4f9c 100%);
+    border-radius: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .tide-month__table {
