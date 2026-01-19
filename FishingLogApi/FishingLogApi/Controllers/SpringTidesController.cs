@@ -13,7 +13,17 @@ public sealed class SpringTidesController : ControllerBase
         new Dictionary<string, GeoLocation>(StringComparer.OrdinalIgnoreCase)
         {
             ["reykjavik"] = KnownLocations.Reykjavik,
-            ["reykjavík"] = KnownLocations.Reykjavik
+            ["reykjavík"] = KnownLocations.Reykjavik,
+            ["seyðisfjörður"] = KnownLocations.Seydisfjordur,
+            ["raufarhöfn"] = KnownLocations.Raufarhofn,
+            ["borgarnes"] = KnownLocations.Borgarnes,
+            ["ísafjörður"] = KnownLocations.Isafjordur,
+            ["vík í mýrdal"] = KnownLocations.VikIMyrdal,
+            ["klaustur"] = KnownLocations.Klaustur,
+            ["egilsstaðir"] = KnownLocations.Egilsstadir,
+            ["blönduós"] = KnownLocations.Blondous,
+            ["akureyri"] = KnownLocations.Akureyri,
+            ["búðardalur"] = KnownLocations.Budardalur
         };
 
     // GET: api/spring-tides/{year}/{month}?location=Reykjavik&windowDays=1
@@ -37,7 +47,7 @@ public sealed class SpringTidesController : ControllerBase
         var resolvedLocation = ResolveLocation(location);
         if (resolvedLocation is null)
         {
-            return BadRequest("Location must be one of: Reykjavik.");
+            return BadRequest("Location must be one of: Reykjavik, Seyðisfjörður, Raufarhöfn, Borgarnes, Ísafjörður, Vík í mýrdal, Klaustur, Egilsstaðir, Blönduós, Akureyri, Búðardalur.");
         }
 
         var resolvedWindowDays = windowDays ?? SpringTideService.DefaultWindowDays;
