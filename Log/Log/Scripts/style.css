@@ -3,6 +3,135 @@ body
 	margin:0;
 }
 
+.tide-page {
+	background: #eef2f7;
+	color: #1f2937;
+	font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.tide-page .sub-content {
+	padding: 24px;
+}
+
+.tide-page .main-panel {
+	border: none;
+	box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
+	border-radius: 16px;
+	overflow: hidden;
+	background: #ffffff;
+}
+
+.tide-hero {
+	background: linear-gradient(135deg, #0f487a 0%, #1e78c9 60%, #2a8bdc 100%);
+	color: #fff;
+	border-bottom: none;
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+	flex-wrap: wrap;
+	padding: 24px 26px;
+}
+
+.tide-hero__title {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.tide-hero__eyebrow {
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	font-size: 12px;
+	opacity: 0.8;
+}
+
+.tide-hero__heading {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-size: 24px;
+	font-weight: 700;
+}
+
+.tide-hero__text {
+	letter-spacing: 0.5px;
+}
+
+.tide-hero__icon {
+	font-size: 22px;
+	color: #ffe58f;
+}
+
+.tide-hero__subtitle {
+	font-size: 14px;
+	opacity: 0.9;
+}
+
+.tide-hero__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.tide-hero__actions .btn {
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.16);
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	color: #fff;
+	font-weight: 600;
+	padding: 6px 16px;
+	min-width: auto;
+}
+
+.tide-hero__actions .btn.active,
+.tide-hero__actions .btn:hover,
+.tide-hero__actions .btn:focus {
+	background: #ffffff;
+	color: #0f487a;
+	border-color: #ffffff;
+}
+
+.tide-content {
+	padding: 24px 26px 32px;
+	background: #f8fafc;
+}
+
+.tide-card {
+	border: none;
+	box-shadow: 0 12px 25px rgba(15, 23, 42, 0.08);
+	border-radius: 14px;
+	overflow: hidden;
+}
+
+.tide-card__header {
+	background: #ffffff;
+	border-bottom: 1px solid #e2e8f0;
+	font-size: 15px;
+	padding: 18px 22px;
+}
+
+.tide-card__body {
+	background: #f8fafc;
+	padding: 22px;
+}
+
+.tide-select {
+	border-radius: 8px;
+	border-color: #cbd5f5;
+	box-shadow: none;
+	height: 34px;
+}
+
+.tide-filters {
+	margin-bottom: 12px;
+}
+
+.tide-note {
+	margin-top: 0;
+	color: #64748b;
+	font-size: 13px;
+}
+
 .home-link {
 	position: fixed;
 	top: 12px;
@@ -235,12 +364,13 @@ body
 
 .tide-month-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-    gap: 20px;
-    padding: 16px;
-    background: #2f2f2f;
-    color: #f5f5f5;
-    border-radius: 8px;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 18px;
+    padding: 18px;
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
 }
 
 .tide-filter {
@@ -256,7 +386,7 @@ body
 }
 
 .tide-loading {
-    color: #f5f5f5;
+    color: #64748b;
     text-align: center;
     padding: 24px;
 }
@@ -265,10 +395,11 @@ body
     display: flex;
     flex-direction: column;
     gap: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid #e2e8f0;
     padding: 12px 14px 16px;
-    background: #3b3b3b;
+    background: #f1f5f9;
     min-height: 220px;
+    border-radius: 10px;
 }
 
 .tide-month__header {
@@ -276,9 +407,9 @@ body
     text-transform: uppercase;
     letter-spacing: 1px;
     text-align: left;
-    color: #f2f2f2;
+    color: #0f172a;
     padding-bottom: 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid #cbd5f5;
 }
 
 .tide-month__table {
@@ -289,13 +420,14 @@ body
 }
 
 .tide-day {
-    color: #e0e0e0;
+    color: #0f172a;
     text-align: left;
 }
 
 .tide-day td {
     padding: 6px 8px;
-    background: rgba(255, 255, 255, 0.04);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
 }
 
 .tide-day td:first-child {
@@ -315,12 +447,12 @@ body
 
 .tide-day__weekday {
     font-size: 11px;
-    color: #bfbfbf;
+    color: #64748b;
     width: 60px;
 }
 
 .tide-day__icon {
-    color: #d7dc3f;
+    color: #f59e0b;
     width: 40px;
     text-align: center;
 }
@@ -333,7 +465,7 @@ body
 
 .tide-day__spring {
     font-weight: 600;
-    color: #ffffff;
+    color: #0f172a;
     width: 140px;
 }
 
