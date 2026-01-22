@@ -1,0 +1,132 @@
+﻿<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="Scripts/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="Scripts/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="Scripts/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="Scripts/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Content-Type" content="text/html; charset=utf-8">
+    <meta name="title" content="Iceland fishing map">
+
+    <title>Iceland fishing map</title>
+
+    <script src="Scripts/respond.min.js"></script>
+    <script src="Scripts/jquery-1.10.2.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+<body>
+    <a class="home-link" href="CalFull.html" aria-label="Home">
+        <span class="fa fa-home" aria-hidden="true"></span>
+    </a>
+
+    <div class="sub-content-container">
+        <div class="sub-content">
+            <div class="panel panel-default main-panel">
+                <div class="panel-heading calendar-menu">
+                    <div class="calendar-menu__title">
+                        <span class="calendar-menu__title-text"><b>Iceland fishing map</b></span>
+                        <span class="calendar-menu__subtitle">Track where you've fished and what is still on the list.</span>
+                    </div>
+                    <div class="calendar-menu__actions btn-group btn-group-sm" role="group" aria-label="Navigation">
+                        <button class="btn btn-default" onclick="location.href='CalFull.html'">Fishing calendar</button>
+                        <button class="btn btn-default" onclick="location.href='FishingPlaces.html'">Fishing places list</button>
+                        <button class="btn btn-default" onclick="location.href='FishingPlaceSpots.html'">Fishing place spots</button>
+                        <button class="btn btn-default" onclick="location.href='FishingPlaceWishlist.html'">Fishing place wishlist</button>
+                        <button class="btn btn-default" onclick="location.href='WeatherHistory.html'">Weather history</button>
+                        <button class="btn btn-default" onclick="location.href='Tides.html'">Tides</button>
+                        <button class="btn btn-default" onclick="location.href='SuggestedFishingTrips.html'">Suggested trips</button>
+                        <button class="btn btn-default" onclick="location.href='fishingnews.html'">Fishing news</button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row" style="margin-bottom: 15px;">
+                        <div class="col-sm-6">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    <b>Fishing progress</b>
+                                </div>
+                                <div class="panel-body">
+                                    <p style="margin-bottom: 5px;">
+                                        <span class="label label-success">Visited</span>
+                                        <span id="visitedCount" class="badge">0</span>
+                                    </p>
+                                    <p style="margin-bottom: 0;">
+                                        <span class="label label-warning">Still to go</span>
+                                        <span id="remainingCount" class="badge">0</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <b>Legend</b>
+                                </div>
+                                <div class="panel-body">
+                                    <p style="margin-bottom: 8px;">
+                                        <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#2ecc71; margin-right:6px;"></span>
+                                        Visited fishing spots
+                                    </p>
+                                    <p style="margin-bottom: 0;">
+                                        <span style="display:inline-block; width:12px; height:12px; border-radius:50%; background:#f39c12; margin-right:6px;"></span>
+                                        Wishlist destinations
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="icelandMap" style="height: 520px; border-radius: 6px; border: 1px solid #ddd;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var fishingPlaces = [
+            { name: "Thingvellir Lake", latitude: 64.255, longitude: -21.129, status: "visited" },
+            { name: "Laxá í Aðaldal", latitude: 65.724, longitude: -17.422, status: "visited" },
+            { name: "Elliðaár River", latitude: 64.117, longitude: -21.846, status: "visited" },
+            { name: "Hítará River", latitude: 64.630, longitude: -22.263, status: "visited" },
+            { name: "West Ranga", latitude: 63.914, longitude: -20.823, status: "visited" },
+            { name: "Lagarfljót", latitude: 65.194, longitude: -14.653, status: "wishlist" },
+            { name: "Borgarfjörður", latitude: 64.531, longitude: -21.922, status: "wishlist" },
+            { name: "Höfn Harbour", latitude: 64.253, longitude: -15.212, status: "wishlist" },
+            { name: "Breiðafjörður", latitude: 65.159, longitude: -22.950, status: "wishlist" }
+        ];
+
+        var visitedCount = fishingPlaces.filter(function (place) {
+            return place.status === "visited";
+        }).length;
+        var remainingCount = fishingPlaces.length - visitedCount;
+
+        document.getElementById("visitedCount").textContent = visitedCount;
+        document.getElementById("remainingCount").textContent = remainingCount;
+
+        var map = L.map("icelandMap").setView([64.9631, -19.0208], 6);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "&copy; OpenStreetMap contributors"
+        }).addTo(map);
+
+        fishingPlaces.forEach(function (place) {
+            var isVisited = place.status === "visited";
+            var markerColor = isVisited ? "#2ecc71" : "#f39c12";
+            var marker = L.circleMarker([place.latitude, place.longitude], {
+                radius: 8,
+                fillColor: markerColor,
+                color: "#333",
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.9
+            }).addTo(map);
+
+            marker.bindPopup("<b>" + place.name + "</b><br>" + (isVisited ? "Visited" : "Still to go"));
+        });
+    </script>
+</body>
+</html>
