@@ -190,6 +190,428 @@ body {
     z-index: 2000;
 }
 
+#placeContextMenu > li > a {
+    cursor: pointer;
+.wind-direction-icon {
+    margin-left: 6px;
+    display: inline-block;
+}
+
+.calendar-menu__title-text {
+    font-size: 16px;
+}
+
+.calendar-menu__subtitle {
+    color: #777;
+    font-size: 13px;
+}
+
+.calendar-menu__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.calendar-menu__actions .btn {
+    min-width: 150px;
+}
+
+.tide-month-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 24px;
+    column-gap: 36px;
+    padding: 16px;
+    background: #2f2f2f;
+    color: #f5f5f5;
+    border-radius: 8px;
+}
+
+.tide-filter {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 6px;
+}
+
+.tide-filter__label {
+    font-weight: 600;
+    margin: 0;
+}
+
+.tide-loading {
+    color: #f5f5f5;
+    text-align: center;
+    padding: 24px;
+}
+
+.tide-month {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 12px 14px 16px;
+    background: #3b3b3b;
+    min-height: 220px;
+}
+
+.tide-month__header {
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
+    color: #f2f2f2;
+    font-weight: 700;
+    padding: 8px 10px;
+    background: linear-gradient(135deg, #1e6bb8 0%, #1b4f9c 100%);
+    border-radius: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.tide-month__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 6px;
+    font-size: 13px;
+}
+
+.tide-day {
+    color: #e0e0e0;
+    text-align: left;
+}
+
+.tide-day td {
+    padding: 6px 8px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.tide-day td:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.tide-day td:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.tide-day__date {
+    font-weight: 700;
+    width: 150px;
+}
+
+.tide-day__weekday {
+    font-size: 11px;
+    color: #bfbfbf;
+    width: 60px;
+}
+
+.tide-day__icon {
+    color: #d7dc3f;
+    width: 40px;
+    text-align: center;
+}
+
+.tide-moon-icon {
+    color: #b19cff;
+    text-shadow: 0 0 6px rgba(177, 156, 255, 0.45);
+}
+
+.tide-moon-gallery {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.tide-moon-card {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(12, 18, 42, 0.9), rgba(25, 33, 67, 0.9));
+    color: #f5f5f5;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.tide-moon-card img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.tide-moon-card figcaption {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #d8dcf7;
+}
+
+.tide-day__icon .fa-moon-o {
+    color: #8fe7ff;
+    text-shadow: 0 0 6px rgba(143, 231, 255, 0.4);
+}
+
+.tide-day__icon .fa-circle {
+    color: #f5c4ff;
+    text-shadow: 0 0 6px rgba(245, 196, 255, 0.4);
+}
+
+.tide-day__icon-marker {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tide-day__spring {
+    font-weight: 600;
+    color: #ffffff;
+    width: 140px;
+}
+
+.tide-day--spring {
+    color: #ffffff;
+}
+
+.weather-history__controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.weather-month .panel-heading {
+    font-weight: bold;
+}
+
+.weather-month .table {
+    margin-bottom: 0;
+}
+
+.weather-condition-icon {
+    margin-right: 6px;
+}
+
+.weather-condition-icon--sunny {
+    color: #f0ad4e;
+}
+
+.weather-condition-icon--rain {
+    color: #5bc0de;
+}
+
+/*calendar header background color*/
+.calendar .calendar-header {
+	background-color: #8dd3b7;
+	color: white;
+	border: 0;
+}
+
+/*month header background color*/
+.calendar table.month .month-title {
+	background-color: green;
+	color: white;
+	padding: 5px;
+}
+
+.center {
+	text-align:center;
+}
+
+.underline-title {
+	border-bottom:1px solid #ccc;
+}
+
+.new-version {
+	display:inline-block;
+	position: absolute;
+	font-size: 12px;
+	padding: 5px;
+	background-color: green;
+	color: white;
+	border-radius: 4px;
+	box-shadow: #222 0 0 10px;
+	margin-top:20px;
+	margin-left:5px;
+}
+
+.parameter,
+.default-value,
+.returns,
+.related-methods {
+	font-size: 15px;
+    font-family: consolas;
+}
+
+.parameter {
+    color: #006696;
+}
+
+.default-value,
+.returns {
+	color: #3C7202;
+}
+
+.related-methods {
+	color:#7C0000;
+}
+
+span.link {
+	font-family: consolas;
+	font-size:13px;
+	color: blue;
+}
+
+.parameter > ul > li{
+	font-size: 12px;
+}
+
+code {
+	display:block;
+	margin:5px 0;
+	padding: 12px;
+}
+
+code.inline {
+	display:inline;
+	padding: 0;
+	background-color: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5
+{
+	font-family:'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;
+	
+}
+
+h1,
+h2
+{
+	font-weight:100;
+}
+
+h1
+{
+	padding: 30px 0 15px 0;
+    margin: 0;
+	font-size:60px;
+	display:inline-block;
+}
+
+h4 {
+	font-size:16px;
+	font-weight:bold;
+}
+
+p {
+	margin: 15px 0;
+}
+
+li {
+	list-style-type:square;
+}
+
+hr {
+	margin:20px 80px;
+}
+
+@media (min-width: 1024px) {
+	.site-content
+	{
+		width:800px;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.site-content
+	{
+		width:650px;
+	}
+	
+	#banner ul.menu  li
+	{
+		padding:0 7px;
+	}
+	
+	#title {
+		height:160px;
+	}
+	
+	h1 {
+		padding: 20px 0 10px 0;
+		font-size:50px;
+	}
+	
+	h2 {
+		font-size:25px;
+	}
+}
+
+
+@media (max-width: 768px) {
+	.site-content
+	{
+		width:100%;
+		min-width:200px;
+		padding:0 5px;
+	}
+	
+	#banner .menu-button
+	{
+		display:inline-block;
+		cursor:pointer;
+		font-size:21px;
+		padding:18px;
+	}
+	
+	#banner ul.menu  {
+		display:none;
+		float:none;
+		clear:both;
+		left:0;
+	}
+	
+	#banner ul.menu  li {
+		display:block;
+		width:100%;
+	}
+	
+	#banner ul.menu  li.selected {
+		box-shadow: inset 3px 0 0 white;
+	}
+	
+	#title {
+		height:120px;
+	}
+	
+	h1 {
+		padding: 15px 0 0 0;
+		font-size:30px;
+	}
+	
+	h2 {
+		font-size:17px;
+	}
+	
+	.new-version {
+		right:5px;
+		margin-top: -10px;
+	}
+}
+
+.modal-footer {
+	text-align: center; /* center buttons horizontally */
+	width: 100%; /* make footer as wide as modal-content */
     #placeContextMenu > li > a {
         cursor: pointer;
 
