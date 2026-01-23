@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-labelledby="title desc">
+  <title id="title">Full Moon</title>
+  <desc id="desc">A glowing full moon with subtle crater highlights.</desc>
+  <defs>
+    <radialGradient id="moonGlow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#fff6c7" />
+      <stop offset="55%" stop-color="#f5e6a1" />
+      <stop offset="100%" stop-color="#e8d27c" />
+    </radialGradient>
+    <radialGradient id="crater" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f0d98e" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#d9c27b" stop-opacity="0.2" />
+    </radialGradient>
+  </defs>
+  <rect width="600" height="600" fill="#0b1026" />
+  <circle cx="300" cy="300" r="220" fill="url(#moonGlow)" />
+  <circle cx="230" cy="240" r="45" fill="url(#crater)" />
+  <circle cx="370" cy="210" r="30" fill="url(#crater)" />
+  <circle cx="320" cy="340" r="65" fill="url(#crater)" />
+  <circle cx="210" cy="360" r="25" fill="url(#crater)" />
+  <circle cx="380" cy="380" r="35" fill="url(#crater)" />
+</svg>
