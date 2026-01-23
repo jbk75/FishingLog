@@ -2,6 +2,37 @@ body {
     margin: 0;
 }
 
+body.map-full-page {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.full-page-map {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.map-overlay {
+    position: fixed;
+    top: 60px;
+    left: 16px;
+    right: 16px;
+    z-index: 900;
+    pointer-events: none;
+}
+
+.map-overlay .panel,
+.map-overlay .btn {
+    pointer-events: auto;
+}
+
+.map-panel {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
 .home-link {
     position: fixed;
     top: 12px;
@@ -587,4 +618,3 @@ body {
 .tide-month__table td.tide-day__spring {
     padding-left: 20px;
 }
-
