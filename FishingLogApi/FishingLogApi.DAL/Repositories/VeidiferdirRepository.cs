@@ -286,6 +286,47 @@ public class TripRepository
         return trips;
     }
 
+    public List<TripMapDto> GetTripMapData()
+    {
+        const string query = @"
+            SELECT
+                t.Id,
+                t.FishingPlaceId,
+                t.Description,
+                t.DateFrom,
+                t.DateTo,
+                f.Name AS FishingPlaceName,
+                f.Longitude,
+                f.Latitude
+            FROM Trip t
+            INNER JOIN FishingPlace f ON t.FishingPlaceId = f.Id
+            ORDER BY t.DateFrom ASC";
+
+        SqlCommand cmd = new(query);
+        DataTable dt = DatabaseService.GetData(cmd, _connectionString);
+
+        List<TripMapDto> list = [];
+        if (dt != null && dt.Rows.Count > 0)
+        {
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(new TripMapDto
+                {
+                    Id = Convert.ToInt32(row["Id"]),
+                    FishingPlaceId = Convert.ToInt32(row["FishingPlaceId"]),
+                    Description = row["Description"]?.ToString(),
+                    DateFrom = GetDate(row["DateFrom"]?.ToString() ?? string.Empty),
+                    DateTo = GetDate(row["DateTo"]?.ToString() ?? string.Empty),
+                    FishingPlaceName = row["FishingPlaceName"]?.ToString(),
+                    Longitude = row["Longitude"]?.ToString(),
+                    Latitude = row["Latitude"]?.ToString()
+                });
+            }
+        }
+
+        return list;
+    }
+
     public async Task UpsertTripsAsync(List<TripDto> clientTrips)
     {
         using var con = new SqlConnection(_connectionString);

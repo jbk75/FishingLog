@@ -15,6 +15,7 @@
     <script src="Scripts/respond.min.js"></script>
     <script src="Scripts/jquery-1.10.2.min.js"></script>
     <script src="Scripts/bootstrap.min.js"></script>
+    <script src="Dal.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
@@ -86,46 +87,77 @@
     </div>
 
     <script>
-        var fishingPlaces = [
-            { name: "Thingvellir Lake", latitude: 64.255, longitude: -21.129, status: "visited" },
-            { name: "Laxá í Aðaldal", latitude: 65.724, longitude: -17.422, status: "visited" },
-            { name: "Elliðaár River", latitude: 64.117, longitude: -21.846, status: "visited" },
-            { name: "Hítará River", latitude: 64.630, longitude: -22.263, status: "visited" },
-            { name: "West Ranga", latitude: 63.914, longitude: -20.823, status: "visited" },
-            { name: "Lagarfljót", latitude: 65.194, longitude: -14.653, status: "wishlist" },
-            { name: "Borgarfjörður", latitude: 64.531, longitude: -21.922, status: "wishlist" },
-            { name: "Höfn Harbour", latitude: 64.253, longitude: -15.212, status: "wishlist" },
-            { name: "Breiðafjörður", latitude: 65.159, longitude: -22.950, status: "wishlist" }
-        ];
-
-        var visitedCount = fishingPlaces.filter(function (place) {
-            return place.status === "visited";
-        }).length;
-        var remainingCount = fishingPlaces.length - visitedCount;
-
-        document.getElementById("visitedCount").textContent = visitedCount;
-        document.getElementById("remainingCount").textContent = remainingCount;
-
         var map = L.map("icelandMap").setView([64.9631, -19.0208], 6);
 
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             attribution: "&copy; OpenStreetMap contributors"
         }).addTo(map);
 
-        fishingPlaces.forEach(function (place) {
-            var isVisited = place.status === "visited";
-            var markerColor = isVisited ? "#2ecc71" : "#f39c12";
-            var marker = L.circleMarker([place.latitude, place.longitude], {
+        function updateCounters(totalVisited) {
+            document.getElementById("visitedCount").textContent = totalVisited;
+            document.getElementById("remainingCount").textContent = 0;
+        }
+
+        function addVisitedMarker(place) {
+            var latitude = parseFloat(place.latitude);
+            var longitude = parseFloat(place.longitude);
+            if (isNaN(latitude) || isNaN(longitude)) {
+                return;
+            }
+
+            var marker = L.circleMarker([latitude, longitude], {
                 radius: 8,
-                fillColor: markerColor,
+                fillColor: "#2ecc71",
                 color: "#333",
                 weight: 1,
                 opacity: 1,
                 fillOpacity: 0.9
             }).addTo(map);
 
-            marker.bindPopup("<b>" + place.name + "</b><br>" + (isVisited ? "Visited" : "Still to go"));
-        });
+            var description = place.description ? "<br>" + place.description : "";
+            marker.bindPopup("<b>" + place.name + "</b>" + description + "<br>Visited");
+        }
+
+        function loadVisitedTrips() {
+            $.ajax({
+                url: APIBaseUrl + "fishingmap/trips",
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    var visitedPlaces = [];
+                    var seenPlaces = {};
+
+                    $.each(data, function (index, trip) {
+                        if (!trip || !trip.fishingPlaceId) {
+                            return;
+                        }
+
+                        if (seenPlaces[trip.fishingPlaceId]) {
+                            return;
+                        }
+
+                        seenPlaces[trip.fishingPlaceId] = true;
+                        visitedPlaces.push({
+                            id: trip.fishingPlaceId,
+                            name: trip.fishingPlaceName || "Unknown place",
+                            latitude: trip.latitude,
+                            longitude: trip.longitude,
+                            description: trip.description || ""
+                        });
+                    });
+
+                    updateCounters(visitedPlaces.length);
+                    visitedPlaces.forEach(addVisitedMarker);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(xhr.status);
+                    console.log(thrownError);
+                    updateCounters(0);
+                }
+            });
+        }
+
+        loadVisitedTrips();
     </script>
 </body>
 </html>
