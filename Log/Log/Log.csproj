@@ -74,6 +74,7 @@
     <Content Include="FishingPlaces.html" />
     <Content Include="FishingPlaceWishlist.html" />
     <Content Include="fishingnews.html" />
+    <Content Include="IcelandFishingMap.html" />
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>

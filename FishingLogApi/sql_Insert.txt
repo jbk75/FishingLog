@@ -1,0 +1,135 @@
+/* Update Latitude/Longitude by Name for Iceland fishing places.
+   - Skips unknown/ambiguous places (no update statement for those).
+   - Rules:
+     * All names starting with "Sogið" share the same coordinates.
+     * Mývatn and Myvatn share the same coordinates.
+     * Hlíðarvatn and Hlidarvatn share the same coordinates.
+*/
+
+----------------------------------------------------------------------
+-- 1) RULE-BASED UPDATES
+----------------------------------------------------------------------
+
+-- All Sogið* entries share the same coordinate (Sog river, NAT.is).
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.0070,
+    Longitude = -20.9738
+WHERE Name LIKE N'Sogið%';
+-- Source: NAT.is Sog coordinates. :contentReference[oaicite:1]{index=1}
+
+-- Mývatn + Myvatn share the same coordinate (Lake Mývatn, NAT.is).
+UPDATE dbo.FishingPlace
+SET Latitude  = 65.6039,
+    Longitude = -16.9961
+WHERE Name IN (N'Mývatn', N'Myvatn');
+-- Source: NAT.is Myvatn Lake coordinates. :contentReference[oaicite:2]{index=2}
+
+-- Hlíðarvatn + Hlidarvatn share the same coordinate (Hlíðarvatn (Selvogi), Wikidata/LMI ref).
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.896740,
+    Longitude = -22.164787
+WHERE Name IN (N'Hlíðarvatn í Selvogi', N'Hlidarvatn', N'Hlíðarvatn');
+-- Source: Wikidata coordinate location (64°53'48.264"N, 22°9'53.233"W). :contentReference[oaicite:3]{index=3}
+
+
+----------------------------------------------------------------------
+-- 2) DIRECT NAME MATCH UPDATES (ONLY WHERE FOUND)
+----------------------------------------------------------------------
+
+-- Ytri-Rangá (OSM/GeoView)
+UPDATE dbo.FishingPlace
+SET Latitude  = 63.94638,
+    Longitude = -20.27830
+WHERE Name = N'Ytri-Rangá';
+-- :contentReference[oaicite:4]{index=4}
+
+-- Andakílsá (NAT.is)
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.5501,
+    Longitude = -21.7000
+WHERE Name = N'Andakílsá';
+-- :contentReference[oaicite:5]{index=5}
+
+-- Grímsá (NAT.is)
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.5431,
+    Longitude = -21.3437
+WHERE Name = N'Grímsá';
+-- :contentReference[oaicite:6]{index=6}
+
+-- Brúará (NAT.is)
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.1471,
+    Longitude = -20.4264
+WHERE Name = N'Brúará';
+-- :contentReference[oaicite:7]{index=7}
+
+-- Þingvallavatn (Wikipedia)
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.18750,
+    Longitude = -21.13500
+WHERE Name = N'Þingvallavatn';
+-- :contentReference[oaicite:8]{index=8}
+
+-- Elliðavatn (NAT.is)
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.1285,
+    Longitude = -21.8176
+WHERE Name = N'Elliðavatn';
+-- :contentReference[oaicite:9]{index=9}
+
+-- Vífilsstaðavatn (2markers; DMS converted to decimal)
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.079075,
+    Longitude = -21.872342
+WHERE Name = N'Vífilstaðavatn';
+-- :contentReference[oaicite:10]{index=10}
+
+-- Kleifarvatn (NAT.is)
+UPDATE dbo.FishingPlace
+SET Latitude  = 63.916663,
+    Longitude = -21.9833294
+WHERE Name = N'Kleifarvatn';
+-- :contentReference[oaicite:11]{index=11}
+
+-- Leirvogsvatn (NAT.is)
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.1958,
+    Longitude = -21.4545
+WHERE Name = N'Leirvogsvatn';
+-- :contentReference[oaicite:12]{index=12}
+
+-- Skorradalsvatn (NAT.is)
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.5001,
+    Longitude = -21.4000
+WHERE Name = N'Skorradalsvatn';
+-- :contentReference[oaicite:13]{index=13}
+
+-- Úlfljótsvatn (NAT.is)
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.099734,
+    Longitude = -21.050616
+WHERE Name = N'Úlfljótsvatn';
+-- :contentReference[oaicite:14]{index=14}
+
+-- Laugarvatn / Laugavatn (NAT.is uses Laugarvatn; you listed Laugavatn)
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.2121,
+    Longitude = -20.7148
+WHERE Name IN (N'Laugavatn', N'Laugarvatn');
+-- :contentReference[oaicite:15]{index=15}
+
+-- Varmá (NAT.is)
+UPDATE dbo.FishingPlace
+SET Latitude  = 63.9485,
+    Longitude = -21.1897
+WHERE Name = N'Varmá';
+-- :contentReference[oaicite:16]{index=16}
+
+-- Elliðaá (GeoView/OSM)
+UPDATE dbo.FishingPlace
+SET Latitude  = 64.130556,
+    Longitude = -21.835556
+WHERE Name = N'Elliðaá';
+-- :contentReference[oaicite:17]{index=17}
