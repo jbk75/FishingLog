@@ -209,16 +209,16 @@ public class SuggestedFishingTripsController : ControllerBase
 
     private static SeasonRange GetUpcomingSeasonRange(DateTime today)
     {
-        var seasonYear = today.Month > 11 ? today.Year + 1 : today.Year;
+        var seasonYear = today.Month > 10 ? today.Year + 1 : today.Year;
         var seasonStart = new DateTime(seasonYear, 4, 1);
-        var seasonEnd = new DateTime(seasonYear, 11, 30);
+        var seasonEnd = new DateTime(seasonYear, 10, 31);
 
         return new SeasonRange(seasonYear, seasonStart, seasonEnd);
     }
 
     private static bool IsEntryInSeason(SuggestionEntry entry, SeasonRange seasonRange)
     {
-        if (entry.Month < 4 || entry.Month > 11)
+        if (entry.Month < 4 || entry.Month > 10)
         {
             return false;
         }
@@ -261,7 +261,7 @@ public class SuggestedFishingTripsController : ControllerBase
                 PlaceId = placeId,
                 PlaceName = placeMap[placeId],
                 Date = date,
-                Reason = "Suggested for the upcoming April-November season based on available fishing places.",
+                Reason = "Suggested for the upcoming April-October season based on available fishing places.",
                 TripCount = 0,
                 NewsCount = 0
             });
